@@ -12,13 +12,20 @@
             <h1>Profile Cloud</h1>
         </div>
     </header>
-    <div class="container">
-        <h1>Profile Cloud</h1>
-        <input type="file" id="fileInput" style="display: none;">
-        <button class="button" onclick="document.getElementById('fileInput').click();">Upload File</button>
-        <button class="button" onclick="downloadFile()">Download File</button>
-    </div>
 
-    <script src="js/profile.js"></script>
+    <div class="container">
+        <h2>Seus Documentos na Cloud</h2>
+        <ul id="fileList">
+            
+        </ul>
+        <input type="file" id="fileInput" style="display: none;">
+        <br>
+        <button class="upload-button" onclick="document.getElementById('fileInput').click();">Upload File</button>
+        <br>
+        <button class="logout-button" onclick="logout();">Logout</button>
+    </div>
+    
+
+    <script src="/WEB/js/profile.js"></script>
 </body>
 </html>
