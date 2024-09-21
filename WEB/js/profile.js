@@ -27,6 +27,10 @@ function loadFiles() {
         fileList.appendChild(li);
     });
 }
+function logout() {
+
+    window.location.href = "/WEB/html/login.html"; 
+}
 
 function confirmDownload(fileName) {
     if (confirm(`Deseja fazer download de ${fileName}?`)) {
