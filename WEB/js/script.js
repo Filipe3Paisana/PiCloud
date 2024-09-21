@@ -10,6 +10,4 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     }
     
     alert(`Login efetuado com sucesso! Bem-vindo(a), ${email}`);
-
-    
 });
