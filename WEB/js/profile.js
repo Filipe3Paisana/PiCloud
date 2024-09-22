@@ -29,7 +29,7 @@ function loadFiles() {
 }
 function logout() {
 
-    window.location.href = "/WEB/html/login.html"; 
+    window.location.href = "/WEB/html/index.html"; 
 }
 
 function confirmDownload(fileName) {
