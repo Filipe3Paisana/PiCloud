@@ -3,7 +3,7 @@ services:
     image: nginx:latest
     container_name: web1
     ports:
-      - "8081:80"
+      - "8083:80"
     volumes:
       - ./WEB/html:/usr/share/nginx/html
 
