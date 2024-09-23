@@ -4,13 +4,16 @@ services:
     container_name: web1
     ports:
       - "8081:80"
+    volumes:
+      - ./WEB/html:/usr/share/nginx/html
 
   web2:
     image: nginx:latest
     container_name: web2
     ports:
       - "8082:80"
-
+    volumes:
+      - ./WEB/html:/usr/share/nginx/html
   nginx:
     image: nginx:latest
     container_name: nginx-container
@@ -22,18 +25,9 @@ services:
       - web1
       - web2
 
-
   k6-tester:
     build:
       context: ./k6-tester
     container_name: k6-tester
     depends_on:
       - nginx
-
-
-
-
-
-
-
-

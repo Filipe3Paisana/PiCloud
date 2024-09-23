@@ -10,7 +10,7 @@ export let options = {
 };
 
 export default function () {
-  const res = http.get('http://nginx-container:8080');
+  const res = http.get('http://nginx-container:80');
   
   // Verifica se a resposta tem o status 200
   check(res, { 'status was 200': (r) => r.status == 200 });
