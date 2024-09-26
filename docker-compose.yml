@@ -20,10 +20,3 @@ services:
     depends_on:
       - web1
       - web2
-
-  k6-tester:
-    build:
-      context: ./k6-tester
-    container_name: k6-tester
-    depends_on:
-      - nginx
