@@ -11,7 +11,7 @@ struct CreateUser {
 
 #[post("/create_user", format = "json", data = "<user>")]
 async fn create_user(user: Json<CreateUser>) -> String {
-    format!("Usuário criado na API 1: {} - {}", user.name, user.email)
+    format!("Usuário criado na API 2: {} - {}", user.name, user.email)
 }
 
 #[launch]
