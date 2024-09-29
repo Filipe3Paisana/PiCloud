@@ -1,0 +1,15 @@
+[package]
+name = "rocket_server"  # Altere conforme necessário (por exemplo, rocket_server1 e rocket_server2)
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rocket = "0.5.0-rc.1"  # Ou a versão mais recente disponível
+rocket_db = { version = "0.5.0-rc.1", features = ["diesel_postgres_pool"] }
+tokio = { version = "1", features = ["full"] }
+dotenv = "0.15"  # Para carregar variáveis de ambiente de um arquivo .env
+
+# Dependência para interagir com o PostgreSQL
+diesel = { version = "2.0", features = ["postgres"] }
+
+# Opcional: Adicione quaisquer outras dependências que você precisar
