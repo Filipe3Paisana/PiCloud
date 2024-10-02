@@ -5,7 +5,7 @@ services:
     volumes:
       - ./WEB/html:/usr/share/nginx/html
     networks:
-      - my_network
+      - pi_network
 
   web2:
     image: nginx:latest
@@ -13,7 +13,7 @@ services:
     volumes:
       - ./WEB/html:/usr/share/nginx/html
     networks:
-      - my_network
+      - pi_network
 
   nginx:
     build: 
@@ -29,7 +29,7 @@ services:
       - web1
       - web2
     networks:
-      - my_network
+      - pi_network
 
   db:
     image: postgres:${POSTGRES_IMAGE_VERSION}
@@ -44,7 +44,7 @@ services:
       - db_data:/var/lib/postgresql/data
       - ./scripts:/docker-entrypoint-initdb.d
     networks:
-      - my_network
+      - pi_network
 
   api:
     build:
@@ -54,10 +54,10 @@ services:
       - "${APP_PORT}:8080"
     tty: true
     networks:
-      - my_network
+      - pi_network
 
 volumes:
   db_data:
 
 networks:
-  my_network:
+  pi_network:
