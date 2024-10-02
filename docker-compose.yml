@@ -10,7 +10,11 @@ services:
     container_name: web2
     volumes:
       - ./WEB/html:/usr/share/nginx/html
+
   nginx:
+    build: 
+      context: ./WEB
+      dockerfile: Dockerfile
     image: nginx:latest
     container_name: nginx-container
     ports:
@@ -21,11 +25,26 @@ services:
       - web1
       - web2
 
+  db:
+    image: postgres:latest
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+
   app:
     build:
       context: ./API
       dockerfile: Dockerfile
     ports:
       - "8081:8080"
-    tty: true  
+    tty: true
 
+volumes:
+  db_data:  
