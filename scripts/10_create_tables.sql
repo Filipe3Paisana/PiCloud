@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    password_hash VARCHAR(255) NOT NULL
 );
 
 -- Tabela 'Files'
@@ -12,7 +11,6 @@ CREATE TABLE IF NOT EXISTS Files (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     size INT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
@@ -33,15 +31,13 @@ CREATE TABLE IF NOT EXISTS Nodes (
     location VARCHAR(255) NOT NULL,
     capacity INT NOT NULL,
     available_capacity INT NOT NULL,
-    status VARCHAR(50) NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    status VARCHAR(50) NOT NULL
 );
 
 -- Tabela 'FragmentLocation'
 CREATE TABLE IF NOT EXISTS FragmentLocation (
     fragment_id INT NOT NULL,
     node_id INT NOT NULL,
-    stored_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (fragment_id, node_id),
     FOREIGN KEY (fragment_id) REFERENCES FileFragments(fragment_id) ON DELETE CASCADE,
     FOREIGN KEY (node_id) REFERENCES Nodes(id) ON DELETE CASCADE
