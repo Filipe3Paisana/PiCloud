@@ -1,4 +1,3 @@
--- Tabela 'Users'
 CREATE TABLE IF NOT EXISTS Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -6,7 +5,6 @@ CREATE TABLE IF NOT EXISTS Users (
     password_hash VARCHAR(255) NOT NULL
 );
 
--- Tabela 'Files'
 CREATE TABLE IF NOT EXISTS Files (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -15,7 +13,6 @@ CREATE TABLE IF NOT EXISTS Files (
     FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
 );
 
--- Tabela 'FileFragments'
 CREATE TABLE IF NOT EXISTS FileFragments (
     fragment_id SERIAL PRIMARY KEY,
     file_id INT NOT NULL,
@@ -24,7 +21,6 @@ CREATE TABLE IF NOT EXISTS FileFragments (
     FOREIGN KEY (file_id) REFERENCES Files(id) ON DELETE CASCADE
 );
 
--- Tabela 'Nodes'
 CREATE TABLE IF NOT EXISTS Nodes (
     id SERIAL PRIMARY KEY,
     node_address VARCHAR(255) NOT NULL,
@@ -34,7 +30,6 @@ CREATE TABLE IF NOT EXISTS Nodes (
     status VARCHAR(50) NOT NULL
 );
 
--- Tabela 'FragmentLocation'
 CREATE TABLE IF NOT EXISTS FragmentLocation (
     fragment_id INT NOT NULL,
     node_id INT NOT NULL,
