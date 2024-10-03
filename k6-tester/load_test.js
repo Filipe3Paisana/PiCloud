@@ -1,10 +1,10 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6'; // Adiciona a importação de 'check'
+import { check, sleep } from 'k6'; 
 
 export let options = {
     stages: [
         
-        { duration: '1m', target: 5000 },  // Aumenta até 5000 usuários em 1 minuto
+        { duration: '1m', target: 2000 },
         
     ],
 };
