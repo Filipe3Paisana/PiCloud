@@ -23,7 +23,21 @@ type User struct {
 
 var db *sql.DB
 
+// Função para habilitar CORS
+func enableCors(w http.ResponseWriter) {
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+}
+
+// Handler para criação de usuários
 func createUserHandler(w http.ResponseWriter, r *http.Request) {
+    enableCors(w) // Habilitar CORS
+
+    if r.Method == http.MethodOptions {
+        return // Retorna para as requisições OPTIONS necessárias para CORS
+    }
+
     if r.Method != http.MethodPost {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
@@ -36,7 +50,7 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     query := `INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id`
-    err := db.QueryRow(query, user.Username, user.Password, user.Email).Scan(&user.ID)
+    err := db.QueryRow(query, user.Username, user.Email, user.Password).Scan(&user.ID)
     if err != nil {
         http.Error(w, "Erro ao criar usuário", http.StatusInternalServerError)
         return
@@ -46,8 +60,14 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(user)
 }
 
-
+// Handler para obter usuários
 func getUsersHandler(w http.ResponseWriter, r *http.Request) {
+    enableCors(w) // Habilitar CORS
+
+    if r.Method == http.MethodOptions {
+        return // Retorna para as requisições OPTIONS necessárias para CORS
+    }
+
     if r.Method != http.MethodGet {
         http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
         return
@@ -80,11 +100,10 @@ func getUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    
+
     var err error
     connStr := "host=postgres-container port=5432 user=test password=test dbname=test sslmode=disable"
 
-    
     for {
         db, err = sql.Open("postgres", connStr)
         if err != nil {
@@ -92,7 +111,6 @@ func main() {
             time.Sleep(5 * time.Second)
             continue
         }
-
 
         if err = db.Ping(); err == nil {
             break
@@ -103,11 +121,11 @@ func main() {
 
     rand.Seed(time.Now().UnixNano())
 
-    
-    http.HandleFunc("/users/add", createUserHandler)    
-    http.HandleFunc("/users", getUsersHandler) 
+    // Definindo rotas e handlers
+    http.HandleFunc("/users/add", createUserHandler)
+    http.HandleFunc("/users", getUsersHandler)
 
-    fmt.Println("Servidor rodando em http://localhost:8081/")
+    fmt.Println("Servidor rodando em http://localhost:8080/")
     if err := http.ListenAndServe(":8080", nil); err != nil {
         fmt.Println("Erro ao iniciar o servidor:", err)
     }
