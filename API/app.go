@@ -125,7 +125,7 @@ func main() {
     http.HandleFunc("/users/add", createUserHandler)
     http.HandleFunc("/users", getUsersHandler)
 
-    fmt.Println("Servidor rodando em http://localhost:8080/")
+    fmt.Println("Servidor rodando em http://localhost:8081/")
     if err := http.ListenAndServe(":8080", nil); err != nil {
         fmt.Println("Erro ao iniciar o servidor:", err)
     }
