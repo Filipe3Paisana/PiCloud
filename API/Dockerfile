@@ -4,25 +4,20 @@ FROM golang:1.20-alpine AS builder
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar os arquivos de configuração e código
-COPY go.mod ./
-COPY app.go ./
+# Copiar todos os arquivos de código fonte para o container
+COPY . .
 
-# Baixar as dependências
-RUN go mod tidy
+# Baixar as dependências e compilar a aplicação
+RUN go mod tidy && go build -o app
 
-# Compilar os aplicativos Go
-RUN go build -o app app.go
-
-# Etapa 2: Executar a aplicação
+# Etapa 2: Criar a imagem final
 FROM alpine:latest
 
 # Definir o diretório de trabalho no container final
 WORKDIR /app
 
-# Copiar apenas o binário da aplicação web para o container final
+# Copiar o binário da aplicação para o container final
 COPY --from=builder /app/app .
 
 # Comando padrão para rodar a aplicação web
 CMD ["./app"]
-
