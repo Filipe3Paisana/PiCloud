@@ -1,4 +1,59 @@
 services:
+  # Serviço do banco de dados principal (master)
+  db:
+    image: postgres:${POSTGRES_IMAGE_VERSION}
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./scripts/master/init:/docker-entrypoint-initdb.d  # Scripts do master
+    networks:
+      - pi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  db_replica:
+    image: postgres:${POSTGRES_IMAGE_VERSION}
+    container_name: postgres-replica
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    depends_on:
+      - db
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_replica_data:/var/lib/postgresql/data
+      - ./scripts/replica/init:/docker-entrypoint-initdb.d  # Reutiliza scripts do master
+    networks:
+      - pi_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Serviço da API
+  api:
+    build:
+      context: ./API
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_PORT}:8080"
+    tty: true
+    networks:
+      - pi_network
+
+  # Serviços web com NGINX
   web1:
     image: nginx:latest
     container_name: web1
@@ -15,6 +70,7 @@ services:
     networks:
       - pi_network
 
+  # NGINX reverso para balancear carga entre web1 e web2
   nginx:
     build: 
       context: ./WEB
@@ -31,42 +87,9 @@ services:
     networks:
       - pi_network
 
-  db:
-    image: postgres:${POSTGRES_IMAGE_VERSION}
-    container_name: postgres-container
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "${DB_PORT}:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./scripts:/docker-entrypoint-initdb.d
-    networks:
-      - pi_network
-
-  api:
-    build:
-      context: ./API
-      dockerfile: Dockerfile
-    ports:
-      - "${APP_PORT}:8080"
-    tty: true
-    networks:
-      - pi_network
- 
-  # k6:
-  #   build:
-  #     context: ./k6-tester 
-  #     dockerfile: Dockerfile  
-  #   depends_on:
-  #     - nginx  
-  #   networks:
-  #     - pi_network
-      
 volumes:
   db_data:
+  db_replica_data:
 
 networks:
   pi_network:
