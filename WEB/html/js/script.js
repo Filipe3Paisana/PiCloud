@@ -24,8 +24,12 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (response.ok) {
             const result = await response.json();
             console.log('Dados da resposta:', result);
+
+            // Armazenar o token no LocalStorage
+            localStorage.setItem('authToken', result.token); // Armazena o token
+
             alert(`Login efetuado com sucesso! Bem-vindo(a), ${email}`);
-            window.location.href = 'profile.html';
+            window.location.href = 'profile.html'; // Redireciona para o perfil
         } else {
             const errorData = await response.text();
             console.error('Erro ao fazer login:', errorData);
