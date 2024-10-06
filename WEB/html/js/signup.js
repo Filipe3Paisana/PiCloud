@@ -17,7 +17,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     const userData = {
         "username": name,
         "email": email,
-        "password_hash": password // Aqui você envia a senha, mas seria melhor aplicar hashing no lado do servidor
+        "password": password // Aqui você envia a senha, mas seria melhor aplicar hashing no lado do servidor
     };
 
     try {
