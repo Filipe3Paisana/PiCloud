@@ -24,8 +24,14 @@ func CreateUserHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        query := `INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id`
-        err := db.QueryRow(query, user.Username, user.Email, user.Password).Scan(&user.ID)
+        HashPassword, err := utils.HashPassword(user.Password)
+        if err != nil {
+            http.Error(w, "Erro ao gerar hash da senha", http.StatusInternalServerError)
+            return
+        }
+
+        query := "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id"
+        err = db.QueryRow(query, user.Username, user.Email, HashPassword).Scan(&user.ID) // sem o ":="
         if err != nil {
             http.Error(w, "Erro ao criar usuário", http.StatusInternalServerError)
             return
@@ -54,7 +60,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         }
 
         var user models.User
-        query := "SELECT id, email, password_ FROM users WHERE email=$1"
+        query := "SELECT id, email, password_hash FROM users WHERE email=$1"
         err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password)
         if err != nil {
             if err == sql.ErrNoRows {
