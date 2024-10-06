@@ -11,14 +11,8 @@ import (
 
 func CreateUserHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w)
-
-		if r.Method == http.MethodOptions {
-            w.WriteHeader(http.StatusOK)
-            return
-        }
-		
-        if r.Method != http.MethodPost {
+        utils.EnableCors(w, r)
+		if r.Method != http.MethodPost {
             http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
             return
         }
@@ -43,7 +37,7 @@ func CreateUserHandler(db *sql.DB) http.HandlerFunc {
 
 func LoginHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w)
+        utils.EnableCors(w, r)
         if r.Method != http.MethodPost {
             http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
             return
@@ -82,7 +76,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
 
 func GetUsersHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w)
+        utils.EnableCors(w, r)
         if r.Method != http.MethodGet {
             http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
             return
