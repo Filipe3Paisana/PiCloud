@@ -12,6 +12,12 @@ import (
 func CreateUserHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         utils.EnableCors(w)
+
+		if r.Method == http.MethodOptions {
+            w.WriteHeader(http.StatusOK)
+            return
+        }
+		
         if r.Method != http.MethodPost {
             http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
             return
