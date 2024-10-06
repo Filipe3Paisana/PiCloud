@@ -4,6 +4,7 @@ import (
     "database/sql"
     "encoding/json"
     "net/http"
+    "strings"
 
     "api/models"
     "api/utils"
@@ -53,7 +54,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         }
 
         var user models.User
-        query := "SELECT id, email, password_hash FROM users WHERE email=$1"
+        query := "SELECT id, email, password_ FROM users WHERE email=$1"
         err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password)
         if err != nil {
             if err == sql.ErrNoRows {
@@ -101,5 +102,36 @@ func GetUsersHandler(db *sql.DB) http.HandlerFunc {
 
         w.Header().Set("Content-Type", "application/json")
         json.NewEncoder(w).Encode(users)
+    }
+}
+
+func GetUserHandler(db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        utils.EnableCors(w, r)
+        if r.Method != http.MethodGet {
+            http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+            return
+        }
+
+        id := strings.TrimPrefix(r.URL.Path, "/user/")
+        if id == "" {
+            http.Error(w, "ID não fornecido", http.StatusBadRequest)
+            return
+        }
+
+        var user models.User
+        query := "SELECT id, username, email FROM users WHERE id=$1"
+        err := db.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email)
+        if err != nil {
+            if err == sql.ErrNoRows {
+                http.Error(w, "Usuário não encontrado", http.StatusNotFound)
+            } else {
+                http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+            }
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(user)
     }
 }
