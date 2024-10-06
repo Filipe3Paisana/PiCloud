@@ -1,4 +1,4 @@
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
     e.preventDefault(); 
 
     const email = document.getElementById('email').value;
@@ -8,6 +8,31 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         alert("Por favor, preencha todos os campos!");
         return;
     }
-    
-    alert(`Login efetuado com sucesso! Bem-vindo(a), ${email}`);
+
+    try {
+        const response = await fetch('http://localhost:8081/users/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email, password: password })
+        });
+
+        console.log('Status da resposta:', response.status);
+        console.log('Resposta completa:', response);
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Dados da resposta:', result);
+            alert(`Login efetuado com sucesso! Bem-vindo(a), ${email}`);
+            window.location.href = 'profile.html';
+        } else {
+            const errorData = await response.text();
+            console.error('Erro ao fazer login:', errorData);
+            alert(`Erro ao fazer login: ${errorData}`);
+        }
+    } catch (error) {
+        console.error('Erro de rede:', error);
+        alert('Erro ao tentar fazer login. Tente novamente mais tarde.');
+    }
 });
