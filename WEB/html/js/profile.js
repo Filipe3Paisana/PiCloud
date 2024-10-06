@@ -28,8 +28,9 @@ function loadFiles() {
     });
 }
 function logout() {
-
-    window.location.href = "html/index.html"; 
+    if (confirm(`Deseja sai da sessão?`)) {    
+        window.location.href = "index.html"; 
+    }
 }
 
 function confirmDownload(fileName) {

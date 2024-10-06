@@ -6,6 +6,7 @@ import (
 
     "api/db"
     "api/handlers"
+    "api/utils"
 
     _ "github.com/lib/pq"
 )
@@ -20,13 +21,15 @@ func main() {
     defer dbConn.Close()
 
     // Definir rotas e handlers
-    http.HandleFunc("/users/add", handlers.CreateUserHandler(dbConn))
-    http.HandleFunc("/users/login", handlers.LoginHandler(dbConn))
-    http.HandleFunc("/users", handlers.GetUsersHandler(dbConn))
-    http.HandleFunc("/user/", handlers.GetUserHandler(dbConn))
+    http.HandleFunc("/users/add", handlers.CreateUserHandler(dbConn))      // Rota pública
+    http.HandleFunc("/users/login", handlers.LoginHandler(dbConn))          // Rota pública
+
+    // Aplicar middleware de autenticação JWT nas rotas protegidas
+    http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
+    http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))    
 
     fmt.Println("Servidor rodando em http://localhost:8081/")
-    if err := http.ListenAndServe(":8080", nil); err != nil {
+    if err := http.ListenAndServe(":8080", nil); err != nil {  
         fmt.Println("Erro ao iniciar o servidor:", err)
     }
 }
