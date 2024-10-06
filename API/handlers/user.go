@@ -51,7 +51,7 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         }
 
         var credentials struct {
-            Email string `json:"email"`
+            Email    string `json:"email"`
             Password string `json:"password"`
         }
         if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
@@ -60,19 +60,17 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         }
 
         var user models.User
+        
         query := "SELECT id, email, password_hash FROM users WHERE email=$1"
         err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password)
         if err != nil {
-            if err == sql.ErrNoRows {
-                http.Error(w, "Usuário não encontrado", http.StatusUnauthorized)
-            } else {
-                http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
-            }
+            http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
             return
         }
 
-        if user.Password != credentials.Password {
-            http.Error(w, "Senha incorreta", http.StatusUnauthorized)
+        
+        if err := utils.ComparePassword(credentials.Password, user.Password); err != nil {
+            http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
             return
         }
 
@@ -80,6 +78,8 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         json.NewEncoder(w).Encode(map[string]string{"message": "Login bem-sucedido"})
     }
 }
+
+
 
 func GetUsersHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
