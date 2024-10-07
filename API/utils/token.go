@@ -6,7 +6,7 @@ import (
 )
 
 
-var jwtKey = []byte("sua_chave_secreta_super_segura")
+var jwtKey = []byte("PiCloudSecretKey")
 
 
 func GenerateJWT(userID int) (string, error) {
