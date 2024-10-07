@@ -23,7 +23,8 @@ func main() {
     // Definir rotas e handlers
     http.HandleFunc("/users/add", handlers.CreateUserHandler(dbConn))      // Rota pública
     http.HandleFunc("/users/login", handlers.LoginHandler(dbConn))          // Rota pública
-
+    http.HandleFunc("/node/status", handlers.CheckNodeStatusHandler)        // Nova rota
+    
     // Aplicar middleware de autenticação JWT nas rotas protegidas
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
     http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))    
