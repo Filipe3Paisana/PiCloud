@@ -17,7 +17,7 @@ kubectl apply -f k8s-deployment/grafana/grafana-deployment.yaml
 
 # Aguarda alguns segundos para o Kubernetes iniciar os pods
 echo "Aguarde enquanto os pods são iniciados..."
-sleep 10
+sleep 5
 
 # Verifica o estado dos pods
 echo "Verificando o estado dos pods..."
