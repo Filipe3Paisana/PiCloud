@@ -80,15 +80,15 @@ services:
     networks:
       - pi_network
 
-  # K6 para Testes de Carga
-  # k6:
-  #   build:
-  #     context: ./k6-tester 
-  #     dockerfile: Dockerfile  
-  #   depends_on:
-  #     - nginx  
-  #   networks:
-  #     - pi_network
+  
+  k6:
+    build:
+      context: ./k6-tester 
+      dockerfile: Dockerfile  
+    depends_on:
+      - nginx  
+    networks:
+      - pi_network
 
 volumes:
   db_data:

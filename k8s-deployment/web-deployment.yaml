@@ -19,6 +19,13 @@ spec:
         volumeMounts:
         - name: web-html
           mountPath: /usr/share/nginx/html
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: web-html
         hostPath:

@@ -21,10 +21,17 @@ spec:
         volumeMounts:
         - name: web-html
           mountPath: /usr/share/nginx/html  # Mounts HTML files correctly
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       volumes:
       - name: web-html
         hostPath:
-          path: /Users/manuel/Documents/IADE/projects /PiCloud-WEB/web/html
+          path: ${WEB_HTML_PATH}  # Replace with your actual path for HTML content
 ---
 apiVersion: v1
 kind: Service

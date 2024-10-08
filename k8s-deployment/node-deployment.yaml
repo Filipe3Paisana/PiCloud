@@ -15,14 +15,16 @@ spec:
       containers:
       - name: node
         image: picloud-web-node:latest  # Use the local Docker image name
-        imagePullPolicy: Never          # Ensure Kubernetes uses the local image
+        imagePullPolicy: Never
         ports:
         - containerPort: 8082
-        env:
-          - name: NODE_ID
-            value: node1
-          - name: NODE_PORT
-            value: "8082"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
 ---
 apiVersion: v1
 kind: Service

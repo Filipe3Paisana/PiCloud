@@ -4,7 +4,7 @@ metadata:
   name: postgres
 spec:
   serviceName: "postgres"
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: postgres
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:13  # Using a local image
+        image: postgres:latest  # Using a local image
         imagePullPolicy: Never
         ports:
         - containerPort: 5432

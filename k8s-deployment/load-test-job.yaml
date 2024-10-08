@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: k6
-        image: loadimpact/k6
+        image: k6:latest
         command: ["k6", "run", "/path/to/your/test/script.js"]
       restartPolicy: Never
   backoffLimit: 4
