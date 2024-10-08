@@ -31,7 +31,7 @@ spec:
       volumes:
       - name: web-html
         hostPath:
-          path: ${WEB_HTML_PATH}  # Replace with your actual path for HTML content
+          path: /Users/manuel/Documents/IADE/projects/PiCloud-WEB/WEB/html  
 ---
 apiVersion: v1
 kind: Service
