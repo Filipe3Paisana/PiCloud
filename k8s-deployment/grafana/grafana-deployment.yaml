@@ -21,7 +21,7 @@ spec:
             - containerPort: 3000
           env:
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "${GRAFANA_PASSWORD}"  
+              value: admin
           resources:
             limits:
               memory: "512Mi"
