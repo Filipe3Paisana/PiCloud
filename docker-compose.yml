@@ -35,7 +35,7 @@ services:
   # Node de Armazenamento
   node:
     build:
-      context: ./NODES
+      context: ./NODE
       dockerfile: Dockerfile
     container_name: node-container
     environment:
