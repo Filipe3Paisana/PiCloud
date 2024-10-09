@@ -3,7 +3,7 @@
 # Aplica o ConfigMap atualizado para NGINX
 echo "Aplicando ConfigMap para NGINX..."
 kubectl apply -f k8s-deployment/nginx/nginx-configmap.yaml
-kubectl apply -f k8s-deployment/nginx/secret.yaml
+kubectl apply -f k8s-deployment/web/web-nginx-configmap.yaml
 
 # Aplica todos os ficheiros de YAML para os deployments
 echo "Aplicando os Deployments do Kubernetes..."

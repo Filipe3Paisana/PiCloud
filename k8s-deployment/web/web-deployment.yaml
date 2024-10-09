@@ -14,22 +14,16 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:latest  # Using nginx image which is available locally
-        imagePullPolicy: Never
+        image: manelsilva/my-web:latest  # Ou a sua imagem personalizada
+        ports:
+        - containerPort: 80
         volumeMounts:
-        - name: web-html
-          mountPath: /usr/share/nginx/html
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: web-nginx-config
+          mountPath: /etc/nginx/conf.d
       volumes:
-      - name: web-html
-        hostPath:
-          path: /path/to/WEB/html  # Replace with your actual path for HTML content
+      - name: web-nginx-config
+        configMap:
+          name: web-nginx-config
 ---
 apiVersion: v1
 kind: Service

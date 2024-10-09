@@ -27,7 +27,7 @@ spec:
             cpu: "250m"
         env:
           - name: DATABASE_URL
-            value: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+            value: postgres://test:test@postgres:5432/test
 ---
 apiVersion: v1
 kind: Service
