@@ -1,3 +1,2 @@
 *.env
 *.git_command.sh
-*.k8s-deployment/nginx/nginx-deployment.yaml

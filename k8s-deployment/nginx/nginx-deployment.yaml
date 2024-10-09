@@ -15,12 +15,9 @@ spec:
       containers:
       - name: nginx
         image: nginx:latest
-        imagePullPolicy: Never
-        ports:
-        - containerPort: 80
         volumeMounts:
-        - name: web-html
-          mountPath: /usr/share/nginx/html  # Mounts HTML files correctly
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
         resources:
           requests:
             memory: "64Mi"
@@ -28,18 +25,9 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "500m"
+        ports:
+        - containerPort: 80
       volumes:
-      - name: web-html
-        hostPath:
-          path: /Users/paisanabuils/Downloads/PiCloud-WEB/WEB/html
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-spec:
-  type: LoadBalancer
-  ports:
-    - port: 80
-  selector:
-    app: nginx
+      - name: nginx-config
+        configMap:
+          name: nginx-config
