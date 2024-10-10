@@ -14,8 +14,7 @@ spec:
     spec:
       containers:
       - name: api
-        image: picloud-web-api:latest  # Use the local Docker image name
-        imagePullPolicy: Never          # Ensure Kubernetes uses the local image
+        image: filipe3paisana/my-api:latest  # Imagem no Docker Hub
         ports:
         - containerPort: 8080
         resources:
