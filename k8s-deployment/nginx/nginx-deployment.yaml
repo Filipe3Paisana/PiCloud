@@ -26,7 +26,8 @@ spec:
             cpu: "500m"
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/conf.d
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
       volumes:
       - name: nginx-config
         configMap:

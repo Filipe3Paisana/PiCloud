@@ -3,19 +3,39 @@ kind: ConfigMap
 metadata:
   name: nginx-config
 data:
-  default.conf: |
-    upstream web_servers {
-        server web-service:80;
+  nginx.conf: |
+    events {
+        worker_connections 1024;
     }
 
-    server {
-        listen 80;
+    http {
+        upstream web_servers {
+            server web-service:80;
+        }
 
-        location / {
-            proxy_pass http://web_servers;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
+        upstream api_servers {
+            server api-service:8080;
+        }
+
+        server {
+            listen 80;
+
+            # Rota para o web-service
+            location / {
+                proxy_pass http://web_servers;  
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            # Rota para a API
+            location /api/ {
+                proxy_pass http://api_servers;  # Proxy apenas para o backend api-service para rotas /api/
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
         }
     }
