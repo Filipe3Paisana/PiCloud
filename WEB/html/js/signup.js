@@ -17,11 +17,11 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     const userData = {
         "username": name,
         "email": email,
-        "password": password // Aqui você envia a senha, mas seria melhor aplicar hashing no lado do servidor
+        "password": password 
     };
 
     try {
-        // Fazer a requisição POST para a API de backend
+        
         const response = await fetch('http://localhost:8081/users/add', {
             method: 'POST',
             headers: {
@@ -30,7 +30,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             body: JSON.stringify(userData)
         });
 
-        // Verificar a resposta
+    
         if (response.ok) {
             const result = await response.json();
             alert('Usuário registrado com sucesso! Bem-vindo, ' + result.username);
