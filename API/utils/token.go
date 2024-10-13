@@ -5,24 +5,28 @@ import (
     "github.com/golang-jwt/jwt/v4"
 )
 
-
 var jwtKey = []byte("PiCloudSecretKey")
 
+type Claims struct {
+    UserID int    `json:"user_id"`
+    Username   string `json:"username"`
+    Email  string `json:"email"` 
+    jwt.StandardClaims
+}
 
-func GenerateJWT(userID int) (string, error) {
-    expirationTime := time.Now().Add(24 * time.Hour) // 
-    claims := &jwt.StandardClaims{
-        Subject:   string(userID), 
-        ExpiresAt: expirationTime.Unix(),
+
+func GenerateJWT(userID int, username string, email string) (string, error) {
+    expirationTime := time.Now().Add(24 * time.Hour)
+    claims := &Claims{
+        UserID: userID,
+        Username:   username,
+        Email:  email, 
+        StandardClaims: jwt.StandardClaims{
+            ExpiresAt: expirationTime.Unix(),
+        },
     }
 
     token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
     return token.SignedString(jwtKey)
 }
 
-
-func ValidateJWT(tokenString string) (*jwt.Token, error) {
-    return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-        return jwtKey, nil
-    })
-}

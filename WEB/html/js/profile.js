@@ -7,8 +7,25 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload); // Converte de string para objeto
 }
+function greetUser(token) {
+    const userData = parseJwt(token);
+    const userName = userData.username; 
+    const userEmail = userData.email; 
 
-// Verifica se o token está presente no LocalStorage
+    
+    document.getElementById('username').textContent = userName; 
+
+    if (userName) {
+        alert(`Olá, ${userName}! Seu email é ${userEmail}.`);
+    } else {
+        alert('Olá, usuário!');
+    }
+}
+
+
+
+
+
 window.onload = function() {
     const token = localStorage.getItem('authToken');
 
@@ -17,6 +34,7 @@ window.onload = function() {
         window.location.href = 'index.html'; 
         return;
     }
+    greetUser(token);
 
     
 };

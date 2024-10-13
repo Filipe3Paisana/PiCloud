@@ -6,7 +6,7 @@ import (
     "net/http"
     "strings"
     "log"
-    "github.com/golang-jwt/jwt/v4"
+    
 
 
     "api/models"
@@ -63,8 +63,8 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
         }
 
         var user models.User
-        query := "SELECT id, email, password_hash FROM users WHERE email=$1"
-        err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password)
+        query := "SELECT id, email, password_hash, username FROM users WHERE email=$1"
+        err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password, &user.Username)
         if err != nil {
             http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
             return
@@ -75,8 +75,8 @@ func LoginHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        // Gerar o token JWT usando a função do utils
-        token, err := utils.GenerateJWT(user.ID)
+        
+        token, err := utils.GenerateJWT(user.ID, user.Username , user.Email)
         if err != nil {
             log.Printf("Erro ao gerar o token: %v", err)
             http.Error(w, "Erro interno", http.StatusInternalServerError)
@@ -148,45 +148,6 @@ func GetUserHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(user)
-    }
-}
-func GetUserProfileHandler(db *sql.DB) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w, r)
-        
-        authHeader := r.Header.Get("Authorization")
-        if authHeader == "" {
-            http.Error(w, "Token não fornecido", http.StatusUnauthorized)
-            return
-        }
-
-        tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-        token, err := utils.ValidateJWT(tokenString)
-        if err != nil || !token.Valid {
-            http.Error(w, "Token inválido", http.StatusUnauthorized)
-            return
-        }
-
-        claims, ok := token.Claims.(jwt.MapClaims)
-        if !ok || !token.Valid {
-            http.Error(w, "Token inválido", http.StatusUnauthorized)
-            return
-        }
-
-        userID := claims["sub"].(string)
-
-        // Buscar os dados do usuário no banco
-        var user models.User
-        query := "SELECT id, username, email FROM users WHERE id=$1"
-        err = db.QueryRow(query, userID).Scan(&user.ID, &user.Username, &user.Email)
-        if err != nil {
-            http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
-            return
-        }
-
-        // Enviar os dados do usuário como resposta
         w.Header().Set("Content-Type", "application/json")
         json.NewEncoder(w).Encode(user)
     }
