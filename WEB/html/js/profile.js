@@ -7,6 +7,7 @@ function parseJwt(token) {
 
     return JSON.parse(jsonPayload); // Converte de string para objeto
 }
+
 function greetUser(token) {
     const userData = parseJwt(token);
     const userName = userData.username; 
@@ -21,10 +22,6 @@ function greetUser(token) {
         alert('Olá, usuário!');
     }
 }
-
-
-
-
 
 window.onload = function() {
     const token = localStorage.getItem('authToken');
@@ -42,6 +39,6 @@ window.onload = function() {
 
 
 function logout() {
-    localStorage.removeItem('authToken'); // Remove o token no logout
-    window.location.href = 'index.html'; // Redireciona para a página de login
+    localStorage.removeItem('authToken'); 
+    window.location.href = 'index.html'; 
 }
