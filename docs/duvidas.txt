@@ -8,6 +8,9 @@ para o projeto vamos fazer essencialmente 3 fazes:
 
 3. Desenvolver dois clusters dentro de cada datacenter, funcionando como Active - Active, com duas bases de dados e duas apis para garantir redundância dentro do mesmo datacenter bem como redundância com o segundo datacenter.
 
+4. Quardar fragmentos em todos os nodes ou não (Quantos mais nodes tivermos  menos fragmentos) (menos nodes necessida em guardar em todos os nodes)
+
+
 
 Duvidas
 
