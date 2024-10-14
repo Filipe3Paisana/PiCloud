@@ -15,7 +15,7 @@ func CheckNodeStatusHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     
-    nodeURL := "http://node-container:8082/status"
+    nodeURL := "http://node:8082/status"
 
     
     resp, err := http.Get(nodeURL)
