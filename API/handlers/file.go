@@ -34,7 +34,7 @@ func sendFileToNode(file multipart.File, filename string) error {
     }
 
     // Enviar a requisição POST para o node
-    nodeURL := "http://node:8082/fragments/upload" // URL do Node
+    nodeURL := "http://node1:8082/fragments/upload" // URL do Node
     req, err := http.NewRequest("POST", nodeURL, &body)
     if err != nil {
         return err

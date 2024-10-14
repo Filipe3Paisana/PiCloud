@@ -33,11 +33,11 @@ services:
       - pi_network
 
   # Node de Armazenamento
-  node:
+  node1:
     build:
       context: ./NODE
       dockerfile: Dockerfile
-    container_name: node-container
+    container_name: node1-container
     environment:
       - NODE_ID=node1
       - NODE_PORT=8082
@@ -45,6 +45,59 @@ services:
       - "8082:8082"
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
+  
+  node2:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node2-container
+    environment:
+      - NODE_ID=node2
+      - NODE_PORT=8083
+    ports:
+      - "8083:8083"
+    networks:
+      - pi_network
+
+  node3:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node3-container
+    environment:
+      - NODE_ID=node3
+      - NODE_PORT=8084
+    ports:
+      - "8084:8084"
+    networks:
+      - pi_network
+
+  node4:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node4-container
+    environment:
+      - NODE_ID=node4
+      - NODE_PORT=8085
+    ports:
+      - "8085:8085"
+    networks:
+      - pi_network
+  
+  node5:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node5-container
+    environment:
+      - NODE_ID=node5
+      - NODE_PORT=8086
+    ports:
+      - "8086:8086"
+    networks:
+      - pi_network
+
 
   # Serviços web com NGINX
   web1:
