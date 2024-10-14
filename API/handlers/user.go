@@ -6,10 +6,7 @@ import (
     "net/http"
     "strings"
     "log"
-    "fmt"
     
-
-
     "api/models"
     "api/utils"
 )
@@ -154,43 +151,43 @@ func GetUserHandler(db *sql.DB) http.HandlerFunc {
     }
 }
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+// func UploadHandler(w http.ResponseWriter, r *http.Request) {
     
-    utils.EnableCors(w, r)
+//     utils.EnableCors(w, r)
 
-    if r.Method == http.MethodOptions {
-        w.WriteHeader(http.StatusOK)
-        return 
-    }
+//     if r.Method == http.MethodOptions {
+//         w.WriteHeader(http.StatusOK)
+//         return 
+//     }
 
-    if r.Method == http.MethodPost {
-        fmt.Println("Recebendo arquivo...")
+//     if r.Method == http.MethodPost {
+//         fmt.Println("Recebendo arquivo...")
 
-        // Tamanho máximo do arquivo (10MB)
-        err := r.ParseMultipartForm(10 << 20)
-        if err != nil {
-            http.Error(w, "Erro ao processar o arquivo", http.StatusBadRequest)
-            return
-        }
+//         // Tamanho máximo do arquivo (10MB)
+//         err := r.ParseMultipartForm(10 << 20)
+//         if err != nil {
+//             http.Error(w, "Erro ao processar o arquivo", http.StatusBadRequest)
+//             return
+//         }
 
-        // Obter o arquivo do formulário
-        file, _, err := r.FormFile("file")
-        if err != nil {
-            http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
-            return
-        }
-        defer file.Close()
+//         // Obter o arquivo do formulário
+//         file, _, err := r.FormFile("file")
+//         if err != nil {
+//             http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
+//             return
+//         }
+//         defer file.Close()
 
-        // Aqui você pode adicionar lógica para armazenar o arquivo, se necessário
-        fmt.Println("Arquivo recebido com sucesso.")
+//         // Aqui você pode adicionar lógica para armazenar o arquivo, se necessário
+//         fmt.Println("Arquivo recebido com sucesso.")
 
-        // Responder com sucesso
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message": "Arquivo recebido com sucesso."}`))
-        return
-    }
+//         // Responder com sucesso
+//         w.Header().Set("Content-Type", "application/json")
+//         w.WriteHeader(http.StatusOK)
+//         w.Write([]byte(`{"message": "Arquivo recebido com sucesso."}`))
+//         return
+//     }
 
-    // Responder com erro para métodos não permitidos
-    http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-}
+//     // Responder com erro para métodos não permitidos
+//     http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+// }
