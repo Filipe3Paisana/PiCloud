@@ -46,7 +46,7 @@ func SendNodeStatusPeriodically() {
 
         fmt.Println("Enviando o seguinte status:", string(statusJSON)) 
 
-        endpoint := "http://localhost:8081/node/status/update"
+        endpoint := "http://api-container:8080/node/status/update"
         resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(statusJSON))
         if err != nil {
             fmt.Println("Erro ao enviar o status:", err)
