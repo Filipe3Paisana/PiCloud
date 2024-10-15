@@ -24,6 +24,8 @@ func main() {
     http.HandleFunc("/users/login", handlers.LoginHandler(dbConn))         
     http.HandleFunc("/node/status", handlers.CheckNodeStatusHandler)
     http.HandleFunc("/user/upload", handlers.UploadHandler)       
+
+    http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler(dbConn))
     
     
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
