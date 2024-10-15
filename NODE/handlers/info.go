@@ -44,7 +44,7 @@ func SendNodeStatusPeriodically() {
             continue
         }
 
-        fmt.Println("Enviando o seguinte status:", string(statusJSON)) // Log do JSON enviado
+        fmt.Println("Enviando o seguinte status:", string(statusJSON)) 
 
         endpoint := "http://localhost:8081/node/status/update"
         resp, err := http.Post(endpoint, "application/json", bytes.NewBuffer(statusJSON))
@@ -58,8 +58,8 @@ func SendNodeStatusPeriodically() {
             fmt.Println("Status enviado com sucesso")
         } else {
             body, _ := io.ReadAll(resp.Body)
-            fmt.Printf("Código de resposta: %d, corpo: %s\n", resp.StatusCode, body) // Log do corpo da resposta
+            fmt.Printf("Código de resposta: %d, corpo: %s\n", resp.StatusCode, body)
         }
     }
 }
-
+// curl -X POST http://localhost:8081/node/status/update -d '{"node_address": "127.0.0.1", "location": "Datacenter XYZ", "capacity": 100, "available_capacity": 60, "status": "ofline"}' -H "Content-Type: application/json" 
