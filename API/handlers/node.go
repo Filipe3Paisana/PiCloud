@@ -2,11 +2,11 @@ package handlers
 
 import (
     "net/http"
-    "io"
-    "api/utils"
+
     "database/sql"
     "encoding/json"
     "fmt"
+    "time"
 
 )
 
@@ -17,39 +17,6 @@ type NodeStatusRequest struct {
     Capacity         int    `json:"capacity"`          // Capacidade total do nó
     AvailableCapacity int    `json:"available_capacity"` // Capacidade disponível
     Status           string `json:"status"`            // Status do nó (ex: "online", "offline")
-}
-
-
-func CheckNodeStatusHandler(w http.ResponseWriter, r *http.Request) {
-    utils.EnableCors(w, r)
-
-    if r.Method != http.MethodGet {
-        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-        return
-    }
-
-    
-    nodeURL := "http://node:8082/status"
-
-    
-    resp, err := http.Get(nodeURL)
-    if err != nil {
-        http.Error(w, "Erro ao se conectar com o Node", http.StatusInternalServerError)
-        return
-    }
-    defer resp.Body.Close()
-
-    
-    body, err := io.ReadAll(resp.Body)
-    if err != nil {
-        http.Error(w, "Erro ao ler a resposta do Node", http.StatusInternalServerError)
-        return
-    }
-
-    
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(resp.StatusCode)
-    w.Write(body)
 }
 
 func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
@@ -65,14 +32,17 @@ func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
+        // Captura o timestamp atual
+        currentTime := time.Now()
+
         var nodeID int
         err := db.QueryRow("SELECT id FROM Nodes WHERE node_address = $1", req.NodeAddress).Scan(&nodeID)
 
         if err == sql.ErrNoRows {
             // Se o nó não existir, insere um novo registro
             _, err = db.Exec(
-                "INSERT INTO Nodes (node_address, location, capacity, available_capacity, status) VALUES ($1, $2, $3, $4, $5)",
-                req.NodeAddress, req.Location, req.Capacity, req.AvailableCapacity, req.Status,
+                "INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated) VALUES ($1, $2, $3, $4, $5, $6)",
+                req.NodeAddress, req.Location, req.Capacity, req.AvailableCapacity, req.Status, currentTime,
             )
             if err != nil {
                 http.Error(w, "Erro ao inserir o nó", http.StatusInternalServerError)
@@ -82,8 +52,8 @@ func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
         } else if err == nil {
             // Se o nó já existir, atualiza o registro
             _, err = db.Exec(
-                "UPDATE Nodes SET location = $1, capacity = $2, available_capacity = $3, status = $4 WHERE id = $5",
-                req.Location, req.Capacity, req.AvailableCapacity, req.Status, nodeID,
+                "UPDATE Nodes SET location = $1, capacity = $2, available_capacity = $3, status = $4, last_updated = $5 WHERE id = $6",
+                req.Location, req.Capacity, req.AvailableCapacity, req.Status, currentTime, nodeID,
             )
             if err != nil {
                 http.Error(w, "Erro ao atualizar o nó", http.StatusInternalServerError)
@@ -92,6 +62,21 @@ func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
             fmt.Fprintln(w, "Nó atualizado com sucesso")
         } else {
             http.Error(w, "Erro ao verificar o nó", http.StatusInternalServerError)
+        }
+    }
+}
+
+func MarkOfflineNodes(db *sql.DB) {
+    for {
+        time.Sleep(30 * time.Second) // Intervalo de verificação
+
+        // Define o limite de tempo para considerar um nó como "offline"
+        offlineThreshold := time.Now().Add(-25 * time.Second)
+
+        // Atualiza os nós para "offline" onde last_updated está além do limite
+        _, err := db.Exec("UPDATE Nodes SET status = 'offline' WHERE last_updated < $1", offlineThreshold)
+        if err != nil {
+            fmt.Println("Erro ao atualizar status dos nós para offline:", err)
         }
     }
 }

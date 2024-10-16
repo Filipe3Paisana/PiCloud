@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS Nodes (
     location VARCHAR(255) NOT NULL,
     capacity BIGINT NOT NULL,
     available_capacity BIGINT NOT NULL,
-    status VARCHAR(50) NOT NULL
+    status VARCHAR(50) NOT NULL,
+    last_updated TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS FragmentLocation (
