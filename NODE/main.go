@@ -19,7 +19,7 @@ func main() {
     http.HandleFunc("/fragments/download", handlers.DownloadFragmentHandler)
 
 
-    fmt.Println("Node rodando na porta 8082")
+    fmt.Println("Node a bombar na porta 8082")
     if err := http.ListenAndServe(":8082", nil); err != nil {
         fmt.Println("Erro ao iniciar o Node:", err)
     }
