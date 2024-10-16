@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS Nodes (
     id SERIAL PRIMARY KEY,
     node_address VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
-    capacity INT NOT NULL,
-    available_capacity INT NOT NULL,
+    capacity BIGINT NOT NULL,
+    available_capacity BIGINT NOT NULL,
     status VARCHAR(50) NOT NULL
 );
 
