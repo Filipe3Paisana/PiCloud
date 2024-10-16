@@ -15,7 +15,7 @@ func main() {
     
     dbConn, err := db.Connect()
     if err != nil {
-        fmt.Println("Erro ao conectar ao banco de dados:", err)
+        fmt.Println("Erro ao conectar à base de dados:", err)
         return
     }
     defer dbConn.Close()
@@ -30,7 +30,7 @@ func main() {
 
     go handlers.MarkOfflineNodes(dbConn)
 
-    fmt.Println("Servidor rodando em http://localhost:8081/")
+    fmt.Println("Servidor a bombar em http://localhost:8081/")
     if err := http.ListenAndServe(":8080", nil); err != nil {  
         fmt.Println("Erro ao iniciar o servidor:", err)
     }

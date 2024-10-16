@@ -1,5 +1,5 @@
 services:
-  # Serviço do banco de dados principal (master)
+  
   db:
     image: postgres:${POSTGRES_IMAGE_VERSION}
     container_name: postgres-container

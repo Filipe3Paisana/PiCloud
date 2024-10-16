@@ -16,7 +16,7 @@ func Connect() (*sql.DB, error) {
     for {
         db, err = sql.Open("postgres", connStr)
         if err != nil {
-            fmt.Println("Erro ao conectar ao banco de dados, tentando novamente em 5 segundos...")
+            fmt.Println("Erro a conectar à base de dados, tentando novamente em 5 segundos...")
             time.Sleep(5 * time.Second)
             continue
         }
@@ -24,7 +24,7 @@ func Connect() (*sql.DB, error) {
         if err = db.Ping(); err == nil {
             break
         }
-        fmt.Println("Banco de dados não está pronto, tentando novamente em 5 segundos...")
+        fmt.Println("Database não está pronta, tentando novamente em 5 segundos...")
         time.Sleep(5 * time.Second)
     }
 

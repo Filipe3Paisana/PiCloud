@@ -10,13 +10,12 @@ import (
 	"api/utils"
 )
 
-// Enviar o arquivo completo para o node
 func sendFileToNode(file multipart.File, filename string) error {
-    // Prepare the file to send in the POST request
+    
     var body bytes.Buffer
     writer := multipart.NewWriter(&body)
 
-    // Criar campo "fragment" para o arquivo
+    
     part, err := writer.CreateFormFile("fragment", filename)
     if err != nil {
         return err
