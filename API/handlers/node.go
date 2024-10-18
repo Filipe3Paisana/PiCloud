@@ -78,5 +78,17 @@ func MarkOfflineNodes(db *sql.DB) {
         if err != nil {
             fmt.Println("Erro ao atualizar status dos nós para offline:", err)
         }
+        numberOfNodes := GetNumberOfOnlineNodes(db)
+        fmt.Println("Número de nós online:", numberOfNodes)
     }
+}
+
+
+func GetNumberOfOnlineNodes(db *sql.DB) int {
+    var onlineNodes int
+    err := db.QueryRow("SELECT COUNT(*) FROM Nodes WHERE status = 'online'").Scan(&onlineNodes)
+    if err != nil {
+        fmt.Println("Erro ao obter o número de nós online:", err)
+    }
+    return onlineNodes
 }
