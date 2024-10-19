@@ -98,7 +98,7 @@ func SendNodeStatusPeriodically() {
         defer resp.Body.Close()
 
         if resp.StatusCode == http.StatusOK {
-            fmt.Println("Status enviado com sucesso")
+            fmt.Println("Status enviado com sucesso, Node: ", nodeAddress)
         } else {
             fmt.Printf("Código de resposta: %d\n", resp.StatusCode)
         }
