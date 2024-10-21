@@ -83,6 +83,9 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         }
         defer file.Close()
 
+        numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
+        fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
+
         // Enviar o arquivo para o node
         err = sendFileToNode(file, fileHeader.Filename)
         if err != nil {
@@ -100,3 +103,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
     // Responder com erro para métodos não permitidos
     http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 }
+
+
+func calculateNumberOfFragments(fileSize int64) int {
+    const targetFragmentSize = 1024 * 1024 // 1MB
+    numberOfFragments := int(fileSize / targetFragmentSize)
+    if fileSize % targetFragmentSize != 0 {
+        numberOfFragments++
+    }
+    return numberOfFragments
+}
+
+
