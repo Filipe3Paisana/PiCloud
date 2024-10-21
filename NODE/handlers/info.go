@@ -8,16 +8,11 @@ import (
     "net/http"
     "syscall"
     "time"
+
+    "node/models"
 )
 
-// Estrutura do status do nó
-type NodeStatusRequest struct {
-    NodeAddress       string `json:"node_address"`
-    Location          string `json:"location"`
-    Capacity          int    `json:"capacity"`
-    AvailableCapacity int    `json:"available_capacity"`
-    Status            string `json:"status"`
-}
+
 
 // Função para obter o endereço IP local
 func getLocalIPAddress() (string, error) {
@@ -73,7 +68,7 @@ func SendNodeStatusPeriodically() {
         location := "Datacenter XYZ" // Defina isso dinamicamente, se necessário
         status := "online"           // Você pode mudar essa lógica com base em outras verificações
 
-        nodeStatus := NodeStatusRequest{
+        nodeStatus := models.NodeStatusRequest{
             NodeAddress:       nodeAddress,
             Location:          location,
             Capacity:          int(totalStorage),

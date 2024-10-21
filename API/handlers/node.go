@@ -7,17 +7,10 @@ import (
     "encoding/json"
     "fmt"
     "time"
+    "api/models"
 
 )
 
-
-type NodeStatusRequest struct {
-    NodeAddress      string `json:"node_address"`      // Endereço do nó (IP ou nome de domínio)
-    Location         string `json:"location"`          // Localização do nó
-    Capacity         int    `json:"capacity"`          // Capacidade total do nó
-    AvailableCapacity int    `json:"available_capacity"` // Capacidade disponível
-    Status           string `json:"status"`            // Status do nó (ex: "online", "offline")
-}
 
 func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
@@ -26,13 +19,13 @@ func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        var req NodeStatusRequest
+        var req models.NodeStatusRequest
         if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
             http.Error(w, "Erro ao decodificar a requisição", http.StatusBadRequest)
             return
         }
 
-        // Captura o timestamp atual
+        
         currentTime := time.Now()
 
         var nodeID int
@@ -68,9 +61,8 @@ func UpdateNodeStatusHandler(db *sql.DB) http.HandlerFunc {
 
 func MarkOfflineNodes(db *sql.DB) {
     for {
-        time.Sleep(30 * time.Second) // Intervalo de verificação
+        time.Sleep(30 * time.Second) 
 
-        // Define o limite de tempo para considerar um nó como "offline"
         offlineThreshold := time.Now().Add(-25 * time.Second)
 
         // Atualiza os nós para "offline" onde last_updated está além do limite
