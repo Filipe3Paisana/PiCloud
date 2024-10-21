@@ -106,12 +106,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 
 func calculateNumberOfFragments(fileSize int64) int {
+    if fileSize <= 0 {
+        return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
+    }
+
     const targetFragmentSize = 1024 * 1024 // 1MB
     numberOfFragments := int(fileSize / targetFragmentSize)
-    if fileSize % targetFragmentSize != 0 {
-        numberOfFragments++
+    if fileSize%targetFragmentSize != 0 {
+        numberOfFragments++ // Adiciona mais um fragmento para o resto do arquivo
     }
     return numberOfFragments
 }
-
-
