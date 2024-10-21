@@ -68,13 +68,6 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodPost {
         fmt.Println("Recebendo arquivo...")
 
-        // Tamanho máximo do arquivo (10MB)
-        err := r.ParseMultipartForm(10 << 20)
-        if err != nil {
-            http.Error(w, "Erro ao processar o arquivo", http.StatusBadRequest)
-            return
-        }
-
         // Obter o arquivo do formulário
         file, fileHeader, err := r.FormFile("file")
         if err != nil {
@@ -82,6 +75,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
         defer file.Close()
+
+        const maxFileSize = 10 * 1024 * 1024 // 10MB
+        if fileHeader.Size > maxFileSize {
+            http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
+            return
+        }
 
         numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
         fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
