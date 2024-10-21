@@ -35,9 +35,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
             return
         }
+
+        // Extrair o userID usando a função reutilizável do utils
+        userID, err := utils.ExtractUserIDFromJWT(r) // Extrair ID do token JWT
+        if err != nil {
+            http.Error(w, err.Error(), http.StatusUnauthorized)
+            return
+        }
         
         // Registrar informações do arquivo na base de dados
-        fileID, err := saveFileInfo(fileHeader.Filename, fileHeader.Size, 2) // Supondo user_id = 1 para este exemplo
+        fileID, err := saveFileInfo(fileHeader.Filename, fileHeader.Size, userID) // Supondo user_id = 1 para este exemplo
         if err != nil {
             http.Error(w, fmt.Sprintf("Erro ao salvar informações do arquivo: %v", err), http.StatusInternalServerError)
             return 

@@ -54,7 +54,6 @@ function uploadFile() {
     const formData = new FormData();
     formData.append('file', file);
 
-
     const uploadMessage = document.createElement('div');
     uploadMessage.textContent = 'Loading...';
     document.body.appendChild(uploadMessage);
@@ -63,7 +62,7 @@ function uploadFile() {
     fetch('http://localhost:8081/user/upload', {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            Authorization: `Bearer ${localStorage.getItem('authToken')}` // Apenas o token
         },
         body: formData
     })
@@ -88,7 +87,56 @@ function uploadFile() {
     });
 }
 
+function uploadFile() {
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    console.log("Selected file:", file);
 
+    if (!file) {
+        alert('Por favor, selecione um arquivo para upload.');
+        return;
+    }
+    const maxSize = 5 * 1024 * 1024; // 5 MB
+    if (file.size > maxSize) {
+        alert('O arquivo excede o tamanho máximo permitido de 5MB.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const uploadMessage = document.createElement('div');
+    uploadMessage.textContent = 'Loading...';
+    document.body.appendChild(uploadMessage);
+    console.log("FormData created, starting fetch...");
+
+    fetch('http://localhost:8081/user/upload', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('authToken')}` // Apenas o token
+        },
+        body: formData
+    })
+    .then(response => {
+        console.log("Fetch response:", response);
+        if (!response.ok) {
+            throw new Error('Erro ao fazer upload: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        console.log("Upload success message:", data.message);
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao enviar o arquivo. Por favor, tente novamente.');
+    })
+    .finally(() => {
+        console.log("Removing upload message");
+        uploadMessage.remove();
+    });
+}
 
 function logout() {
     localStorage.removeItem('authToken'); 
