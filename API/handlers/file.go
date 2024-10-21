@@ -36,7 +36,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
 
-        // Extrair o userID usando a função reutilizável do utils
+        
         userID, err := utils.ExtractUserIDFromJWT(r) // Extrair ID do token JWT
         if err != nil {
             http.Error(w, err.Error(), http.StatusUnauthorized)
@@ -73,6 +73,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
     http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 }
 
+func saveFileInfo(name string, size int64, userID int) (int, error) {
+    var fileID int
+    query := "INSERT INTO Files (name, size, user_id) VALUES ($1, $2, $3) RETURNING id"
+    err := db.DB.QueryRow(query, name, size, userID).Scan(&fileID) // Usando db.DB para acessar a instância do banco de dados
+    if err != nil {
+        return 0, err
+    }
+    return fileID, nil
+}
+
 func calculateNumberOfFragments(fileSize int64) int {
     if fileSize <= 0 {
         return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
@@ -86,15 +96,36 @@ func calculateNumberOfFragments(fileSize int64) int {
     return numberOfFragments
 }
 
-func saveFileInfo(name string, size int64, userID int) (int, error) {
-    var fileID int
-    query := "INSERT INTO Files (name, size, user_id) VALUES ($1, $2, $3) RETURNING id"
-    err := db.DB.QueryRow(query, name, size, userID).Scan(&fileID) // Usando db.DB para acessar a instância do banco de dados
-    if err != nil {
-        return 0, err
-    }
-    return fileID, nil
+func fragmentFile(file multipart.File, filename string, numberOfFragments int) error {
+    // Implementar a fragmentação do arquivo
+    return nil
 }
+
+func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
+    // Implementar a função para salvar as informações do fragmento na base de dados
+    return nil
+}
+
+func calcReplicationFactor(numberOfNodes int) int {
+    // Implementar a função para calcular o fator de replicação
+    return 0
+}
+
+func replicateFragment(fragment multipart.File, filename string) error {
+    // Implementar a função para replicar o fragmento em outros nodes
+    return nil
+}
+
+func saveReplicaInfo(fileID int, fragmentNumber int, nodeID int) error {
+    // Implementar a função para salvar as informações da réplica na base de dados
+    return nil
+}
+
+func distributeFragments(fileID int, numberOfFragments int) error {
+    // Implementar a função para distribuir os fragmentos entre os nodes
+    return nil
+}
+
 
 func sendFileToNode(file multipart.File, filename string) error {
     var body bytes.Buffer
