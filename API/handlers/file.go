@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"fmt"
+    "fmt"
     "io"
     "mime/multipart"
     "net/http"
     "bytes"
 
-	"api/utils"
+    "api/utils"
+    "api/db"
 )
-
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
     utils.EnableCors(w, r)
@@ -36,6 +36,15 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
         
+        // Registrar informações do arquivo na base de dados
+        fileID, err := saveFileInfo(fileHeader.Filename, fileHeader.Size, 2) // Supondo user_id = 1 para este exemplo
+        if err != nil {
+            http.Error(w, fmt.Sprintf("Erro ao salvar informações do arquivo: %v", err), http.StatusInternalServerError)
+            return 
+        }
+
+        fmt.Printf("ID do Arquivo salvo: %d\n", fileID)
+
         numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
         fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
         
@@ -70,12 +79,20 @@ func calculateNumberOfFragments(fileSize int64) int {
     return numberOfFragments
 }
 
+func saveFileInfo(name string, size int64, userID int) (int, error) {
+    var fileID int
+    query := "INSERT INTO Files (name, size, user_id) VALUES ($1, $2, $3) RETURNING id"
+    err := db.DB.QueryRow(query, name, size, userID).Scan(&fileID) // Usando db.DB para acessar a instância do banco de dados
+    if err != nil {
+        return 0, err
+    }
+    return fileID, nil
+}
+
 func sendFileToNode(file multipart.File, filename string) error {
-    
     var body bytes.Buffer
     writer := multipart.NewWriter(&body)
 
-    
     part, err := writer.CreateFormFile("fragment", filename)
     if err != nil {
         return err

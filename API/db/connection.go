@@ -6,7 +6,7 @@ import (
     "time"
     _ "github.com/lib/pq"
 )
-
+var DB *sql.DB
 func Connect() (*sql.DB, error) {
     connStr := "host=postgres-container port=5432 user=test password=test dbname=test sslmode=disable"
 
@@ -28,5 +28,6 @@ func Connect() (*sql.DB, error) {
         time.Sleep(5 * time.Second)
     }
 
+    DB = db
     return db, nil
 }
