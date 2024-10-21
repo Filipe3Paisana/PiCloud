@@ -20,8 +20,8 @@ func main() {
     }
     defer dbConn.Close()
 
-    http.HandleFunc("/users/add", handlers.CreateUserHandler(dbConn))      
-    http.HandleFunc("/users/login", handlers.LoginHandler(dbConn))         
+    http.HandleFunc("/users/add", handlers.CreateUserHandler)      
+    http.HandleFunc("/users/login", handlers.LoginHandler)         
     http.HandleFunc("/user/upload", handlers.UploadHandler)       
     http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler(dbConn))
 

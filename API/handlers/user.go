@@ -9,85 +9,83 @@ import (
     
     "api/models"
     "api/utils"
+    "api/db"
 )
 
-func CreateUserHandler(db *sql.DB) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w, r)
-		if r.Method != http.MethodPost {
-            http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-            return
-        }
+func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 
-        var user models.User
-        if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-            http.Error(w, "Requisição inválida", http.StatusBadRequest)
-            return
-        }
-
-        HashPassword, err := utils.HashPassword(user.Password)
-        if err != nil {
-            http.Error(w, "Erro ao gerar hash da senha", http.StatusInternalServerError)
-            return
-        }
-
-        query := "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id"
-        err = db.QueryRow(query, user.Username, user.Email, HashPassword).Scan(&user.ID) 
-        if err != nil {
-            http.Error(w, "Erro ao criar usuário", http.StatusInternalServerError)
-            return
-        }
-
-        w.WriteHeader(http.StatusCreated)
-        json.NewEncoder(w).Encode(user)
+    utils.EnableCors(w, r)
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
     }
+
+    var user models.User
+    if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+        http.Error(w, "Requisição inválida", http.StatusBadRequest)
+        return
+    }
+
+    HashPassword, err := utils.HashPassword(user.Password)
+    if err != nil {
+        http.Error(w, "Erro ao gerar hash da senha", http.StatusInternalServerError)
+        return
+    }
+
+    query := "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id"
+    err = db.DB.QueryRow(query, user.Username, user.Email, HashPassword).Scan(&user.ID) 
+    if err != nil {
+        http.Error(w, "Erro ao criar usuário", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(user)
 }
 
-func LoginHandler(db *sql.DB) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        utils.EnableCors(w, r)
-        if r.Method != http.MethodPost {
-            http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-            return
-        }
-
-        var credentials struct {
-            Email    string `json:"email"`
-            Password string `json:"password"`
-        }
-        if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
-            http.Error(w, "Requisição inválida", http.StatusBadRequest)
-            return
-        }
-
-        var user models.User
-        query := "SELECT id, email, password_hash, username FROM users WHERE email=$1"
-        err := db.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password, &user.Username)
-        if err != nil {
-            http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
-            return
-        }
-
-        if err := utils.ComparePassword(credentials.Password, user.Password); err != nil {
-            http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
-            return
-        }
-
-        
-        token, err := utils.GenerateJWT(user.ID, user.Username , user.Email)
-        if err != nil {
-            log.Printf("Erro ao gerar o token: %v", err)
-            http.Error(w, "Erro interno", http.StatusInternalServerError)
-            return
-        }
-
-        // Retornar o token JWT no corpo da resposta
-        w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(map[string]string{
-            "token":   token,
-            "message": "Login bem-sucedido",
-        })
+func LoginHandler(w http.ResponseWriter, r *http.Request) {
+    utils.EnableCors(w, r)
+    if r.Method != http.MethodPost {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
     }
+
+    var credentials struct {
+        Email    string `json:"email"`
+        Password string `json:"password"`
+    }
+    if err := json.NewDecoder(r.Body).Decode(&credentials); err != nil {
+        http.Error(w, "Requisição inválida", http.StatusBadRequest)
+        return
+    }
+
+    var user models.User
+    query := "SELECT id, email, password_hash, username FROM users WHERE email=$1"
+    err := db.DB.QueryRow(query, credentials.Email).Scan(&user.ID, &user.Email, &user.Password, &user.Username)
+    if err != nil {
+        http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
+        return
+    }
+
+    if err := utils.ComparePassword(credentials.Password, user.Password); err != nil {
+        http.Error(w, "Credenciais inválidas", http.StatusUnauthorized)
+        return
+    }
+
+    
+    token, err := utils.GenerateJWT(user.ID, user.Username , user.Email)
+    if err != nil {
+        log.Printf("Erro ao gerar o token: %v", err)
+        http.Error(w, "Erro interno", http.StatusInternalServerError)
+        return
+    }
+
+    // Retornar o token JWT no corpo da resposta
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]string{
+        "token":   token,
+        "message": "Login bem-sucedido",
+    })
 }
 
 func GetUsersHandler(db *sql.DB) http.HandlerFunc {
