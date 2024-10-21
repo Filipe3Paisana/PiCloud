@@ -10,6 +10,66 @@ import (
 	"api/utils"
 )
 
+
+func UploadHandler(w http.ResponseWriter, r *http.Request) {
+    utils.EnableCors(w, r)
+    
+    if r.Method == http.MethodOptions {
+        w.WriteHeader(http.StatusOK)
+        return
+    }
+    
+    if r.Method == http.MethodPost {
+        fmt.Println("Recebendo arquivo...")
+        
+        // Obter o arquivo do formulário
+        file, fileHeader, err := r.FormFile("file")
+        if err != nil {
+            http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
+            return
+        }
+        defer file.Close()
+        
+        const maxFileSize = 10 * 1024 * 1024 // 10MB
+        if fileHeader.Size > maxFileSize {
+            http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
+            return
+        }
+        
+        numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
+        fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
+        
+        // Enviar o arquivo para o node
+        err = sendFileToNode(file, fileHeader.Filename)
+        if err != nil {
+            http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
+            return
+        }
+        
+        // Responder com sucesso
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(http.StatusOK)
+        w.Write([]byte(`{"message": "Arquivo enviado com sucesso para o node."}`))
+        return
+    }
+    
+    // Responder com erro para métodos não permitidos
+    http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+}
+
+func calculateNumberOfFragments(fileSize int64) int {
+    if fileSize <= 0 {
+        return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
+    }
+    
+    const targetFragmentSize = 1024 * 1024 // 1MB
+    numberOfFragments := int(fileSize / targetFragmentSize)
+    if fileSize%targetFragmentSize != 0 {
+        numberOfFragments++ // Adiciona mais um fragmento para o resto do arquivo
+    }
+    return numberOfFragments
+}
+
 func sendFileToNode(file multipart.File, filename string) error {
     
     var body bytes.Buffer
@@ -55,64 +115,4 @@ func sendFileToNode(file multipart.File, filename string) error {
     }
 
     return nil
-}
-
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
-    utils.EnableCors(w, r)
-
-    if r.Method == http.MethodOptions {
-        w.WriteHeader(http.StatusOK)
-        return
-    }
-
-    if r.Method == http.MethodPost {
-        fmt.Println("Recebendo arquivo...")
-
-        // Obter o arquivo do formulário
-        file, fileHeader, err := r.FormFile("file")
-        if err != nil {
-            http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
-            return
-        }
-        defer file.Close()
-
-        const maxFileSize = 10 * 1024 * 1024 // 10MB
-        if fileHeader.Size > maxFileSize {
-            http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
-            return
-        }
-
-        numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
-        fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
-
-        // Enviar o arquivo para o node
-        err = sendFileToNode(file, fileHeader.Filename)
-        if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
-            return
-        }
-
-        // Responder com sucesso
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message": "Arquivo enviado com sucesso para o node."}`))
-        return
-    }
-
-    // Responder com erro para métodos não permitidos
-    http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-}
-
-
-func calculateNumberOfFragments(fileSize int64) int {
-    if fileSize <= 0 {
-        return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
-    }
-
-    const targetFragmentSize = 1024 * 1024 // 1MB
-    numberOfFragments := int(fileSize / targetFragmentSize)
-    if fileSize%targetFragmentSize != 0 {
-        numberOfFragments++ // Adiciona mais um fragmento para o resto do arquivo
-    }
-    return numberOfFragments
 }
