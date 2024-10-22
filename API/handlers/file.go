@@ -6,6 +6,10 @@ import (
     "mime/multipart"
     "net/http"
     "bytes"
+    "encoding/hex"
+    "encoding/base64"
+    "crypto/md5"
+
 
     "api/utils"
     "api/db"
@@ -39,7 +43,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         fileSize := int64(len(fileContent))
         fileName := fileHeader.Filename
 
-        const maxFileSize = 10 * 1024 * 1024 // 10MB
+        const maxFileSize = 100 * 1024 * 1024 // 10MB
         if fileSize > maxFileSize {
             http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
             return
@@ -63,14 +67,35 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         numberOfFragments := calculateNumberOfFragments(fileSize)
         fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
 
+        
+        err = testFragmentAndReassemble(fileContent, fileSize, numberOfFragments)
+        if err != nil {
+            http.Error(w, fmt.Sprintf("Erro ao testar a integridade do arquivo: %v", err), http.StatusInternalServerError)
+            return
+        }
+
         // Fragmentar o arquivo
         fragments, err := fragmentFile(fileContent, fileSize, numberOfFragments)
         if err != nil {
             http.Error(w, fmt.Sprintf("Erro ao fragmentar o arquivo: %v", err), http.StatusInternalServerError)
-        return
+            return
         }
-        fmt.Println(fragments)
+
         
+        for i, fragment := range fragments {
+            // Calcular hash MD5 para verificar a integridade
+            hash := md5.Sum(fragment)
+            hashString := hex.EncodeToString(hash[:])
+
+            // Converter para base64 para visualizar o conteúdo de forma legível
+            encoded := base64.StdEncoding.EncodeToString(fragment)
+            if len(encoded) > 20 {
+                encoded = encoded[:20] + "..." // Mostrar apenas os primeiros 20 caracteres
+            }
+
+            fmt.Printf("Fragmento %d: Tamanho = %d bytes, Hash MD5 = %s, Conteúdo (base64) = %s\n", i+1, len(fragment), hashString, encoded)
+        }
+
         // Enviar o arquivo para o node
         err = sendFileToNode(file, fileHeader.Filename)
         if err != nil {
@@ -136,9 +161,33 @@ func fragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byt
     return fragments, nil
 }
 
-func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
-    // Implementar a função para salvar as informações do fragmento na base de dados
+func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments int) error {
+    // Fragmentar o arquivo
+    fragments, err := fragmentFile(fileContent, fileSize, numFragments)
+    if err != nil {
+        return fmt.Errorf("Erro ao fragmentar o arquivo: %v", err)
+    }
+
+    // Reconstituir o arquivo a partir dos fragmentos
+    var reassembledContent []byte
+    for _, fragment := range fragments {
+        reassembledContent = append(reassembledContent, fragment...)
+    }
+
+    // Verificar se o conteúdo reconstituído é igual ao conteúdo original
+    if !bytes.Equal(fileContent, reassembledContent) {
+        return fmt.Errorf("O arquivo reconstituído não é idêntico ao original")
+    }
+
+    fmt.Println("Teste bem-sucedido: o arquivo foi fragmentado e reconstituído corretamente")
     return nil
+}
+
+
+
+func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
+    
+    
 }
 
 func calcReplicationFactor(numberOfNodes int) int {

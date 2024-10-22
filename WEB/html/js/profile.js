@@ -38,11 +38,13 @@ function uploadFile() {
         alert('Por favor, selecione um arquivo para upload.');
         return;
     }
-    const maxSize = 5 * 1024 * 1024; // 5 MB
+    
+    const maxSize = 100 * 1024 * 1024; // 100 MB
     if (file.size > maxSize) {
         alert('O arquivo excede o tamanho máximo permitido de 5MB.');
         return;
     }
+    
 
     const formData = new FormData();
     formData.append('file', file);
@@ -89,7 +91,7 @@ function uploadFile() {
         alert('Por favor, selecione um arquivo para upload.');
         return;
     }
-    const maxSize = 5 * 1024 * 1024; // 5 MB
+    const maxSize = 100 * 1024 * 1024; // 5 MB
     if (file.size > maxSize) {
         alert('O arquivo excede o tamanho máximo permitido de 5MB.');
         return;
