@@ -11,16 +11,9 @@ function parseJwt(token) {
 function greetUser(token) {
     const userData = parseJwt(token);
     const userName = userData.username; 
-    const userEmail = userData.email; 
+    //const userEmail = userData.email; 
 
-    
     document.getElementById('username').textContent = userName; 
-
-    if (userName) {
-        alert(`Olá, ${userName}! Seu email é ${userEmail}.`);
-    } else {
-        alert('Olá, usuário!');
-    }
 }
 
 window.onload = function() {
@@ -113,7 +106,7 @@ function uploadFile() {
     fetch('http://localhost:8081/user/upload', {
         method: 'POST',
         headers: {
-            Authorization: `Bearer ${localStorage.getItem('authToken')}` // Apenas o token
+            Authorization: `Bearer ${localStorage.getItem('authToken')}` 
         },
         body: formData
     })

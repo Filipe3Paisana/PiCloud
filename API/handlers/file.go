@@ -29,22 +29,30 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
         defer file.Close()
-        
+
+        // Ler o conteudo do ficheiro e calcular o tamanho
+        fileContent, err := io.ReadAll(file)
+        if err != nil {
+            http.Error(w, "Erro ao ler o arquivo", http.StatusInternalServerError)
+            return
+        }
+        fileSize := int64(len(fileContent))
+        fileName := fileHeader.Filename
+
         const maxFileSize = 10 * 1024 * 1024 // 10MB
-        if fileHeader.Size > maxFileSize {
+        if fileSize > maxFileSize {
             http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
             return
         }
 
-        
-        userID, err := utils.ExtractUserIDFromJWT(r) // Extrair ID do token JWT
+        userID, err := utils.ExtractUserIDFromJWT(r) // Extrair ID JWT
         if err != nil {
             http.Error(w, err.Error(), http.StatusUnauthorized)
             return
         }
         
-        // Registrar informações do arquivo na base de dados
-        fileID, err := saveFileInfo(fileHeader.Filename, fileHeader.Size, userID) // Supondo user_id = 1 para este exemplo
+        // Informações do arquivo na base de dados
+        fileID, err := saveFileInfo(fileName, fileSize, userID) 
         if err != nil {
             http.Error(w, fmt.Sprintf("Erro ao salvar informações do arquivo: %v", err), http.StatusInternalServerError)
             return 
@@ -52,8 +60,16 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
         fmt.Printf("ID do Arquivo salvo: %d\n", fileID)
 
-        numberOfFragments := calculateNumberOfFragments(fileHeader.Size)
+        numberOfFragments := calculateNumberOfFragments(fileSize)
         fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
+
+        // Fragmentar o arquivo
+        fragments, err := fragmentFile(fileContent, fileSize, numberOfFragments)
+        if err != nil {
+            http.Error(w, fmt.Sprintf("Erro ao fragmentar o arquivo: %v", err), http.StatusInternalServerError)
+        return
+        }
+        fmt.Println(fragments)
         
         // Enviar o arquivo para o node
         err = sendFileToNode(file, fileHeader.Filename)
@@ -96,9 +112,28 @@ func calculateNumberOfFragments(fileSize int64) int {
     return numberOfFragments
 }
 
-func fragmentFile(file multipart.File, filename string, numberOfFragments int) error {
-    // Implementar a fragmentação do arquivo
-    return nil
+func fragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byte, error) {
+    if numFragments <= 0 {
+        return nil, fmt.Errorf("Número de fragmentos deve ser maior que zero")
+    }
+
+    var fragments [][]byte
+    fragmentSize := int(fileSize) / numFragments
+    remainder := int(fileSize) % numFragments
+
+    start := 0
+
+    for i := 0; i < numFragments; i++ {
+        end := start + fragmentSize
+        if i == numFragments-1 {
+            // O último fragmento contém o resto
+            end += remainder
+        }
+        fragments = append(fragments, fileContent[start:end])
+        start = end
+    }
+
+    return fragments, nil
 }
 
 func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
