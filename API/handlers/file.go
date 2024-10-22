@@ -186,8 +186,7 @@ func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments 
 
 
 func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
-    
-    
+    return nil
 }
 
 func calcReplicationFactor(numberOfNodes int) int {
