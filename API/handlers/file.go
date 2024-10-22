@@ -94,6 +94,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             }
 
             fmt.Printf("Fragmento %d: Tamanho = %d bytes, Hash MD5 = %s, Conteúdo (base64) = %s\n", i+1, len(fragment), hashString, encoded)
+            saveFragmentInfo(fileID, i+1, hashString) 
+
         }
 
         // Enviar o arquivo para o node
@@ -185,7 +187,12 @@ func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments 
 
 
 
-func saveFragmentInfo(fileID int, fragmentNumber int, filename string) error {
+func saveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
+    query := "INSERT INTO FileFragments (file_id, fragment_hashes, fragment_order) VALUES ($1, $2, $3)"
+    _, err := db.DB.Exec(query, fileID, hash, fragmentOrder)
+    if err != nil {
+        return err
+    }
     return nil
 }
 
