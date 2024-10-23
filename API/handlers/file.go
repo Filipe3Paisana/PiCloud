@@ -9,11 +9,18 @@ import (
     "encoding/hex"
     "encoding/base64"
     "crypto/md5"
-
+    "math"
+    "math/rand"
+    "time"
+    "strconv"
 
     "api/utils"
+    "api/models"
     "api/db"
 )
+
+const availability = 0.999
+const failureRate = 0.1
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
     utils.EnableCors(w, r)
@@ -97,13 +104,22 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             saveFragmentInfo(fileID, i+1, hashString) 
 
         }
+        numberOfNodes := GetNumberOfOnlineNodes()
+        replicationFactor := calcReplicationFactor(availability, failureRate, numberOfNodes)
+        fmt.Printf("Fator de Replicação: %d\n", replicationFactor)
 
-        // Enviar o arquivo para o node
-        err = sendFileToNode(file, fileHeader.Filename)
+        err = distributeFragments(fileID, numberOfFragments, fragments)
         if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
+            http.Error(w, fmt.Sprint("Erro ao distribuir fragmentos pelos nodes: %v", err), http.StatusInternalServerError)
             return
         }
+
+        // // Enviar o arquivo para o node
+        // err = sendFileToNode(file, fileHeader.Filename)
+        // if err != nil {
+        //     http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
+        //     return
+        // }
         
         // Responder com sucesso
         w.Header().Set("Content-Type", "application/json")
@@ -185,8 +201,6 @@ func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments 
     return nil
 }
 
-
-
 func saveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
     query := "INSERT INTO FileFragments (file_id, fragment_hashes, fragment_order) VALUES ($1, $2, $3)"
     _, err := db.DB.Exec(query, fileID, hash, fragmentOrder)
@@ -196,25 +210,160 @@ func saveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
     return nil
 }
 
-func calcReplicationFactor(numberOfNodes int) int {
-    // Implementar a função para calcular o fator de replicação
-    return 0
+func calcReplicationFactor(availability float64, failureRate float64, numberOfNodes int) int {
+    if availability <= 0 || availability >= 1 || failureRate <= 0 || failureRate >= 1 || numberOfNodes <= 0 {
+        fmt.Println("Parâmetros inválidos fornecidos para o cálculo do fator de replicação.")
+        return 0
+    }
+
+    // Calcular o fator de replicação usando a fórmula
+    numerator := math.Log(1 - availability)
+    denominator := math.Log(failureRate / float64(numberOfNodes))
+
+    replicationFactor := numerator / denominator
+
+    // Arredondar para cima para garantir o mínimo necessário de réplicas
+    return int(math.Ceil(replicationFactor))
 }
 
-func replicateFragment(fragment multipart.File, filename string) error {
-    // Implementar a função para replicar o fragmento em outros nodes
+func distributeFragments(fileID int, numberOfFragments int, fragments [][]byte) error {
+    availableNodes := GetOnlineNodesList()
+    if len(availableNodes) == 0 {
+        return fmt.Errorf("Nenhum nó disponível para distribuir os fragmentos")
+    }
+
+    replicationFactor := calcReplicationFactor(availability, failureRate, len(availableNodes))
+
+    for i := 1; i <= numberOfFragments; i++ {
+        selectedNodes := SelectNodesForFragment(availableNodes, replicationFactor)
+
+        for _, node := range selectedNodes {
+            err := SendFragmentToNode(fileID, i, fragments[i-1], node.NodeID) // Passando o conteúdo real do fragmento
+            if err != nil {
+                fmt.Printf("Erro ao enviar fragmento %d para o nó %d: %v\n", i, node.NodeID, err)
+                continue
+            }
+
+            err = SaveDistributionInfo(fileID, i, node.NodeAddress)
+            if err != nil {
+                fmt.Printf("Erro ao salvar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
+                continue
+            }
+        }
+    }
     return nil
 }
 
-func saveReplicaInfo(fileID int, fragmentNumber int, nodeID int) error {
-    // Implementar a função para salvar as informações da réplica na base de dados
+func SelectNodesForFragment(availableNodes []models.Node, replicationFactor int) []models.Node {
+    if replicationFactor >= len(availableNodes) {
+        // Se o fator de replicação é maior ou igual ao número de nós disponíveis, retorna todos os nós
+        return availableNodes
+    }
+
+    // Inicializar o gerador de números aleatórios
+    rand.Seed(time.Now().UnixNano())
+
+    // Embaralhar a lista de nós para uma seleção aleatória
+    rand.Shuffle(len(availableNodes), func(i, j int) {
+        availableNodes[i], availableNodes[j] = availableNodes[j], availableNodes[i]
+    })
+
+    // Selecionar um número de nós igual ao fator de replicação
+    return availableNodes[:replicationFactor]
+}
+
+func SendFragmentToNode(fileID int, fragmentOrder int, fragmentContent []byte, nodeID int) error {
+    // Construir a URL do nó
+    nodeURL := fmt.Sprintf("http://node%d:8082/fragments/upload", nodeID)
+
+    var body bytes.Buffer
+    writer := multipart.NewWriter(&body)
+
+    // Adicionar campos ao formulário para passar informações adicionais
+    writer.WriteField("file_id", strconv.Itoa(fileID))
+    writer.WriteField("fragment_order", strconv.Itoa(fragmentOrder))
+
+    // Adicionar o fragmento ao formulário
+    part, err := writer.CreateFormFile("fragment", fmt.Sprintf("file_%dfragment_%d", fileID, fragmentOrder))
+    if err != nil {
+        return err
+    }
+
+    // Escreve o conteúdo real do fragmento
+    _, err = io.Copy(part, bytes.NewReader(fragmentContent))
+    if err != nil {
+        return err
+    }
+
+    err = writer.Close()
+    if err != nil {
+        return err
+    }
+
+    // Criar e enviar requisição HTTP POST
+    req, err := http.NewRequest("POST", nodeURL, &body)
+    if err != nil {
+        return err
+    }
+
+    req.Header.Set("Content-Type", writer.FormDataContentType())
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return err
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        return fmt.Errorf("falha ao enviar fragmento para o nó: %s, código de status: %d", nodeID, resp.StatusCode)
+    }
+
     return nil
 }
 
-func distributeFragments(fileID int, numberOfFragments int) error {
-    // Implementar a função para distribuir os fragmentos entre os nodes
+func SaveDistributionInfo(fileID int, fragmentOrder int, nodeAddress string) error {
+    // Primeiro, verificar se o fragmento já existe e obter seu fragment_id
+    var fragmentID int
+    err := db.DB.QueryRow("SELECT fragment_id FROM FileFragments WHERE file_id = $1 AND fragment_order = $2", fileID, fragmentOrder).Scan(&fragmentID)
+    if err != nil {
+        return fmt.Errorf("erro ao obter fragmento: %v", err)
+    }
+
+    // Obter o ID do nó com base no endereço
+    var nodeID int
+    err = db.DB.QueryRow("SELECT id FROM Nodes WHERE node_address = $1", nodeAddress).Scan(&nodeID)
+    if err != nil {
+        return fmt.Errorf("erro ao obter nó: %v", err)
+    }
+
+    // Inserir na tabela FragmentLocation para registrar onde o fragmento foi armazenado
+    query := "INSERT INTO FragmentLocation (fragment_id, node_id) VALUES ($1, $2)"
+    _, err = db.DB.Exec(query, fragmentID, nodeID)
+    if err != nil {
+        return fmt.Errorf("erro ao salvar informações de localização do fragmento: %v", err)
+    }
     return nil
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 func sendFileToNode(file multipart.File, filename string) error {

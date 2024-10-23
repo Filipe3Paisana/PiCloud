@@ -53,9 +53,9 @@ services:
     container_name: node2-container
     environment:
       - NODE_ID=node2
-      - NODE_PORT=8083
+      - NODE_PORT=8082
     ports:
-      - "8083:8083"
+      - "8083:8082"
     networks:
       - pi_network
 
@@ -66,9 +66,9 @@ services:
     container_name: node3-container
     environment:
       - NODE_ID=node3
-      - NODE_PORT=8084
+      - NODE_PORT=8082
     ports:
-      - "8084:8084"
+      - "8084:8082"
     networks:
       - pi_network
 
@@ -79,9 +79,9 @@ services:
     container_name: node4-container
     environment:
       - NODE_ID=node4
-      - NODE_PORT=8085
+      - NODE_PORT=8082
     ports:
-      - "8085:8085"
+      - "8085:8082"
     networks:
       - pi_network
   
@@ -92,9 +92,9 @@ services:
     container_name: node5-container
     environment:
       - NODE_ID=node5
-      - NODE_PORT=8086
+      - NODE_PORT=8082
     ports:
-      - "8086:8086"
+      - "8086:8082"
     networks:
       - pi_network
 
