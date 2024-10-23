@@ -26,7 +26,8 @@ func main() {
     http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler(dbConn))
 
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
-    http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))    
+    http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))
+    http.Handle("/user/files/", (http.HandlerFunc(handlers.GetUSserFilesHandler(dbConn))))    
 
     go handlers.MarkOfflineNodes(dbConn)
 
