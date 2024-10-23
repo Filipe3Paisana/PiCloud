@@ -1,7 +1,7 @@
 package models 
 
 type File struct {
-	ID int
-	Name string
-	Size int
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+    Size int64  `json:"size"`
 }

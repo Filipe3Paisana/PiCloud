@@ -149,22 +149,22 @@ func GetUserHandler(db *sql.DB) http.HandlerFunc {
     }
 }
 
-func GetUSserFilesHandler(db *sql.DB) http.HandlerFunc {
+func GetUserFilesHandler(db *sql.DB) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
-        //utils.EnableCors(w, r)
+        utils.EnableCors(w, r)
         
         if r.Method != http.MethodGet {
             http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
             return
         }
 
-        id := strings.TrimPrefix(r.URL.Path, "/user/files/")
-        if id == "" {
+        userID, err := utils.ExtractUserIDFromJWT(r)
+        if err != nil || userID == 0 {
             http.Error(w, "ID não fornecido", http.StatusBadRequest)
             return
         }
 
-        rows, err := db.Query("SELECT id, name, size FROM files WHERE user_id=$1", id)
+        rows, err := db.Query("SELECT id, name, size FROM files WHERE user_id=$1", userID)
         if err != nil {
             http.Error(w, "Erro ao buscar arquivos", http.StatusInternalServerError)
             return
@@ -181,7 +181,14 @@ func GetUSserFilesHandler(db *sql.DB) http.HandlerFunc {
             files = append(files, file)
         }
 
+        // Garantir que uma lista vazia seja retornada em vez de null
+        if files == nil {
+            files = []models.File{}
+        }
+
         w.Header().Set("Content-Type", "application/json")
-        json.NewEncoder(w).Encode(files)
+        if err := json.NewEncoder(w).Encode(files); err != nil {
+            http.Error(w, "Erro ao codificar resposta JSON", http.StatusInternalServerError)
+        }
     }
 }
