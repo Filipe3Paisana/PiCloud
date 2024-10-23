@@ -223,7 +223,7 @@ func calcReplicationFactor(availability float64, failureRate float64, numberOfNo
     replicationFactor := numerator / denominator
 
     // Arredondar para cima para garantir o mínimo necessário de réplicas
-    return int(math.Ceil(replicationFactor))
+    return int(math.Ceil(replicationFactor)) //TODO definir se este é o número de réplicas (sem contar com o original) ou o número de fragmentos total
 }
 
 func distributeFragments(fileID int, numberOfFragments int, fragments [][]byte) error {
