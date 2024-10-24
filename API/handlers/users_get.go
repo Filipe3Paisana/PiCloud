@@ -4,12 +4,9 @@ import (
     "database/sql"
     "encoding/json"
     "net/http"
-    "strings"
-    "log"
     
     "api/models"
     "api/utils"
-    "api/db"
 )
 
 
