@@ -45,7 +45,7 @@ func receiveFragments(fileID int) ([]byte, string, error) {
 		FROM FileFragments AS f 
 		JOIN FragmentLocation AS fl ON f.fragment_id = fl.fragment_id
 		JOIN Nodes AS n ON fl.node_id = n.id 
-		WHERE f.file_id = $1 
+		WHERE f.file_id = $1 AND status = 'online'
 		ORDER BY f.fragment_order`, fileID)
 	if err != nil {
 		return nil, "", fmt.Errorf("erro ao buscar fragmentos na base de dados: %v", err)
