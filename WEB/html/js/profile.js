@@ -119,6 +119,13 @@ function displayFiles(files) {
     files.forEach(file => {
         const listItem = document.createElement('li');
         listItem.textContent = `${file.name} (${formatFileSize(file.size)})`;
+
+        const downloadButton = document.createElement('button');
+        downloadButton.textContent = 'Download';
+        downloadButton.onclick = () => downloadFile(file.id); 
+
+        listItem.appendChild(downloadButton);
+
         filesList.appendChild(listItem);
     });
 }
@@ -130,17 +137,51 @@ function formatFileSize(bytes) {
     else return `${(bytes / 1073741824).toFixed(2)} GB`;
 }
 
-function logout() {
-    localStorage.removeItem('authToken'); 
-    window.location.href = 'index.html'; 
-}
-
 
 function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} B`;
     else if (bytes < 1048576) return `${(bytes / 1024).toFixed(2)} KB`;
     else if (bytes < 1073741824) return `${(bytes / 1048576).toFixed(2)} MB`;
     else return `${(bytes / 1073741824).toFixed(2)} GB`;
+}
+
+function downloadFile(fileID) {
+    const url = `http://localhost:8081/user/download?file_id=${fileID}`;
+    
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao baixar o arquivo: ' + response.statusText);
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Criar URL para o blob e baixar o arquivo
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        
+        // Definir o nome do arquivo para download (você pode melhorar para usar o nome real do arquivo)
+        a.download = `arquivo_${fileID}`; 
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    })
+    .catch(error => {
+        console.error('Erro ao baixar o arquivo:', error);
+        alert('Erro ao baixar o arquivo. Por favor, tente novamente.');
+    });
+}
+
+function logout() {
+    localStorage.removeItem('authToken'); 
+    window.location.href = 'index.html'; 
 }
 
 window.onload = function() {
@@ -153,7 +194,6 @@ window.onload = function() {
     }
     greetUser(token);
 
-    // Chamar a função para obter e exibir os arquivos do usuário
     fetchUserFiles();
 };
 

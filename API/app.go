@@ -28,6 +28,8 @@ func main() {
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
     http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))
     http.Handle("/user/files", (http.HandlerFunc(handlers.GetUserFilesHandler(dbConn))))    
+    http.Handle("/user/download", (http.HandlerFunc(handlers.DownloadHandler)))
+
 
     go handlers.MarkOfflineNodes(dbConn)
 

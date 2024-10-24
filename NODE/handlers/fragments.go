@@ -46,21 +46,33 @@ func UploadFragmentHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Fragment uploaded successfully")
 }
 
-// DownloadFragmentHandler handles serving file fragments
-func DownloadFragmentHandler(w http.ResponseWriter, r *http.Request) {
-    fragmentID := r.URL.Query().Get("id") // Getting the fragment ID from query params
+func DownloadFragmentHandler(w http.ResponseWriter, r *http.Request) { //TODO falta guardar o tipo de ficheiro para colocar a extensão no fim (PDF, TXT, ...)
+    // Extrair `file_id` e `fragment_order` dos parâmetros da URL
+    fileID := r.URL.Query().Get("file_id")
+    fragmentOrder := r.URL.Query().Get("fragment_order")
 
-    if fragmentID == "" {
-        http.Error(w, "Fragment ID is required", http.StatusBadRequest)
+    // Verificar se os parâmetros necessários foram fornecidos
+    if fileID == "" || fragmentOrder == "" {
+        http.Error(w, "File ID and fragment order are required", http.StatusBadRequest)
         return
     }
 
-    filePath := filepath.Join(fragmentStorageDir, fragmentID)
+    // Formar o nome do fragmento com base no fileID e na ordem do fragmento
+    fragmentFileName := fmt.Sprintf("file_%sfragment_%s", fileID, fragmentOrder)
+    filePath := filepath.Join(fragmentStorageDir, fragmentFileName)
 
+    // Adicionar logs para ajudar na depuração
+    fmt.Printf("Tentando servir o fragmento: %s\n", filePath)
+
+    // Verificar se o arquivo existe
     if _, err := os.Stat(filePath); os.IsNotExist(err) {
+        fmt.Printf("Fragmento não encontrado: %s\n", filePath)
         http.Error(w, "Fragment not found", http.StatusNotFound)
         return
     }
 
+    // Servir o arquivo como resposta
+    w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fragmentFileName))
+    w.Header().Set("Content-Type", "application/octet-stream")
     http.ServeFile(w, r, filePath)
 }

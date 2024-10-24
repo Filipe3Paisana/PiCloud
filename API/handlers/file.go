@@ -316,7 +316,7 @@ func SendFragmentToNode(fileID int, fragmentOrder int, fragmentContent []byte, n
     defer resp.Body.Close()
 
     if resp.StatusCode != http.StatusOK {
-        return fmt.Errorf("falha ao enviar fragmento para o nó: %s, código de status: %d", nodeID, resp.StatusCode)
+        return fmt.Errorf("falha ao enviar fragmento para o nó: %d, código de status: %d", nodeID, resp.StatusCode)
     }
 
     return nil
