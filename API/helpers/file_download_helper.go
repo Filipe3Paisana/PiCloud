@@ -1,4 +1,4 @@
-package handlers
+package helpers
 
 import (
 	"bytes"
@@ -8,37 +8,10 @@ import (
 	"strconv"
 
 	"api/db"
-	"api/utils"
 )
 
-func DownloadHandler(w http.ResponseWriter, r *http.Request) {
-	utils.EnableCors(w, r)
 
-	// Extraindo o ID do arquivo a partir da URL
-	fileIDStr := r.URL.Query().Get("file_id")
-	if fileIDStr == "" {
-		http.Error(w, "ID do arquivo não fornecido", http.StatusBadRequest)
-		return
-	}
-
-	fileID, err := strconv.Atoi(fileIDStr)
-	if err != nil {
-		http.Error(w, "ID do arquivo inválido", http.StatusBadRequest)
-		return
-	}
-
-	// Receber fragmentos e reconstituir o arquivo
-	fileContent, fileName, err := receiveFragments(fileID)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Erro ao reconstruir o arquivo: %v", err), http.StatusInternalServerError)
-		return
-	}
-
-	sendFile(w, fileName, fileContent)
-}
-
-
-func receiveFragments(fileID int) ([]byte, string, error) {
+func ReceiveFragments(fileID int) ([]byte, string, error) {
 	// Buscar os fragmentos armazenados nos diferentes nós para o arquivo
 	rows, err := db.DB.Query(`
 		SELECT f.fragment_order, f.fragment_hashes, n.id
@@ -64,7 +37,7 @@ func receiveFragments(fileID int) ([]byte, string, error) {
 			return nil, "", fmt.Errorf("erro ao escanear fragmento: %v", err)
 		}
 
-		fragment, err := getFragmentsFromNode(fileID, fragmentOrder, nodeID)
+		fragment, err := GetFragmentsFromNode(fileID, fragmentOrder, nodeID)
 		if err != nil {
 			return nil, "", fmt.Errorf("erro ao obter fragmento do nó %d: %v", nodeID, err)
 		}
@@ -72,13 +45,13 @@ func receiveFragments(fileID int) ([]byte, string, error) {
 	}
 
 	// Reconstituir o arquivo a partir dos fragmentos
-	fileContent, err := reassembleFile(fragments)
+	fileContent, err := ReassembleFile(fragments)
 	if err != nil {
 		return nil, "", fmt.Errorf("erro ao montar o arquivo: %v", err)
 	}
 
 	// Recuperar o nome do arquivo original
-	fileName, err = getFileName(fileID)
+	fileName, err = GetFileName(fileID)
 	if err != nil {
 		return nil, "", fmt.Errorf("erro ao obter nome do arquivo: %v", err)
 	}
@@ -86,7 +59,7 @@ func receiveFragments(fileID int) ([]byte, string, error) {
 	return fileContent, fileName, nil
 }
 
-func getFragmentsFromNode(fileID, fragmentOrder int, nodeID int) ([]byte, error) {
+func GetFragmentsFromNode(fileID, fragmentOrder int, nodeID int) ([]byte, error) {
 	// Construir URL para obter fragmento do nó
 	fragmentURL := fmt.Sprintf("http://node%d:8082/fragments/download?file_id=%d&fragment_order=%d", nodeID, fileID, fragmentOrder)
 
@@ -108,7 +81,7 @@ func getFragmentsFromNode(fileID, fragmentOrder int, nodeID int) ([]byte, error)
 	return fragment, nil
 }
 
-func reassembleFile(fragments [][]byte) ([]byte, error) {
+func ReassembleFile(fragments [][]byte) ([]byte, error) {
 	var fileContent bytes.Buffer
 
 	for _, fragment := range fragments {
@@ -121,7 +94,7 @@ func reassembleFile(fragments [][]byte) ([]byte, error) {
 	return fileContent.Bytes(), nil
 }
 
-func sendFile(w http.ResponseWriter, fileName string, fileContent []byte) {
+func SendFile(w http.ResponseWriter, fileName string, fileContent []byte) {
 	// Definir headers para download
 	w.Header().Set("Content-Disposition", "attachment; filename="+fileName)
 	w.Header().Set("Content-Type", "application/octet-stream")
@@ -134,7 +107,7 @@ func sendFile(w http.ResponseWriter, fileName string, fileContent []byte) {
 	}
 }
 
-func getFileName(fileID int) (string, error) {
+func GetFileName(fileID int) (string, error) {
 	var fileName string
 	err := db.DB.QueryRow("SELECT name FROM Files WHERE id=$1", fileID).Scan(&fileName)
 	if err != nil {

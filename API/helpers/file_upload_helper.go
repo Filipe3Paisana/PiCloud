@@ -1,4 +1,4 @@
-package handlers
+package helpers
 
 import (
     "fmt"
@@ -6,133 +6,17 @@ import (
     "mime/multipart"
     "net/http"
     "bytes"
-    "encoding/hex"
-    "encoding/base64"
-    "crypto/md5"
     "math"
     "math/rand"
     "time"
     "strconv"
 
-    "api/utils"
     "api/models"
     "api/db"
 )
 
-const availability = 0.999
-const failureRate = 0.1
 
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
-    utils.EnableCors(w, r)
-    
-    if r.Method == http.MethodOptions {
-        w.WriteHeader(http.StatusOK)
-        return
-    }
-    
-    if r.Method == http.MethodPost {
-        fmt.Println("Recebendo arquivo...")
-        
-        // Obter o arquivo do formulário
-        file, fileHeader, err := r.FormFile("file")
-        if err != nil {
-            http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
-            return
-        }
-        defer file.Close()
-
-        // Ler o conteudo do ficheiro e calcular o tamanho
-        fileContent, err := io.ReadAll(file)
-        if err != nil {
-            http.Error(w, "Erro ao ler o arquivo", http.StatusInternalServerError)
-            return
-        }
-        fileSize := int64(len(fileContent))
-        fileName := fileHeader.Filename
-
-        const maxFileSize = 1000 * 1024 * 1024 // 100MB
-        if fileSize > maxFileSize {
-            http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
-            return
-        }
-
-        userID, err := utils.ExtractUserIDFromJWT(r) // Extrair ID JWT
-        if err != nil {
-            http.Error(w, err.Error(), http.StatusUnauthorized)
-            return
-        }
-        
-        // Informações do arquivo na base de dados
-        fileID, err := saveFileInfo(fileName, fileSize, userID) 
-        if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao salvar informações do arquivo: %v", err), http.StatusInternalServerError)
-            return 
-        }
-
-        fmt.Printf("ID do Arquivo salvo: %d\n", fileID)
-
-        numberOfFragments := calculateNumberOfFragments(fileSize)
-        fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
-
-        
-        err = testFragmentAndReassemble(fileContent, fileSize, numberOfFragments)
-        if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao testar a integridade do arquivo: %v", err), http.StatusInternalServerError)
-            return
-        }
-
-        // Fragmentar o arquivo
-        fragments, err := fragmentFile(fileContent, fileSize, numberOfFragments)
-        if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao fragmentar o arquivo: %v", err), http.StatusInternalServerError)
-            return
-        }
-
-        
-        for i, fragment := range fragments {
-            // Calcular hash MD5 para verificar a integridade
-            hash := md5.Sum(fragment)
-            hashString := hex.EncodeToString(hash[:])
-
-            // Converter para base64 para visualizar o conteúdo de forma legível
-            encoded := base64.StdEncoding.EncodeToString(fragment)
-            if len(encoded) > 20 {
-                encoded = encoded[:20] + "..." // Mostrar apenas os primeiros 20 caracteres
-            }
-
-            fmt.Printf("Fragmento %d: Tamanho = %d bytes, Hash MD5 = %s, Conteúdo (base64) = %s\n", i+1, len(fragment), hashString, encoded)
-            saveFragmentInfo(fileID, i+1, hashString) 
-
-        }
-        numberOfNodes := GetNumberOfOnlineNodes()
-        replicationFactor := calcReplicationFactor(availability, failureRate, numberOfNodes)
-        fmt.Printf("Fator de Replicação: %d\n", replicationFactor)
-
-        err = distributeFragments(fileID, numberOfFragments, fragments)
-        if err != nil {
-            http.Error(w, fmt.Sprint("Erro ao distribuir fragmentos pelos nodes: %v", err), http.StatusInternalServerError)
-            return
-        }
-
-        // // Enviar o arquivo para o node
-        // err = sendFileToNode(file, fileHeader.Filename)
-        // if err != nil {
-        //     http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
-        //     return
-        // }
-        
-        // Responder com sucesso
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message": "Arquivo enviado com sucesso para o node."}`))
-        return
-    }
-    
-    // Responder com erro para métodos não permitidos
-    http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
-}
-
-func saveFileInfo(name string, size int64, userID int) (int, error) {
+func SaveFileInfo(name string, size int64, userID int) (int, error) {
     var fileID int
     query := "INSERT INTO Files (name, size, user_id) VALUES ($1, $2, $3) RETURNING id"
     err := db.DB.QueryRow(query, name, size, userID).Scan(&fileID) // Usando db.DB para acessar a instância do banco de dados
@@ -142,7 +26,7 @@ func saveFileInfo(name string, size int64, userID int) (int, error) {
     return fileID, nil
 }
 
-func calculateNumberOfFragments(fileSize int64) int {
+func CalculateNumberOfFragments(fileSize int64) int {
     if fileSize <= 0 {
         return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
     }
@@ -155,7 +39,7 @@ func calculateNumberOfFragments(fileSize int64) int {
     return numberOfFragments
 }
 
-func fragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byte, error) {
+func FragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byte, error) {
     if numFragments <= 0 {
         return nil, fmt.Errorf("Número de fragmentos deve ser maior que zero")
     }
@@ -179,9 +63,9 @@ func fragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byt
     return fragments, nil
 }
 
-func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments int) error {
+func TestFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments int) error {
     // Fragmentar o arquivo
-    fragments, err := fragmentFile(fileContent, fileSize, numFragments)
+    fragments, err := FragmentFile(fileContent, fileSize, numFragments)
     if err != nil {
         return fmt.Errorf("Erro ao fragmentar o arquivo: %v", err)
     }
@@ -201,7 +85,7 @@ func testFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments 
     return nil
 }
 
-func saveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
+func SaveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
     query := "INSERT INTO FileFragments (file_id, fragment_hashes, fragment_order) VALUES ($1, $2, $3)"
     _, err := db.DB.Exec(query, fileID, hash, fragmentOrder)
     if err != nil {
@@ -210,7 +94,7 @@ func saveFragmentInfo(fileID int, fragmentOrder int, hash string) error {
     return nil
 }
 
-func calcReplicationFactor(availability float64, failureRate float64, numberOfNodes int) int {
+func CalcReplicationFactor(availability float64, failureRate float64, numberOfNodes int) int {
     if availability <= 0 || availability >= 1 || failureRate <= 0 || failureRate >= 1 || numberOfNodes <= 0 {
         fmt.Println("Parâmetros inválidos fornecidos para o cálculo do fator de replicação.")
         return 0
@@ -226,13 +110,11 @@ func calcReplicationFactor(availability float64, failureRate float64, numberOfNo
     return int(math.Ceil(replicationFactor)) //TODO definir se este é o número de réplicas (sem contar com o original) ou o número de fragmentos total
 }
 
-func distributeFragments(fileID int, numberOfFragments int, fragments [][]byte) error {
+func DistributeFragments(fileID int, numberOfFragments int, fragments [][]byte, replicationFactor int) error {
     availableNodes := GetOnlineNodesList()
     if len(availableNodes) == 0 {
         return fmt.Errorf("Nenhum nó disponível para distribuir os fragmentos")
     }
-
-    replicationFactor := calcReplicationFactor(availability, failureRate, len(availableNodes))
 
     for i := 1; i <= numberOfFragments; i++ {
         selectedNodes := SelectNodesForFragment(availableNodes, replicationFactor)
@@ -343,70 +225,5 @@ func SaveDistributionInfo(fileID int, fragmentOrder int, nodeAddress string) err
     if err != nil {
         return fmt.Errorf("erro ao salvar informações de localização do fragmento: %v", err)
     }
-    return nil
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-func sendFileToNode(file multipart.File, filename string) error {
-    var body bytes.Buffer
-    writer := multipart.NewWriter(&body)
-
-    part, err := writer.CreateFormFile("fragment", filename)
-    if err != nil {
-        return err
-    }
-
-    // Copiar o conteúdo do arquivo para a requisição
-    _, err = io.Copy(part, file)
-    if err != nil {
-        return err
-    }
-
-    err = writer.Close()
-    if err != nil {
-        return err
-    }
-
-    // Enviar a requisição POST para o node
-    nodeURL := "http://node1:8082/fragments/upload" // URL do Node
-    req, err := http.NewRequest("POST", nodeURL, &body)
-    if err != nil {
-        return err
-    }
-
-    // Adicionar o cabeçalho de tipo de conteúdo
-    req.Header.Set("Content-Type", writer.FormDataContentType())
-
-    // Fazer a requisição
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        return err
-    }
-    defer resp.Body.Close()
-
-    if resp.StatusCode != http.StatusOK {
-        return fmt.Errorf("falha ao enviar arquivo para o node: %s", resp.Status)
-    }
-
     return nil
 }
