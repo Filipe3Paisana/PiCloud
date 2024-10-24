@@ -1,7 +1,6 @@
 package helpers
 
 import (
-    "database/sql"
     "fmt"
     "time"
 
@@ -9,14 +8,14 @@ import (
     "api/db"
 )
 
-func MarkOfflineNodes(db *sql.DB) {
+func MarkOfflineNodes() {
     for {
         time.Sleep(30 * time.Second) 
 
         offlineThreshold := time.Now().Add(-25 * time.Second)
 
         // Atualiza os nós para "offline" onde last_updated está além do limite
-        _, err := db.Exec("UPDATE Nodes SET status = 'offline' WHERE last_updated < $1", offlineThreshold)
+        _, err := db.DB.Exec("UPDATE Nodes SET status = 'offline' WHERE last_updated < $1", offlineThreshold)
         if err != nil {
             fmt.Println("Erro ao atualizar status dos nós para offline:", err)
         }

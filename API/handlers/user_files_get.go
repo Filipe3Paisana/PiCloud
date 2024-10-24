@@ -1,16 +1,16 @@
 package handlers
 
 import (
-    "database/sql"
     "encoding/json"
     "net/http"
     
     "api/models"
     "api/utils"
+	"api/db"
 )
 
 
-func GetUserFilesHandler(db *sql.DB) http.HandlerFunc {
+func GetUserFilesHandler() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         utils.EnableCors(w, r)
         
@@ -25,7 +25,7 @@ func GetUserFilesHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        rows, err := db.Query("SELECT id, name, size FROM files WHERE user_id=$1", userID)
+        rows, err := db.DB.Query("SELECT id, name, size FROM files WHERE user_id=$1", userID)
         if err != nil {
             http.Error(w, "Erro ao buscar arquivos", http.StatusInternalServerError)
             return

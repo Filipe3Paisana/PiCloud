@@ -25,16 +25,16 @@ func main() {
     http.HandleFunc("/users/login", handlers.LoginHandler)         
     http.HandleFunc("/user/upload", handlers.UploadHandler)
     
-    http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler(dbConn))))
-    http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler(dbConn))))   
+    http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler())))
+    http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler())))   
     
-    http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler(dbConn))
+    http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler())
 
-    http.Handle("/user/files", (http.HandlerFunc(handlers.GetUserFilesHandler(dbConn))))    
+    http.Handle("/user/files", (http.HandlerFunc(handlers.GetUserFilesHandler())))    
     http.Handle("/user/download", (http.HandlerFunc(handlers.DownloadHandler)))
 
 
-    go helpers.MarkOfflineNodes(dbConn)
+    go helpers.MarkOfflineNodes()
 
     fmt.Println("Servidor a bombar em http://localhost:8081/")
     if err := http.ListenAndServe(":8080", nil); err != nil {  

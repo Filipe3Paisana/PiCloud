@@ -8,10 +8,11 @@ import (
     
     "api/models"
     "api/utils"
+	"api/db"
 )
 
 
-func GetUserHandler(db *sql.DB) http.HandlerFunc {
+func GetUserHandler() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         utils.EnableCors(w, r)
         if r.Method != http.MethodGet {
@@ -27,7 +28,7 @@ func GetUserHandler(db *sql.DB) http.HandlerFunc {
 
         var user models.User
         query := "SELECT id, username, email FROM users WHERE id=$1"
-        err := db.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email)
+        err := db.DB.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email)
         if err != nil {
             if err == sql.ErrNoRows {
                 http.Error(w, "Usuário não encontrado", http.StatusNotFound)

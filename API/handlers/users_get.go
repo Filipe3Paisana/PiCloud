@@ -1,16 +1,16 @@
 package handlers
 
 import (
-    "database/sql"
     "encoding/json"
     "net/http"
     
     "api/models"
     "api/utils"
+	"api/db"
 )
 
 
-func GetUsersHandler(db *sql.DB) http.HandlerFunc {
+func GetUsersHandler() http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         utils.EnableCors(w, r)
         if r.Method != http.MethodGet {
@@ -18,7 +18,7 @@ func GetUsersHandler(db *sql.DB) http.HandlerFunc {
             return
         }
 
-        rows, err := db.Query("SELECT id, username, email FROM users")
+        rows, err := db.DB.Query("SELECT id, username, email FROM users")
         if err != nil {
             http.Error(w, "Erro ao buscar usuários", http.StatusInternalServerError)
             return
