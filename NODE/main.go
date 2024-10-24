@@ -9,7 +9,7 @@ import (
 
 func main() {
     
-    go handlers.SendNodeStatusPeriodically()
+    go handlers.SendNodeStatusHandler()
 
     //http.HandleFunc("/status", handlers.GetNodeStatusHandler)
 

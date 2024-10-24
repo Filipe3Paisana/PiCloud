@@ -4,61 +4,29 @@ import (
     "bytes"
     "encoding/json"
     "fmt"
-    "net"
     "net/http"
-    "syscall"
     "time"
 
     "node/models"
+    "node/helpers"
 )
 
 
-
-// Função para obter o endereço IP local
-func getLocalIPAddress() (string, error) {
-    addrs, err := net.InterfaceAddrs()
-    if err != nil {
-        return "", err
-    }
-
-    for _, addr := range addrs {
-        if ipNet, ok := addr.(*net.IPNet); ok && !ipNet.IP.IsLoopback() {
-            if ipNet.IP.To4() != nil {
-                return ipNet.IP.String(), nil
-            }
-        }
-    }
-    return "", fmt.Errorf("não foi possível obter o IP")
-}
-
-// Função para obter o uso de disco
-func getDiskUsage(path string) (total uint64, free uint64, err error) {
-    var stat syscall.Statfs_t
-    err = syscall.Statfs(path, &stat)
-    if err != nil {
-        return 0, 0, err
-    }
-
-    total = stat.Blocks * uint64(stat.Bsize)       // Capacidade total
-    free = stat.Bavail * uint64(stat.Bsize)        // Capacidade disponível
-    return total, free, nil
-}
-
 // Função para enviar o status do nó periodicamente
-func SendNodeStatusPeriodically() {
+func SendNodeStatusHandler() {
     ticker := time.NewTicker(20 * time.Second)
     defer ticker.Stop()
 
     for range ticker.C {
-        nodeAddress, err := getLocalIPAddress()
+        nodeAddress, err := helpers.GetLocalIPAddress()
         if err != nil {
             fmt.Println("Erro ao obter o endereço IP:", err)
             continue
         }
 
-        totalStorage, availableStorage, err := getDiskUsage("/app/fragments/")
+        totalStorage, availableStorage, err := helpers.GetDiskUsage("/app/fragments/")
         if err != nil {
-			totalStorage, availableStorage, err = getDiskUsage("/")
+			totalStorage, availableStorage, err = helpers.GetDiskUsage("/")
 			if err != nil {
 				fmt.Println("Erro ao obter us de disco:", err)
 				continue
