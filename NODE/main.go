@@ -18,6 +18,7 @@ func main() {
     // Endpoint para download de fragmento de arquivo por ID
     http.HandleFunc("/fragments/download", handlers.DownloadFragmentHandler)
 
+    http.HandleFunc("/fragments/delete", handlers.DeleteFragmentHandler)
 
     fmt.Println("Node a bombar na porta 8082")
     if err := http.ListenAndServe(":8082", nil); err != nil {

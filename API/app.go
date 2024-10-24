@@ -32,6 +32,8 @@ func main() {
 
     http.Handle("/user/files", (http.HandlerFunc(handlers.GetUserFilesHandler())))    
     http.Handle("/user/download", (http.HandlerFunc(handlers.DownloadHandler)))
+    http.Handle("/user/delete", (http.HandlerFunc(handlers.DeleteFileHandler)))
+
 
 
     go helpers.MarkOfflineNodes()

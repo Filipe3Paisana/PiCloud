@@ -125,7 +125,12 @@ function displayFiles(files) {
         downloadButton.textContent = 'Download';
         downloadButton.onclick = () => downloadFile(file.id); 
 
+        const deleteButton = document.createElement('deleteButton');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = () => deleteFile(file.id); 
+
         listItem.appendChild(downloadButton);
+        listItem.appendChild(deleteButton);
 
         filesList.appendChild(listItem);
     });
@@ -180,6 +185,36 @@ function downloadFile(fileID) {
     });
 }
 
+function deleteFile(fileID) {
+    const confirmDelete = confirm("Tem certeza que deseja deletar este arquivo?");
+    if (!confirmDelete) return;
+
+    const url = `http://localhost:8081/user/delete?file_id=${fileID}`;
+
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao deletar o arquivo: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);
+        console.log("Arquivo deletado com sucesso:", data.message);
+        // Atualizar a lista de arquivos após deletar
+        fetchUserFiles();
+    })
+    .catch(error => {
+        console.error('Erro ao deletar o arquivo:', error);
+        alert('Erro ao deletar o arquivo. Por favor, tente novamente.');
+    });
+}
+
 function logout() {
     localStorage.removeItem('authToken'); 
     window.location.href = 'index.html'; 
@@ -197,9 +232,3 @@ window.onload = function() {
 
     fetchUserFiles();
 };
-
-
-function logout() {
-    localStorage.removeItem('authToken'); 
-    window.location.href = 'index.html'; 
-}

@@ -68,6 +68,20 @@ button:hover {
     background-color: #45a049; /* Cor de hover para os botões */
 }
 
+deleteButton {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #d6422f; /* Cor de fundo padrão */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+deleteButton:hover {
+    background-color: #af2900; /* Cor de hover para os botões */
+}
+
 .register-text {
     margin-top: 1rem;
     color: #555;

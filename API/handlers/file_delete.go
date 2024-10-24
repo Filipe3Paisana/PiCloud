@@ -1,45 +1,45 @@
 package handlers
 
-// import (
-// 	"api/models"
-// )
+import (
+    "fmt"
+    "net/http"
+    "strconv"
 
+    "api/helpers"
+    "api/utils"
+)
 
-// func DeleteFragments(fileID int, fragments [][]byte, replicationFactor int) error {
-//     availableNodes := GetOnlineNodesList()
-//     if len(availableNodes) == 0 {
-//         return fmt.Errorf("Nenhum nó disponível para distribuir os fragmentos")
-//     }
+// DeleteFileFragments apaga todos os fragmentos relacionados a um arquivo específico, incluindo réplicas.
+func DeleteFileHandler(w http.ResponseWriter, r *http.Request) {
+    utils.EnableCors(w, r)
 
-//     for i := 1; i <= numberOfFragments; i++ {
-//         selectedNodes := SelectNodesWithFragment(availableNodes, fileID)
+    // Validar o método HTTP
+    if r.Method != http.MethodDelete {
+        http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+        return
+    }
 
-//         for _, node := range selectedNodes {
-//             err := DeleteFragments(fileID, i, fragments[i-1], node.NodeID) // Passando o conteúdo real do fragmento
-//             if err != nil {
-//                 fmt.Printf("Erro ao eliminar fragmento %d do nó %d: %v\n", i, node.NodeID, err)
-//                 continue
-//             }
+    // Extraindo o ID do arquivo a partir dos parâmetros
+    fileIDStr := r.URL.Query().Get("file_id")
+    if fileIDStr == "" {
+        http.Error(w, "ID do arquivo não fornecido", http.StatusBadRequest)
+        return
+    }
 
-//             err = DeleteDistributionInfo(fileID, i, node.NodeAddress)
-//             if err != nil {
-//                 fmt.Printf("Erro ao salvar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
-//                 continue
-//             }
-//         }
-//     }
-//     return nil
-// }
+    fileID, err := strconv.Atoi(fileIDStr)
+    if err != nil {
+        http.Error(w, "ID do arquivo inválido", http.StatusBadRequest)
+        return
+    }
 
+    // Chamar a lógica para deletar o arquivo e seus fragmentos
+    err = helpers.DeleteFileFragments(fileID)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Erro ao deletar o arquivo: %v", err), http.StatusInternalServerError)
+        return
+    }
 
-// SelectNodesWithFragment(availableNodes models.Node, fileID int) {
-// 	return nil
-// }
-
-// DeleteFragments(fileID int, i int, fragments int, nodeID int) {
-// 	return nil
-// }
-
-// DeleteDistributionInfo(fileID int, i int, nodeAddress string) {
-// 	return nil
-// }
+    // Retornar sucesso
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte(`{"message": "Arquivo deletado com sucesso."}`))
+}
