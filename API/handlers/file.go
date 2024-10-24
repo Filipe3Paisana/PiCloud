@@ -50,7 +50,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         fileSize := int64(len(fileContent))
         fileName := fileHeader.Filename
 
-        const maxFileSize = 100 * 1024 * 1024 // 10MB
+        const maxFileSize = 1000 * 1024 * 1024 // 100MB
         if fileSize > maxFileSize {
             http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
             return
