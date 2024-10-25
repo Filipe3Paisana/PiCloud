@@ -70,6 +70,7 @@ function uploadFile() {
     .then(data => {
         alert(data.message);
         console.log("Upload success message:", data.message);
+        fetchUserFiles()
     })
     .catch(error => {
         console.error('Erro:', error);
@@ -113,36 +114,37 @@ function displayFiles(files) {
     filesList.innerHTML = ''; // Limpa o conteúdo existente
 
     if (!files || files.length === 0) {
-        filesList.textContent = 'Você não possui arquivos.';
+        filesList.innerHTML = '<p>Você não possui arquivos.</p>';
         return;
     }
 
     files.forEach(file => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${file.name} (${formatFileSize(file.size)})`;
+        const fileCard = document.createElement('div');
+        fileCard.classList.add('file-card');
+
+        const fileName = document.createElement('h4');
+        fileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
+
+        const iconButtons = document.createElement('div');
+        iconButtons.classList.add('icon-buttons');
 
         const downloadButton = document.createElement('button');
-        downloadButton.textContent = 'Download';
-        downloadButton.onclick = () => downloadFile(file.id); 
+        downloadButton.innerHTML = '<i class="fas fa-download"></i>';
+        downloadButton.onclick = () => downloadFile(file.id);
 
-        const deleteButton = document.createElement('deleteButton');
-        deleteButton.textContent = 'Delete';
-        deleteButton.onclick = () => deleteFile(file.id); 
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
+        deleteButton.onclick = () => deleteFile(file.id);
 
-        listItem.appendChild(downloadButton);
-        listItem.appendChild(deleteButton);
+        iconButtons.appendChild(downloadButton);
+        iconButtons.appendChild(deleteButton);
 
-        filesList.appendChild(listItem);
+        fileCard.appendChild(fileName);
+        fileCard.appendChild(iconButtons);
+
+        filesList.appendChild(fileCard);
     });
 }
-
-function formatFileSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    else if (bytes < 1048576) return `${(bytes / 1024).toFixed(2)} KB`;
-    else if (bytes < 1073741824) return `${(bytes / 1048576).toFixed(2)} MB`;
-    else return `${(bytes / 1073741824).toFixed(2)} GB`;
-}
-
 
 function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} B`;
