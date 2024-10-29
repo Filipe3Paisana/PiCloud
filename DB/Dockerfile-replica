@@ -1,0 +1,16 @@
+FROM postgres:latest
+
+ENV POSTGRES_USER=${POSTGRES_USER}
+ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+ENV POSTGRES_DB=${POSTGRES_DB}
+ENV PGDATA=/data
+
+      
+COPY ./postgres-2/config/pg_hba.conf /etc/postgresql/pg_hba.conf
+COPY ./postgres-2/config/pg_ident.conf /etc/postgresql/pg_ident.conf
+COPY ./postgres-2/config/postgresql.conf /etc/postgresql/postgresql.conf
+
+
+EXPOSE 5432
+
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

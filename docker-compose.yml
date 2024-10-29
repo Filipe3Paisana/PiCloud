@@ -1,20 +1,52 @@
 services:
-  
+
   db:
     build: 
       context: ./DB  
       dockerfile: Dockerfile
-    container_name: postgres-container
+    container_name: postgres-1-container
+    command: postgres -c config_file=/config/postgresql.conf
+    
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: "/data"  
     ports:
-      - "${DB_PORT}:5432"
+      - "${DB_PORT}:5432"  
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./DB/postgres-1/pgdata:/data
+      - ./DB/postgres-1/config:/config/
+      - ./DB/postgres-1/archive:/mnt/server/archive
+      # - ./DB/postgres-1/config/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      # - ./DB/postgres-1/config/pg_ident.conf:/etc/postgresql/pg_ident.conf
+      # - ./DB/postgres-1/config/postgresql.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - pi_network  
+
+  db_standby:
+    build: 
+      context: ./DB  
+      dockerfile: Dockerfile-replica
+    container_name: postgres-2-container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: /data  
+    ports:
+      - "5001:5432"  
+    volumes:
+      - ./DB/postgres-2/pgdata:/data  
+      - ./DB/postgres-2/config:/config/
+      - ./DB/postgres-2/archive:/mnt/server/archive  
+      # - ./DB/postgres-2/config/pg_hba.conf:/etc/postgresql/pg_hba.conf  
+      # - ./DB/postgres-2/config/pg_ident.conf:/etc/postgresql/pg_ident.conf  
+      # - ./DB/postgres-2/config/postgresql.conf:/etc/postgresql/postgresql.conf  
     networks:
       - pi_network
+
+
 
   # Serviço da API
   api:
