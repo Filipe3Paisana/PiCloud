@@ -9,6 +9,20 @@ services:
       - "9090:9090"
     networks:
       - pi_network
+  
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Pode mudar a senha
+    # volumes:
+    # - ./grafana:/var/lib/grafana
+    # - ./grafana/dashboards:/grafana/dashboards
+    # - ./grafana/grafana_setup.sh:/etc/grafana/grafana_setup.sh
+    # entrypoint: ["/bin/bash", "-c", "/etc/grafana/grafana_setup.sh"]
+    networks:
+      - pi_network
 
   node_exporter:
       image: prom/node-exporter
@@ -49,6 +63,7 @@ services:
     tty: true
     networks:
       - pi_network
+
 
   # Node de Armazenamento
   node1:
@@ -180,7 +195,6 @@ services:
       - web2
     networks:
       - pi_network
-
   
   # k6:
   #   build:
