@@ -1,52 +1,37 @@
 services:
 
-  db:
-    build: 
-      context: ./DB  
-      dockerfile: Dockerfile
-    container_name: postgres-1-container
-    command: postgres -c config_file=/config/postgresql.conf
-    
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: "/data"  
-    ports:
-      - "${DB_PORT}:5432"  
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
     volumes:
-      - ./DB/postgres-1/pgdata:/data
-      - ./DB/postgres-1/config:/config/
-      - ./DB/postgres-1/archive:/mnt/server/archive
-      # - ./DB/postgres-1/config/pg_hba.conf:/etc/postgresql/pg_hba.conf
-      # - ./DB/postgres-1/config/pg_ident.conf:/etc/postgresql/pg_ident.conf
-      # - ./DB/postgres-1/config/postgresql.conf:/etc/postgresql/postgresql.conf
-    networks:
-      - pi_network  
-
-  db_standby:
-    build: 
-      context: ./DB  
-      dockerfile: Dockerfile-replica
-    container_name: postgres-2-container
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: /data  
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "5001:5432"  
-    volumes:
-      - ./DB/postgres-2/pgdata:/data  
-      - ./DB/postgres-2/config:/config/
-      - ./DB/postgres-2/archive:/mnt/server/archive  
-      # - ./DB/postgres-2/config/pg_hba.conf:/etc/postgresql/pg_hba.conf  
-      # - ./DB/postgres-2/config/pg_ident.conf:/etc/postgresql/pg_ident.conf  
-      # - ./DB/postgres-2/config/postgresql.conf:/etc/postgresql/postgresql.conf  
+      - "9090:9090"
     networks:
       - pi_network
 
+  node_exporter:
+      image: prom/node-exporter
+      container_name: node_exporter
+      ports:
+        - "9100:9100"
+      networks:
+        - pi_network
 
+  db:
+    image: postgres:${POSTGRES_IMAGE_VERSION}
+    container_name: postgres-container
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./DB/scripts/init:/docker-entrypoint-initdb.d
+    networks:
+      - pi_network
 
   # Serviço da API
   api:
@@ -78,7 +63,13 @@ services:
       - "8082:8082"
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
-  
+  node-exporter1:
+    image: prom/node-exporter
+    ports:
+      - "9100"
+    networks:
+      - pi_network
+
   node2:
     build:
       context: ./NODE
@@ -89,6 +80,12 @@ services:
       - NODE_PORT=8082
     ports:
       - "8083:8082"
+    networks:
+      - pi_network
+  node-exporter2:
+    image: prom/node-exporter
+    ports:
+      - "9100"
     networks:
       - pi_network
 
@@ -104,6 +101,12 @@ services:
       - "8084:8082"
     networks:
       - pi_network
+  node-exporter3:
+    image: prom/node-exporter
+    ports:
+      - "9100"
+    networks:
+      - pi_network
 
   node4:
     build:
@@ -117,6 +120,12 @@ services:
       - "8085:8082"
     networks:
       - pi_network
+  node-exporter4:
+    image: prom/node-exporter
+    ports:
+      - "9100"
+    networks:
+      - pi_network
   
   node5:
     build:
@@ -128,6 +137,12 @@ services:
       - NODE_PORT=8082
     ports:
       - "8086:8082"
+    networks:
+      - pi_network
+  node-exporter5:
+    image: prom/node-exporter
+    ports:
+      - "9100"
     networks:
       - pi_network
 
@@ -181,3 +196,4 @@ volumes:
   
 networks:
   pi_network:
+    driver: bridge
