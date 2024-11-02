@@ -35,17 +35,53 @@ services:
   db:
     image: postgres:${POSTGRES_IMAGE_VERSION}
     container_name: postgres-container
+    command: "postgres -c config_file=/config/postgresql.conf"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: "/data"
     ports:
       - "${DB_PORT}:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - ./DB/master/pgdata:/data
+      - ./DB/master/config:/config
+      - ./DB/master/archive:/mt/server/archive
       - ./DB/scripts/init:/docker-entrypoint-initdb.d
     networks:
       - pi_network
+
+  
+  db-replica:
+    image: postgres:${POSTGRES_IMAGE_VERSION}
+    container_name: postgres-replica-container
+    command: "postgres -c config_file=/config/postgresql.conf"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      PGDATA: "/data"
+    ports:
+      - 5001:5432 
+    networks:
+      - pi_network
+    depends_on:
+      - db
+    volumes:
+      - ./DB/replica/pgdata:/data
+      - ./DB/replica/config:/config
+      - ./DB/replica/archive:/mt/server/archive
+
+
+    # entrypoint:
+    #   - "bash"
+    #   - "-c"
+    #   - |
+    #     if [ ! -f /var/lib/postgresql/data/standby.signal ]; then
+    #       pg_basebackup -h postgres-1 -p 5432 -U replicauser -D /var/lib/postgresql/data -Fp -Xs -R -P
+    #     fi
+    #     docker-entrypoint.sh postgres
+
 
   # Serviço da API
   api:
@@ -207,6 +243,7 @@ services:
 
 volumes:
   db_data:
+  db_replica_data:
   
 networks:
   pi_network:
