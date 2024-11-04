@@ -10,19 +10,32 @@ services:
     networks:
       - pi_network
   
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin  # Pode mudar a senha
-    # volumes:
-    # - ./grafana:/var/lib/grafana
-    # - ./grafana/dashboards:/grafana/dashboards
-    # - ./grafana/grafana_setup.sh:/etc/grafana/grafana_setup.sh
-    # entrypoint: ["/bin/bash", "-c", "/etc/grafana/grafana_setup.sh"]
+  data_collector:
+    build:
+      context: ./data_collector
+      dockerfile: Dockerfile
+    container_name: data_collector
+    volumes:
+      - ./data_collector/prometheus_data:/app/prometheus_data  # Monta a pasta para salvar os dados coletados
+    depends_on:
+      - prometheus
     networks:
       - pi_network
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090  # Variável de ambiente para o endereço do Prometheus
+
+  # grafana:
+  #   image: grafana/grafana
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #   # volumes:
+  #   #   - ./grafana/provisioning:/etc/grafana/provisioning
+  #   #   - ./grafana/dashboards:/var/lib/grafana/dashboards
+  #   networks:
+  #     - pi_network
 
   node_exporter:
       image: prom/node-exporter

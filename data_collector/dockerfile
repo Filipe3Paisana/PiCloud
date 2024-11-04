@@ -1,0 +1,19 @@
+# Usa uma imagem base do Golang
+FROM golang:1.20
+
+# Define o diretório de trabalho no container
+WORKDIR /app
+
+# Copia o código do coletor para o container
+COPY collector.go .
+
+# Instala quaisquer dependências (não necessárias aqui, pois o código não usa pacotes externos)
+
+# Compila o código
+RUN go build -o prometheus_collector collector.go
+
+# Cria um diretório para armazenar os dados de métricas
+RUN mkdir -p /app/prometheus_data
+
+# Define o ponto de entrada para o coletor
+ENTRYPOINT ["/app/prometheus_collector"]
