@@ -59,12 +59,11 @@ services:
     volumes:
       - ./DB/master/pgdata:/data
       - ./DB/master/config:/config
-      - ./DB/master/archive:/mt/server/archive
+      - ./DB/master/archive:/mnt/server/archive
       - ./DB/scripts/init:/docker-entrypoint-initdb.d
     networks:
       - pi_network
-
-  
+      
   db-replica:
     image: postgres:${POSTGRES_IMAGE_VERSION}
     container_name: postgres-replica-container
@@ -75,26 +74,16 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: "/data"
     ports:
-      - 5001:5432 
+      - 5001:5432
+    
     networks:
       - pi_network
     depends_on:
       - db
     volumes:
-      - ./DB/replica/pgdata:/data
-      - ./DB/replica/config:/config
-      - ./DB/replica/archive:/mt/server/archive
-
-
-    # entrypoint:
-    #   - "bash"
-    #   - "-c"
-    #   - |
-    #     if [ ! -f /var/lib/postgresql/data/standby.signal ]; then
-    #       pg_basebackup -h postgres-1 -p 5432 -U replicauser -D /var/lib/postgresql/data -Fp -Xs -R -P
-    #     fi
-    #     docker-entrypoint.sh postgres
-
+       - ./DB/replica/pgdata:/data
+       - ./DB/replica/config:/config
+       - ./DB/replica/archive:/mnt/server/archive
 
   # Serviço da API
   api:
