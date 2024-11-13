@@ -1,3 +1,15 @@
+version: '3.8'
+
+x-postgres-common:
+  &postgres-common
+  image: postgres:14-alpine
+  restart: always
+  healthcheck:
+    test: 'pg_isready -U test --dbname=postgres'
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
 services:
 
   prometheus:
@@ -16,76 +28,71 @@ services:
       dockerfile: Dockerfile
     container_name: data_collector
     volumes:
-      - ./data_collector/prometheus_data:/app/prometheus_data  # Monta a pasta para salvar os dados coletados
+      - ./data_collector/prometheus_data:/app/prometheus_data
     depends_on:
       - prometheus
     networks:
       - pi_network
     environment:
-      - PROMETHEUS_URL=http://prometheus:9090  # Variável de ambiente para o endereço do Prometheus
-
-  # grafana:
-  #   image: grafana/grafana
-  #   container_name: grafana
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - GF_SECURITY_ADMIN_PASSWORD=admin
-  #   # volumes:
-  #   #   - ./grafana/provisioning:/etc/grafana/provisioning
-  #   #   - ./grafana/dashboards:/var/lib/grafana/dashboards
-  #   networks:
-  #     - pi_network
+      - PROMETHEUS_URL=http://prometheus:9090
 
   node_exporter:
-      image: prom/node-exporter
-      container_name: node_exporter
-      ports:
-        - "9100:9100"
-      networks:
-        - pi_network
-
-  db:
-    image: postgres:${POSTGRES_IMAGE_VERSION}
-    container_name: postgres-container
-    command: "postgres -c config_file=/config/postgresql.conf"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: "/data"
+    image: prom/node-exporter
+    container_name: node_exporter
     ports:
-      - "${DB_PORT}:5432"
+      - "9100:9100"
+    networks:
+      - pi_network
+  
+  db:
+    <<: *postgres-common
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_DB: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    user: postgres
+    command: |
+      postgres 
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
     volumes:
-      - ./DB/master/pgdata:/data
-      - ./DB/master/config:/config
-      - ./DB/master/archive:/mnt/server/archive
       - ./DB/scripts/init:/docker-entrypoint-initdb.d
     networks:
       - pi_network
-      
+
   db-replica:
-    image: postgres:${POSTGRES_IMAGE_VERSION}
-    container_name: postgres-replica-container
-    command: "postgres -c config_file=/config/postgresql.conf"
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-      PGDATA: "/data"
+    <<: *postgres-common
     ports:
-      - 5001:5432
-    
+      - 5433:5432
+    environment:
+      PGUSER: reptest
+      PGPASSWORD: test
+    user: postgres
+    command: |
+      bash -c "
+      rm -rf /var/lib/postgresql/data/*
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=db --port=5432
+      do
+        echo 'Waiting for primary to connect...'
+        sleep 1s
+      done
+      echo 'Backup done, starting replica...'
+      chmod 0700 /var/lib/postgresql/data
+      postgres 
+      "
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - pi_network
-    depends_on:
-      - db
-    volumes:
-       - ./DB/replica/pgdata:/data
-       - ./DB/replica/config:/config
-       - ./DB/replica/archive:/mnt/server/archive
 
-  # Serviço da API
   api:
     build:
       context: ./API
@@ -102,8 +109,6 @@ services:
     networks:
       - pi_network
 
-
-  # Node de Armazenamento
   node1:
     build:
       context: ./NODE
@@ -115,7 +120,7 @@ services:
     ports:
       - "8082:8082"
     networks:
-      - pi_network  # Conectado à mesma rede que a API para comunicação
+      - pi_network
   node-exporter1:
     image: prom/node-exporter
     ports:
@@ -199,8 +204,6 @@ services:
     networks:
       - pi_network
 
-
-  # Serviços web com NGINX
   web1:
     image: nginx:latest
     container_name: web1
@@ -217,7 +220,6 @@ services:
     networks:
       - pi_network
 
-  # NGINX reverso para balancear carga entre web1 e web2
   nginx:
     build: 
       context: ./WEB
@@ -234,15 +236,6 @@ services:
     networks:
       - pi_network
   
-  # k6:
-  #   build:
-  #     context: ./k6-tester 
-  #     dockerfile: Dockerfile  
-  #   depends_on:
-  #     - nginx  
-  #   networks:
-  #     - pi_network
-
 volumes:
   db_data:
   db_replica_data:

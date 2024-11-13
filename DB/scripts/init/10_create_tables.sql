@@ -1,3 +1,7 @@
+CREATE USER reptest WITH REPLICATION ENCRYPTED PASSWORD 'test';
+SELECT pg_create_physical_replication_slot('replication_slot');
+
+
 CREATE TABLE IF NOT EXISTS Users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
