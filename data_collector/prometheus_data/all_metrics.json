@@ -32364,5 +32364,387 @@
         }
       }
     }
+  },
+  {
+    "timestamp": 1731525061,
+    "metrics": {
+      "cpu": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "instance": "node-exporter1:9100"
+              },
+              "value": [
+                1731525061.339,
+                "4.439704019732531"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter3:9100"
+              },
+              "value": [
+                1731525061.339,
+                "4.579389414745094"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter5:9100"
+              },
+              "value": [
+                1731525061.339,
+                "3.8538471796242106"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter2:9100"
+              },
+              "value": [
+                1731525061.339,
+                "4.145552740365574"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter4:9100"
+              },
+              "value": [
+                1731525061.339,
+                "4.33333333333357"
+              ]
+            }
+          ]
+        }
+      },
+      "disk": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter1:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hostname"
+              },
+              "value": [
+                1731525061.355,
+                "18.34306598300546"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter1:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hosts"
+              },
+              "value": [
+                1731525061.355,
+                "18.34306598300546"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter1:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/resolv.conf"
+              },
+              "value": [
+                1731525061.355,
+                "18.34306598300546"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter3:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hostname"
+              },
+              "value": [
+                1731525061.355,
+                "18.3430790544216"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter3:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hosts"
+              },
+              "value": [
+                1731525061.355,
+                "18.3430790544216"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter3:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/resolv.conf"
+              },
+              "value": [
+                1731525061.355,
+                "18.3430790544216"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter5:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hostname"
+              },
+              "value": [
+                1731525061.355,
+                "18.343085590129668"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter5:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hosts"
+              },
+              "value": [
+                1731525061.355,
+                "18.343085590129668"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter5:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/resolv.conf"
+              },
+              "value": [
+                1731525061.355,
+                "18.343085590129668"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter2:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hostname"
+              },
+              "value": [
+                1731525061.355,
+                "18.34309866154581"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter2:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hosts"
+              },
+              "value": [
+                1731525061.355,
+                "18.34309866154581"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter2:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/resolv.conf"
+              },
+              "value": [
+                1731525061.355,
+                "18.34309866154581"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter4:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hostname"
+              },
+              "value": [
+                1731525061.355,
+                "18.34305291158932"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter4:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/hosts"
+              },
+              "value": [
+                1731525061.355,
+                "18.34305291158932"
+              ]
+            },
+            {
+              "metric": {
+                "device": "/dev/vda1",
+                "fstype": "ext4",
+                "instance": "node-exporter4:9100",
+                "job": "nodes",
+                "mountpoint": "/etc/resolv.conf"
+              },
+              "value": [
+                1731525061.355,
+                "18.34305291158932"
+              ]
+            }
+          ]
+        }
+      },
+      "memory": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "instance": "node-exporter1:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.349,
+                "43.11588930726343"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter3:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.349,
+                "43.11529131293641"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter5:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.349,
+                "43.224823940503555"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter2:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.349,
+                "43.249242042190495"
+              ]
+            },
+            {
+              "metric": {
+                "instance": "node-exporter4:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.349,
+                "43.37033589341349"
+              ]
+            }
+          ]
+        }
+      },
+      "uptime": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "up",
+                "instance": "node-exporter1:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.321,
+                "1"
+              ]
+            },
+            {
+              "metric": {
+                "__name__": "up",
+                "instance": "node-exporter3:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.321,
+                "1"
+              ]
+            },
+            {
+              "metric": {
+                "__name__": "up",
+                "instance": "node-exporter5:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.321,
+                "1"
+              ]
+            },
+            {
+              "metric": {
+                "__name__": "up",
+                "instance": "node-exporter2:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.321,
+                "1"
+              ]
+            },
+            {
+              "metric": {
+                "__name__": "up",
+                "instance": "node-exporter4:9100",
+                "job": "nodes"
+              },
+              "value": [
+                1731525061.321,
+                "1"
+              ]
+            }
+          ]
+        }
+      }
+    }
   }
 ]

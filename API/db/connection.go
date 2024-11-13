@@ -8,7 +8,7 @@ import (
 )
 var DB *sql.DB
 func Connect() (*sql.DB, error) {
-    connStr := "host=postgres-container port=5432 user=test password=test dbname=test sslmode=disable"
+    connStr := "host=db port=5432 user=test password=test dbname=test sslmode=disable"
 
     var db *sql.DB
     var err error
