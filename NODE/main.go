@@ -11,6 +11,8 @@ func main() {
     
     go handlers.SendNodeStatusHandler()
 
+    go startMetricsExporter()
+
     //http.HandleFunc("/status", handlers.GetNodeStatusHandler)
 
     http.HandleFunc("/fragments/upload", handlers.UploadFragmentHandler)

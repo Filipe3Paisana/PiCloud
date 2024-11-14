@@ -5,124 +5,99 @@ import (
     "fmt"
     "io/ioutil"
     "net/http"
-    "net/url"
     "os"
     "time"
+    "sync"
+    "log"
 )
 
-// Estrutura para armazenar a resposta da API do Prometheus
-type PrometheusResponse struct {
-    Status string `json:"status"`
-    Data   struct {
-        ResultType string `json:"resultType"`
-        Result     []struct {
-            Metric map[string]string `json:"metric"`
-            Value  []interface{}      `json:"value"`
-        } `json:"result"`
-    } `json:"data"`
+type Metric struct {
+    Instance string  `json:"instance"`
+    Value    float64 `json:"value"`
 }
 
-// Estrutura para armazenar todas as métricas em um único arquivo
 type MetricsData struct {
-    Timestamp int64                          `json:"timestamp"`
-    Metrics   map[string]*PrometheusResponse `json:"metrics"`
+    NodeID    string                 `json:"node_id"`
+    Timestamp int64                  `json:"timestamp"`
+    Metrics   map[string][]Metric    `json:"metrics"`
 }
 
-func collectMetrics(query string) (*PrometheusResponse, error) {
-    prometheusURL := os.Getenv("PROMETHEUS_URL")
-    // Escapa a query para evitar problemas de URL encoding
-    encodedQuery := url.QueryEscape(query)
-    fullURL := fmt.Sprintf("%s/api/v1/query?query=%s", prometheusURL, encodedQuery)
+var mu sync.Mutex  // Mutex para proteger o acesso ao arquivo
 
-    resp, err := http.Get(fullURL)
+func receiveMetricsHandler(w http.ResponseWriter, r *http.Request) {
+    var data MetricsData
+    data.Timestamp = time.Now().Unix()
+
+    bodyBytes, err := ioutil.ReadAll(r.Body)
     if err != nil {
-        return nil, err
+        http.Error(w, "Erro ao ler o corpo da requisição", http.StatusBadRequest)
+        return
     }
-    defer resp.Body.Close()
+    r.Body.Close()
 
-    // Log para capturar a resposta completa
-    body, err := ioutil.ReadAll(resp.Body)
-    fmt.Printf("Resposta completa do Prometheus para query '%s': %s\n", query, string(body))
+    // Log do payload recebido
+    log.Printf("Payload recebido: %s", string(bodyBytes))
 
-    if resp.StatusCode != http.StatusOK {
-        return nil, fmt.Errorf("Erro na resposta do Prometheus: %s", string(body))
+    // Decodificar o payload
+    if err := json.Unmarshal(bodyBytes, &data); err != nil {
+        http.Error(w, "Erro ao decodificar payload", http.StatusBadRequest)
+        log.Printf("Erro ao decodificar payload: %v\n", err)
+        return
     }
 
-    var result PrometheusResponse
-    if err := json.Unmarshal(body, &result); err != nil {
-        return nil, err
+    // Salvar métricas no arquivo all_metrics.json
+    if err := appendAllMetricsData(data); err != nil {
+        http.Error(w, "Erro ao salvar métricas", http.StatusInternalServerError)
+        log.Printf("Erro ao salvar métricas: %v\n", err)
+        return
     }
-    return &result, nil
+
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("Métricas recebidas e armazenadas com sucesso"))
 }
 
 func appendAllMetricsData(data MetricsData) error {
+    mu.Lock()
+    defer mu.Unlock()
+
     filename := "prometheus_data/all_metrics.json"
     var existingData []MetricsData
 
-    // Carregar dados existentes, se houver
+    // Verificar se o arquivo existe e tem conteúdo válido
     if _, err := os.Stat(filename); err == nil {
         file, err := ioutil.ReadFile(filename)
         if err != nil {
-            return err
+            return fmt.Errorf("Erro ao ler o arquivo JSON: %v", err)
         }
-        if err := json.Unmarshal(file, &existingData); err != nil {
-            return err
+        if len(file) > 0 {
+            if err := json.Unmarshal(file, &existingData); err != nil {
+                log.Printf("JSON inválido detectado. Corrigindo...\n")
+                existingData = []MetricsData{}
+            }
         }
     }
 
-    // Adicionar nova entrada
+    // Adicionar os novos dados
     existingData = append(existingData, data)
 
+    // Serializar e escrever de volta no arquivo
     file, err := json.MarshalIndent(existingData, "", "  ")
     if err != nil {
-        return err
+        return fmt.Errorf("Erro ao formatar o JSON: %v", err)
     }
     return ioutil.WriteFile(filename, file, 0644)
 }
 
 func main() {
-    // Diretório para armazenar o arquivo JSON
+    // Criar o diretório para armazenar o arquivo JSON, caso não exista
     if _, err := os.Stat("prometheus_data"); os.IsNotExist(err) {
         os.Mkdir("prometheus_data", 0755)
     }
 
-    queries := map[string]string{
-        "uptime": 	"up{job=\"nodes\"}",
-        "cpu": 		"100 - (avg by (instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[1m])) * 100)",
-        "memory": 	"100 * (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes))",
-        "disk": 	"100 * (node_filesystem_size_bytes{fstype!=\"tmpfs\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\"}) / node_filesystem_size_bytes{fstype!=\"tmpfs\"}",
-    }
+    // Configurar o handler para receber métricas
+    http.HandleFunc("/receive_metrics", receiveMetricsHandler)
 
-    ticker := time.NewTicker(1 * time.Minute)
-    defer ticker.Stop()
-
-    for {
-        select {
-        case <-ticker.C:
-            fmt.Println("Iniciando coleta de métricas...")
-
-            allMetrics := MetricsData{
-                Timestamp: time.Now().Unix(),
-                Metrics:   make(map[string]*PrometheusResponse),
-            }
-
-            for metricName, query := range queries {
-                fmt.Printf("Coletando dados de %s...\n", metricName)
-
-                data, err := collectMetrics(query)
-                if err != nil {
-                    fmt.Printf("Erro ao coletar %s: %v\n", metricName, err)
-                    continue
-                }
-
-                allMetrics.Metrics[metricName] = data
-            }
-
-            if err := appendAllMetricsData(allMetrics); err != nil {
-                fmt.Printf("Erro ao salvar todas as métricas: %v\n", err)
-            } else {
-                fmt.Println("Todas as métricas salvas.")
-            }
-        }
-    }
+    // Iniciar o servidor para escutar requisições na porta 8001
+    fmt.Println("Data Collector rodando na porta 8001...")
+    http.ListenAndServe(":8001", nil)
 }
