@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-master
+  labels:
+    app: postgres
+    role: master
+spec:
+  serviceName: "postgres-master-service"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres
+      role: master
+  template:
+    metadata:
+      labels:
+        app: postgres
+        role: master
+    spec:
+      containers:
+        - name: postgres
+          image: 'postgres:14'
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-master-config
+            - secretRef:
+                name: postgres-master-secret
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-master-data
+            - name: postgres-init-sql
+              mountPath: /docker-entrypoint-initdb.d/init.sql
+              subPath: init.sql 
+      volumes:
+        - name: postgres-master-data
+          persistentVolumeClaim:
+            claimName: postgres-master-pvc
+        - name: postgres-init-sql
+          configMap:
+            name: postgres-init-sql
+            items:
+              - key: init.sql
+                path: init.sql

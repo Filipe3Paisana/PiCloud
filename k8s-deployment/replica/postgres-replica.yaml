@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-replica
+  labels:
+    app: postgres
+    role: replica
+spec:
+  serviceName: "postgres-replica-service"
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: postgres
+      role: replica
+  template:
+    metadata:
+      labels:
+        app: postgres
+        role: replica
+    spec:
+      containers:
+        - name: postgres
+          image: 'postgres:14'        
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: postgres-replica-config
+            - secretRef:
+                name: postgres-replica-secret 
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-replica-data
+      volumes:
+        - name: postgres-replica-data
+          persistentVolumeClaim:
+            claimName: postgres-replica-pvc

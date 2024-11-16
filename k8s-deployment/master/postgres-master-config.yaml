@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-master-config
+data:
+  postgresql.conf: |
+    wal_level = replica
+    hot_standby = on
+    max_wal_senders = 10
+    max_replication_slots = 10
+    hot_standby_feedback=on
+  pg_hba.conf: |
+    host replication reptest 0.0.0.0/0 md5
