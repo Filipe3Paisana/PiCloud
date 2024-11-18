@@ -11,6 +11,8 @@ import (
     "log"
 )
 
+//FIXME as metricas não estão a funcionar a 100%, as vezes funciona, as vezes tem erro ao decodificar o payload. 
+
 type Metric struct {
     Instance string  `json:"instance"`
     Value    float64 `json:"value"`

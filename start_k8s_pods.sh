@@ -1,20 +1,22 @@
 #!/bin/bash
 
 # Aplica o ConfigMap atualizado para NGINX
-echo "Aplicando ConfigMap para NGINX..."
-kubectl apply -f k8s-deployment/nginx/nginx-configmap.yaml
+# echo "Aplicando ConfigMap para NGINX..."
+# kubectl apply -f k8s-deployment/nginx/nginx-configmap.yaml
 #kubectl apply -f k8s-deployment/web/web-nginx-configmap.yaml
 
 # Aplica todos os ficheiros de YAML para os deployments
 echo "Aplicando os Deployments do Kubernetes..."
-kubectl apply -f k8s-deployment/api/api-deployment.yaml
-kubectl apply -f k8s-deployment/node/node-deployment.yaml
-kubectl apply -f k8s-deployment/web/web-deployment.yaml
-kubectl apply -f k8s-deployment/nginx/nginx-deployment.yaml
-kubectl apply -f k8s-deployment/db/db-statefulset.yaml
-kubectl apply -f k8s-deployment/db/postgres-secret.yaml
-kubectl apply -f k8s-deployment/grafana/grafana-deployment.yaml
-
+# kubectl apply -f k8s-deployment/api/api-deployment.yaml
+# kubectl apply -f k8s-deployment/node/node-deployment.yaml
+# kubectl apply -f k8s-deployment/web/web-deployment.yaml
+# kubectl apply -f k8s-deployment/nginx/nginx-deployment.yaml
+# kubectl apply -f k8s-deployment/db/db-statefulset.yaml
+# kubectl apply -f k8s-deployment/db/postgres-secret.yaml
+# kubectl apply -f k8s-deployment/grafana/grafana-deployment.yaml
+kubectl apply -f k8s-deployment/secret/.
+kubectl apply -f k8s-deployment/master/.
+kubectl apply -f k8s-deployment/replica/.
 # Aguarda alguns segundos para o Kubernetes iniciar os pods
 echo "Aguarde enquanto os pods são iniciados..."
 sleep 5

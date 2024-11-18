@@ -6,6 +6,7 @@ import (
     "os"
     "path/filepath"
 )
+//FIXME verificar que podemos mandar um node abaixo e fazer download na mesma. 
 
 func DownloadFragmentHandler(w http.ResponseWriter, r *http.Request) { //TODO falta guardar o tipo de ficheiro para colocar a extensão no fim (PDF, TXT, ...)
     // Extrair `file_id` e `fragment_order` dos parâmetros da URL
