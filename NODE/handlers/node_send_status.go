@@ -14,7 +14,7 @@ import (
 
 // Função para enviar o status do nó periodicamente
 func SendNodeStatusHandler() {
-    ticker := time.NewTicker(20 * time.Second)
+    ticker := time.NewTicker(1 * time.Second)
     defer ticker.Stop()
 
     for range ticker.C {

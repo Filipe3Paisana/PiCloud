@@ -75,6 +75,7 @@ services:
       -c hot_standby_feedback=on
     volumes:
       - ./DB/scripts/init:/docker-entrypoint-initdb.d
+      - db_data:/var/lib/postgresql/data
     networks:
       - pi_network
 
@@ -101,6 +102,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - db_replica_data:/var/lib/postgresql/data
     networks:
       - pi_network
 
@@ -138,6 +141,7 @@ services:
       - "8082:8082"
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
+  
   node-exporter1:
     image: prom/node-exporter
     container_name: node-exporter1
@@ -161,6 +165,8 @@ services:
       - "8083:8082"
     networks:
       - pi_network
+    depends_on:
+      - node1
   node-exporter2:
     image: prom/node-exporter
     container_name: node-exporter2
@@ -184,6 +190,8 @@ services:
       - "8084:8082"
     networks:
       - pi_network
+    depends_on:
+      - node2
   node-exporter3:
     image: prom/node-exporter
     container_name: node-exporter3
@@ -207,6 +215,8 @@ services:
       - "8085:8082"
     networks:
       - pi_network
+    depends_on:
+      - node3
   node-exporter4:
     image: prom/node-exporter
     container_name: node-exporter4
@@ -230,6 +240,8 @@ services:
       - "8086:8082"
     networks:
       - pi_network
+    depends_on:
+      - node4
   node-exporter5:
     image: prom/node-exporter
     container_name: node-exporter5

@@ -10,9 +10,9 @@ import (
 
 func MarkOfflineNodes() {
     for {
-        time.Sleep(30 * time.Second) 
+        time.Sleep(10 * time.Second) 
 
-        offlineThreshold := time.Now().Add(-25 * time.Second)
+        offlineThreshold := time.Now().Add(-5 * time.Second)
 
         // Atualiza os nós para "offline" onde last_updated está além do limite
         _, err := db.DB.Exec("UPDATE Nodes SET status = 'offline' WHERE last_updated < $1", offlineThreshold)
