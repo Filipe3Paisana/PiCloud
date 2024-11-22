@@ -6,6 +6,9 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"crypto/md5"
+	"encoding/hex"
+
 
 	"api/db"
 )
@@ -37,14 +40,14 @@ func ReceiveFragments(fileID int) ([]byte, string, error) {
 			return nil, "", fmt.Errorf("erro ao escanear fragmento: %v", err)
 		}
 
-		fragment, err := GetFragmentsFromNode(fileID, fragmentOrder, nodeID)
+		fragment, err := GetFragmentsFromNode(fileID, fragmentOrder, nodeID, fragmentHash)
 		if err != nil {
 			return nil, "", fmt.Errorf("erro ao obter fragmento do nó %d: %v", nodeID, err)
 		}
 		fragments = append(fragments, fragment)
 	}
 
-	// Reconstituir o ficheiro a partir dos fragmentos
+	// Reconstituir o ficheiro a partir dos fragmentos TODO verificar integridade do ficheiro
 	fileContent, err := ReassembleFile(fragments)
 	if err != nil {
 		return nil, "", fmt.Errorf("erro ao montar o ficheiro: %v", err)
@@ -59,28 +62,37 @@ func ReceiveFragments(fileID int) ([]byte, string, error) {
 	return fileContent, fileName, nil
 }
 
-func GetFragmentsFromNode(fileID, fragmentOrder int, nodeID int) ([]byte, error) {
-	// Construir URL para obter fragmento do nó
-	fragmentURL := fmt.Sprintf("http://node%d:8082/fragments/download?file_id=%d&fragment_order=%d", nodeID, fileID, fragmentOrder)
+func GetFragmentsFromNode(fileID, fragmentOrder int, nodeID int, fragmentHash string) ([]byte, error) {
+    // Construir URL para obter fragmento do nó
+    fragmentURL := fmt.Sprintf("http://node%d:8082/fragments/download?file_id=%d&fragment_order=%d", nodeID, fileID, fragmentOrder)
 
-	resp, err := http.Get(fragmentURL)
-	if err != nil {
-		return nil, fmt.Errorf("erro ao conectar ao nó %d: %v", nodeID, err)
-	}
-	defer resp.Body.Close()
+    resp, err := http.Get(fragmentURL)
+    if err != nil {
+        return nil, fmt.Errorf("erro ao conectar ao nó %d: %v", nodeID, err)
+    }
+    defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("falha ao baixar fragmento do nó %d, status: %d", nodeID, resp.StatusCode)
-	}
+    if resp.StatusCode != http.StatusOK {
+        return nil, fmt.Errorf("falha ao baixar fragmento do nó %d, status: %d", nodeID, resp.StatusCode)
+    }
 
-	fragment, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("erro ao ler resposta do nó: %v", err)
-	}
+    fragment, err := io.ReadAll(resp.Body)
+    if err != nil {
+        return nil, fmt.Errorf("erro ao ler resposta do nó: %v", err)
+    }
 
-	return fragment, nil
+    // Calcular o hash MD5 do fragmento recebido
+    hash := md5.Sum(fragment)
+    calculatedHash := hex.EncodeToString(hash[:])
+
+    // Verificar se o hash calculado coincide com o armazenado
+    if calculatedHash != fragmentHash {
+        RemoveFragment(fileID, fragmentOrder)
+        return nil, fmt.Errorf("hash do fragmento adulterado no nó %d: esperado %s, recebido %s", nodeID, fragmentHash, calculatedHash)
+    }
+
+    return fragment, nil
 }
-
 func ReassembleFile(fragments [][]byte) ([]byte, error) {
 	var fileContent bytes.Buffer
 
@@ -114,4 +126,11 @@ func GetFileName(fileID int) (string, error) {
 		return "", fmt.Errorf("erro ao buscar nome do ficheiro: %v", err)
 	}
 	return fileName, nil
+}
+
+func RemoveFragment(fileID, fragmentOrder int) {
+	_, err := db.DB.Exec("DELETE FROM FileFragments WHERE file_id=$1 AND fragment_order=$2", fileID, fragmentOrder)
+	if err != nil {
+		fmt.Printf("Erro ao remover fragmento %d do ficheiro %d: %v", fragmentOrder, fileID, err)
+	}
 }

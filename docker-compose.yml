@@ -141,6 +141,8 @@ services:
       - "8082:8082"
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
+    volumes:
+      - node1_data:/app/fragme§nts
   
   node-exporter1:
     image: prom/node-exporter
@@ -297,6 +299,11 @@ services:
 volumes:
   db_data:
   db_replica_data:
+  node1_data:
+  node2_data:
+  node3_data:
+  node4_data:
+  node5_data:
   
 networks:
   pi_network:

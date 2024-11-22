@@ -1,47 +1,1983 @@
 [
   {
+    "node_id": "node1",
+    "timestamp": 1732296121,
+    "metrics": {}
+  },
+  {
     "node_id": "node2",
-    "timestamp": 1732231835,
+    "timestamp": 1732296121,
     "metrics": {}
   },
   {
     "node_id": "node3",
-    "timestamp": 1732231836,
+    "timestamp": 1732296121,
     "metrics": {}
   },
   {
     "node_id": "node4",
-    "timestamp": 1732231836,
+    "timestamp": 1732296122,
     "metrics": {}
   },
   {
     "node_id": "node5",
-    "timestamp": 1732231836,
+    "timestamp": 1732296123,
     "metrics": {}
   },
   {
     "node_id": "node1",
-    "timestamp": 1732231889,
+    "timestamp": 1732296421,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.580555555555563
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.243337286783145
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.243337286783145
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.243337286783145
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 45.05568323841834
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732296421,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.733333333333334
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.243285001118586
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.243285001118586
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.243285001118586
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 45.068440450728254
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732296421,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.794444444444451
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.243239251162098
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.243239251162098
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.243239251162098
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 45.08279231457691
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732296422,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.645762033868166
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.243324215367007
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.243324215367007
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.243324215367007
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 45.04521833769537
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732296423,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.763888888888914
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.243298072534728
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.243298072534728
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.243298072534728
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 45.084785629000336
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732296721,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.836111111111109
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.249905673393283
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.249905673393283
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.249905673393283
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 48.15488850395773
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732296721,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.8611111111111
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.249846852020656
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.249846852020656
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.249846852020656
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 48.12419146183699
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732296721,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.97499999999998
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.249814173480306
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.249814173480306
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.249814173480306
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 48.22425584589287
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732296722,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.85211439745774
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.249886066269074
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.249886066269074
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.249886066269074
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 48.14342694602304
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732296723,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.854892113508555
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.249872994852932
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.249872994852932
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.249872994852932
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 48.38421932837264
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732297118,
     "metrics": {}
   },
   {
     "node_id": "node2",
-    "timestamp": 1732231889,
+    "timestamp": 1732297118,
     "metrics": {}
   },
   {
     "node_id": "node3",
-    "timestamp": 1732231890,
+    "timestamp": 1732297119,
     "metrics": {}
   },
   {
     "node_id": "node4",
-    "timestamp": 1732231890,
+    "timestamp": 1732297119,
     "metrics": {}
   },
   {
     "node_id": "node5",
-    "timestamp": 1732231890,
+    "timestamp": 1732297120,
     "metrics": {}
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732297418,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 5.100566729636654
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.418455048805072
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.418455048805072
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.418455048805072
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 46.27927929723706
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732297418,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 5.177202533051869
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.418389691724375
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.418389691724375
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.418389691724375
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 46.250376238097424
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732297419,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 5.163888888888948
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.418468120221213
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.418468120221213
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.418468120221213
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 46.29113951805643
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732297419,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 5.158333333333388
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.418448513097005
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.418448513097005
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.418448513097005
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 46.20114137183885
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732297420,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 5.0221130767179005
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.418415834556654
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.418415834556654
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.418415834556654
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 46.262435790359135
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732297718,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.4166666666667
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.42497768545872
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.42497768545872
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.42497768545872
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 49.021282618098894
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732297718,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.8145514344763
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.424905792669957
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.424905792669957
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.424905792669957
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 48.65022713817855
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732297719,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.405555555555537
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.424984221166792
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.424984221166792
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.424984221166792
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 49.1330078915318
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732297719,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.524343903468846
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.424938471210304
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.424938471210304
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.424938471210304
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 48.988990924439435
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732297720,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.656072896988491
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.424918864086095
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.424918864086095
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.424918864086095
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 49.02895687862908
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732298045,
+    "metrics": {}
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732298046,
+    "metrics": {}
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732298046,
+    "metrics": {}
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732298047,
+    "metrics": {}
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732298047,
+    "metrics": {}
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732298220,
+    "metrics": {}
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732298221,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 64.32956436867866
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.49200790742248
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.49200790742248
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.49200790742248
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 45.79410656657571
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732298221,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 62.28196954540422
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.49201444313055
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.49201444313055
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.49201444313055
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 45.88799167591897
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732298222,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 61.765228065498306
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.49202751454669
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.49202751454669
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.49202751454669
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 45.952076734632044
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732298222,
+    "metrics": {
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.491994836006338
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.491994836006338
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.491994836006338
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 45.680188647277035
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732298520,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.680555555555671
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.70015713802912
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.70015713802912
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 23.70015713802912
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 47.43599965714992
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732298521,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.8423298295519
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.700091780948423
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.700091780948423
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.700091780948423
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 47.90672085824146
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732298522,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.5797497610949875
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.700117923780702
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.700117923780702
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.700117923780702
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 47.90632219535678
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732298522,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.599999999999994
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.700124459488773
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.700124459488773
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.700124459488773
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 47.90612286391443
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732298522,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.47680750338931
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.7001832808614
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.7001832808614
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.7001832808614
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 47.44008595171793
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732298698,
+    "metrics": {}
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732298699,
+    "metrics": {}
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732298700,
+    "metrics": {}
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732298700,
+    "metrics": {}
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732298700,
+    "metrics": {}
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732298845,
+    "metrics": {}
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732298846,
+    "metrics": {}
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732298846,
+    "metrics": {}
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732298847,
+    "metrics": {}
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732298847,
+    "metrics": {}
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732299040,
+    "metrics": {}
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732299041,
+    "metrics": {
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.9614089967028
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.9614089967028
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 23.9614089967028
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 45.871148169041035
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732299042,
+    "metrics": {
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.96143513953508
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.96143513953508
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 23.96143513953508
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 45.539659980425654
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732299043,
+    "metrics": {
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.961337103914033
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.961337103914033
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 23.961337103914033
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 45.59058916394413
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732299043,
+    "metrics": {
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.961376318162454
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.961376318162454
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 23.961376318162454
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 45.46301704084501
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732299340,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 5.2916666666666
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.19756373638849
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.19756373638849
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.19756373638849
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 45.12116361722782
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732299341,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 5.286784150759004
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.19755066497235
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.19755066497235
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.19755066497235
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 45.12116361722782
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732299342,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 5.257572727070894
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.19757680780463
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.19757680780463
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.19757680780463
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 45.119269968525565
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732299343,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 5.2840921716331195
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.197589879220768
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.197589879220768
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.197589879220768
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 45.03634808851113
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732299343,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 5.45277777777757
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.197517986432
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.197517986432
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.197517986432
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 45.07910468289358
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732299585,
+    "metrics": {}
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732299586,
+    "metrics": {}
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732299587,
+    "metrics": {}
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732299587,
+    "metrics": {}
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732299884,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.557526057292662
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.283998475611448
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.283998475611448
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.283998475611448
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 46.02682602551044
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732299885,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.543131416381513
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.28403768985987
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.28403768985987
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.28403768985987
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 45.79889052119193
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732299886,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.474345014555325
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.28404422556794
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.28404422556794
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.28404422556794
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 45.74616735469236
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732299887,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.567323718305062
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.28426643964231
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.28426643964231
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.28426643964231
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 46.017258116278
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732299887,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.600657792395438
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.28428604676652
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.28428604676652
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.28428604676652
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 46.01506547041224
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732300184,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.640349317808244
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.315108446023643
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.315108446023643
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.315108446023643
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 49.0478933656516
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732300185,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.707536057959743
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.315141124563993
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.315141124563993
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.315141124563993
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 48.99038624453582
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732300186,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.710974308827517
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.315160731688206
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.315160731688206
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.315160731688206
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 48.7513878451673
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732300187,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.761111111111077
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.31537641005451
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.31537641005451
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.315363338638367
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 48.85015657484796
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732300187,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.703437854174538
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.315382945762575
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.315382945762575
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.315382945762575
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 48.86042214412859
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732300484,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 4.81044865669638
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.321598404136946
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.321598404136946
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.321598404136946
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 51.473159024631386
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732300485,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.615495711683067
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.321644154093434
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.321644154093434
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.321644154093434
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 51.21891176992368
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732300486,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.606213471410257
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.321650689801505
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.321650689801505
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.321650689801505
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 51.317580833883156
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732300487,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 4.711111111110881
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.321670296925717
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.321670296925717
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.321670296925717
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 51.398509399474165
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732300487,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 4.717987466109605
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.321689904049922
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.321689904049922
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.321689904049922
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 51.43698036784624
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node1",
+    "timestamp": 1732300784,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 5.0096670963154395
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.328081826542178
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.328081826542178
+        },
+        {
+          "instance": "node-exporter1:9100",
+          "value": 24.328081826542178
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter1:9100",
+          "value": 54.31622338676081
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732300785,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 4.913888888888778
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.328127576498666
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.328127576498666
+        },
+        {
+          "instance": "node-exporter2:9100",
+          "value": 24.328127576498666
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter2:9100",
+          "value": 54.81744229853073
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732300786,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 4.921557298726697
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.328147183622875
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.328147183622875
+        },
+        {
+          "instance": "node-exporter3:9100",
+          "value": 24.328147183622875
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter3:9100",
+          "value": 54.823023578916306
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732300787,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 5.0159996444526485
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.328166790747087
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.328166790747087
+        },
+        {
+          "instance": "node-exporter4:9100",
+          "value": 24.328166790747087
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter4:9100",
+          "value": 54.793721856891985
+        }
+      ]
+    }
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732300787,
+    "metrics": {
+      "CPU": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 5.03522770208707
+        }
+      ],
+      "Disk": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.328179862163225
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.328179862163225
+        },
+        {
+          "instance": "node-exporter5:9100",
+          "value": 24.328179862163225
+        }
+      ],
+      "Memory": [
+        {
+          "instance": "node-exporter5:9100",
+          "value": 54.83209315954289
+        }
+      ]
+    }
   }
 ]
