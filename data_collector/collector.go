@@ -24,7 +24,7 @@ type MetricsData struct {
     Metrics   map[string][]Metric    `json:"metrics"`
 }
 
-var mu sync.Mutex  // Mutex para proteger o acesso ao arquivo
+var mu sync.Mutex  // Mutex para proteger o acesso ao ficheiro
 
 func receiveMetricsHandler(w http.ResponseWriter, r *http.Request) {
     var data MetricsData
@@ -47,10 +47,10 @@ func receiveMetricsHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    // Salvar métricas no arquivo all_metrics.json
+    // guardar métricas no ficheiro all_metrics.json
     if err := appendAllMetricsData(data); err != nil {
-        http.Error(w, "Erro ao salvar métricas", http.StatusInternalServerError)
-        log.Printf("Erro ao salvar métricas: %v\n", err)
+        http.Error(w, "Erro ao guardar métricas", http.StatusInternalServerError)
+        log.Printf("Erro ao guardar métricas: %v\n", err)
         return
     }
 
@@ -65,11 +65,11 @@ func appendAllMetricsData(data MetricsData) error {
     filename := "prometheus_data/all_metrics.json"
     var existingData []MetricsData
 
-    // Verificar se o arquivo existe e tem conteúdo válido
+    // Verificar se o ficheiro existe e tem conteúdo válido
     if _, err := os.Stat(filename); err == nil {
         file, err := ioutil.ReadFile(filename)
         if err != nil {
-            return fmt.Errorf("Erro ao ler o arquivo JSON: %v", err)
+            return fmt.Errorf("Erro ao ler o ficheiro JSON: %v", err)
         }
         if len(file) > 0 {
             if err := json.Unmarshal(file, &existingData); err != nil {
@@ -82,7 +82,7 @@ func appendAllMetricsData(data MetricsData) error {
     // Adicionar os novos dados
     existingData = append(existingData, data)
 
-    // Serializar e escrever de volta no arquivo
+    // Serializar e escrever de volta no ficheiro
     file, err := json.MarshalIndent(existingData, "", "  ")
     if err != nil {
         return fmt.Errorf("Erro ao formatar o JSON: %v", err)
@@ -91,7 +91,7 @@ func appendAllMetricsData(data MetricsData) error {
 }
 
 func main() {
-    // Criar o diretório para armazenar o arquivo JSON, caso não exista
+    // Criar o diretório para armazenar o ficheiro JSON, caso não exista
     if _, err := os.Stat("prometheus_data"); os.IsNotExist(err) {
         os.Mkdir("prometheus_data", 0755)
     }

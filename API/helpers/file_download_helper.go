@@ -12,7 +12,7 @@ import (
 
 
 func ReceiveFragments(fileID int) ([]byte, string, error) {
-	// Buscar os fragmentos armazenados nos diferentes nós para o arquivo
+	// Buscar os fragmentos armazenados nos diferentes nós para o ficheiro
 	rows, err := db.DB.Query(`
 		SELECT f.fragment_order, f.fragment_hashes, n.id
 		FROM FileFragments AS f 
@@ -44,16 +44,16 @@ func ReceiveFragments(fileID int) ([]byte, string, error) {
 		fragments = append(fragments, fragment)
 	}
 
-	// Reconstituir o arquivo a partir dos fragmentos
+	// Reconstituir o ficheiro a partir dos fragmentos
 	fileContent, err := ReassembleFile(fragments)
 	if err != nil {
-		return nil, "", fmt.Errorf("erro ao montar o arquivo: %v", err)
+		return nil, "", fmt.Errorf("erro ao montar o ficheiro: %v", err)
 	}
 
-	// Recuperar o nome do arquivo original
+	// Recuperar o nome do ficheiro original
 	fileName, err = GetFileName(fileID)
 	if err != nil {
-		return nil, "", fmt.Errorf("erro ao obter nome do arquivo: %v", err)
+		return nil, "", fmt.Errorf("erro ao obter nome do ficheiro: %v", err)
 	}
 
 	return fileContent, fileName, nil
@@ -87,7 +87,7 @@ func ReassembleFile(fragments [][]byte) ([]byte, error) {
 	for _, fragment := range fragments {
 		_, err := fileContent.Write(fragment)
 		if err != nil {
-			return nil, fmt.Errorf("erro ao reconstituir arquivo: %v", err)
+			return nil, fmt.Errorf("erro ao reconstituir ficheiro: %v", err)
 		}
 	}
 
@@ -100,10 +100,10 @@ func SendFile(w http.ResponseWriter, fileName string, fileContent []byte) {
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Header().Set("Content-Length", strconv.Itoa(len(fileContent)))
 
-	// Escrever o conteúdo do arquivo no ResponseWriter
+	// Escrever o conteúdo do ficheiro no ResponseWriter
 	_, err := w.Write(fileContent)
 	if err != nil {
-		http.Error(w, "Erro ao enviar o arquivo", http.StatusInternalServerError)
+		http.Error(w, "Erro ao enviar o ficheiro", http.StatusInternalServerError)
 	}
 }
 
@@ -111,7 +111,7 @@ func GetFileName(fileID int) (string, error) {
 	var fileName string
 	err := db.DB.QueryRow("SELECT name FROM Files WHERE id=$1", fileID).Scan(&fileName)
 	if err != nil {
-		return "", fmt.Errorf("erro ao buscar nome do arquivo: %v", err)
+		return "", fmt.Errorf("erro ao buscar nome do ficheiro: %v", err)
 	}
 	return fileName, nil
 }

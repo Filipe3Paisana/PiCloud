@@ -33,7 +33,7 @@ func CreateUserHandler(w http.ResponseWriter, r *http.Request) {
     query := "INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING id"
     err = db.DB.QueryRow(query, user.Username, user.Email, HashPassword).Scan(&user.ID) 
     if err != nil {
-        http.Error(w, "Erro ao criar usuário", http.StatusInternalServerError)
+        http.Error(w, "Erro ao criar utilizador", http.StatusInternalServerError)
         return
     }
 

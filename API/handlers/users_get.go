@@ -20,7 +20,7 @@ func GetUsersHandler() http.HandlerFunc {
 
         rows, err := db.DB.Query("SELECT id, username, email FROM users")
         if err != nil {
-            http.Error(w, "Erro ao buscar usuários", http.StatusInternalServerError)
+            http.Error(w, "Erro ao procurar utilizadores", http.StatusInternalServerError)
             return
         }
         defer rows.Close()
@@ -29,7 +29,7 @@ func GetUsersHandler() http.HandlerFunc {
         for rows.Next() {
             var user models.User
             if err := rows.Scan(&user.ID, &user.Username, &user.Email); err != nil {
-                http.Error(w, "Erro ao escanear usuário", http.StatusInternalServerError)
+                http.Error(w, "Erro ao fazer scan do utilizador", http.StatusInternalServerError)
                 return
             }
             users = append(users, user)

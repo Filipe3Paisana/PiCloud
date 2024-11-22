@@ -17,7 +17,7 @@ func main() {
 
     http.HandleFunc("/fragments/upload", handlers.UploadFragmentHandler)
 
-    // Endpoint para download de fragmento de arquivo por ID
+    // Endpoint para download de fragmento de ficheiro por ID
     http.HandleFunc("/fragments/download", handlers.DownloadFragmentHandler)
 
     http.HandleFunc("/fragments/delete", handlers.DeleteFragmentHandler)

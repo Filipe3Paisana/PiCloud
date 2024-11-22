@@ -26,14 +26,14 @@ func DownloadFragmentHandler(w http.ResponseWriter, r *http.Request) { //TODO fa
     // Adicionar logs para ajudar na depuração
     fmt.Printf("Tentando servir o fragmento: %s\n", filePath)
 
-    // Verificar se o arquivo existe
+    // Verificar se o ficheiro existe
     if _, err := os.Stat(filePath); os.IsNotExist(err) {
         fmt.Printf("Fragmento não encontrado: %s\n", filePath)
         http.Error(w, "Fragment not found", http.StatusNotFound)
         return
     }
 
-    // Servir o arquivo como resposta
+    // Servir o ficheiro como resposta
     w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s", fragmentFileName))
     w.Header().Set("Content-Type", "application/octet-stream")
     http.ServeFile(w, r, filePath)

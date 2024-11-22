@@ -32,7 +32,7 @@ func UpdateNodeStatusHandler() http.HandlerFunc {
         err := db.DB.QueryRow("SELECT id FROM Nodes WHERE node_address = $1", req.NodeAddress).Scan(&nodeID)
 
         if err == sql.ErrNoRows {
-            // Se o nó não existir, insere um novo registro
+            // Se o nó não existir, insere um novo resgisto
             _, err = db.DB.Exec(
                 "INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated) VALUES ($1, $2, $3, $4, $5, $6)",
                 req.NodeAddress, req.Location, req.Capacity, req.AvailableCapacity, req.Status, currentTime,
@@ -43,7 +43,7 @@ func UpdateNodeStatusHandler() http.HandlerFunc {
             }
             fmt.Fprintln(w, "Nó adicionado com sucesso")
         } else if err == nil {
-            // Se o nó já existir, atualiza o registro
+            // Se o nó já existir, atualiza o registo
             _, err = db.DB.Exec(
                 "UPDATE Nodes SET location = $1, capacity = $2, available_capacity = $3, status = $4, last_updated = $5 WHERE id = $6",
                 req.Location, req.Capacity, req.AvailableCapacity, req.Status, currentTime, nodeID,

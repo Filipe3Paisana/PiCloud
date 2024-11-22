@@ -13,7 +13,7 @@ func DeleteFileFragments(fileID int) error {
 	// Lista os nós disponíveis
 	availableNodes := GetOnlineNodesList()
 	if len(availableNodes) == 0 {
-		return fmt.Errorf("Nenhum nó disponível para deletar os fragmentos")
+		return fmt.Errorf("Nenhum nó disponível para eliminar os fragmentos")
 	}
 
 	// Obter os fragmentos e suas localizações da base de dados
@@ -53,10 +53,10 @@ func DeleteFileFragments(fileID int) error {
 		}
 	}
 
-	// Remover as informações do arquivo da base de dados
+	// Remover as informações do ficheiro da base de dados
 	err = DeleteFileInfo(fileID)
 	if err != nil {
-		return fmt.Errorf("Erro ao remover informações do arquivo na base de dados: %v", err)
+		return fmt.Errorf("Erro ao remover informações do ficheiro na base de dados: %v", err)
 	}
 
 	return nil
@@ -68,22 +68,22 @@ func DeleteFragmentOnNode(fileID, fragmentOrder, nodeID int) error {
 
     req, err := http.NewRequest("DELETE", deleteURL, nil)
     if err != nil {
-        return fmt.Errorf("erro ao criar requisição para deletar fragmento no nó %d: %v", nodeID, err)
+        return fmt.Errorf("erro ao criar requisição para eliminar fragmento no nó %d: %v", nodeID, err)
     }
 
     client := &http.Client{}
     resp, err := client.Do(req)
     if err != nil {
-        return fmt.Errorf("erro ao conectar ao nó %d para deletar fragmento: %v", nodeID, err)
+        return fmt.Errorf("erro ao conectar ao nó %d para eliminar fragmento: %v", nodeID, err)
     }
     defer resp.Body.Close()
 
     if resp.StatusCode != http.StatusOK {
         body, _ := io.ReadAll(resp.Body)
-        return fmt.Errorf("falha ao deletar fragmento no nó %d: %s", nodeID, string(body))
+        return fmt.Errorf("falha ao eliminar fragmento no nó %d: %s", nodeID, string(body))
     }
 
-    fmt.Printf("Fragmento %d do arquivo %d deletado do nó %d com sucesso\n", fragmentOrder, fileID, nodeID)
+    fmt.Printf("Fragmento %d do ficheiro %d eliminado do nó %d com sucesso\n", fragmentOrder, fileID, nodeID)
     return nil
 }
 
@@ -97,18 +97,18 @@ func DeleteDistributionInfo(fileID, fragmentOrder, nodeID int) error {
 	return nil
 }
 
-// DeleteFileInfo remove informações do arquivo e todos os fragmentos relacionados.
+// DeleteFileInfo remove informações do ficheiro e todos os fragmentos relacionados.
 func DeleteFileInfo(fileID int) error {
-	// Remover todas as informações de fragmentos do arquivo
+	// Remover todas as informações de fragmentos do ficheiro
 	_, err := db.DB.Exec("DELETE FROM FileFragments WHERE file_id = $1", fileID)
 	if err != nil {
-		return fmt.Errorf("Erro ao remover fragmentos do arquivo: %v", err)
+		return fmt.Errorf("Erro ao remover fragmentos do ficheiro: %v", err)
 	}
 
-	// Remover o próprio arquivo
+	// Remover o próprio ficheiro
 	_, err = db.DB.Exec("DELETE FROM Files WHERE id = $1", fileID)
 	if err != nil {
-		return fmt.Errorf("Erro ao remover arquivo: %v", err)
+		return fmt.Errorf("Erro ao remover ficheiro: %v", err)
 	}
 	return nil
 }

@@ -31,9 +31,9 @@ func GetUserHandler() http.HandlerFunc {
         err := db.DB.QueryRow(query, id).Scan(&user.ID, &user.Username, &user.Email)
         if err != nil {
             if err == sql.ErrNoRows {
-                http.Error(w, "Usuário não encontrado", http.StatusNotFound)
+                http.Error(w, "Utilizador não encontrado", http.StatusNotFound)
             } else {
-                http.Error(w, "Erro ao buscar usuário", http.StatusInternalServerError)
+                http.Error(w, "Erro ao procurar utilizador", http.StatusInternalServerError)
             }
             return
         }

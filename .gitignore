@@ -3,7 +3,7 @@
 DB/master/pgdata/
 DB/replica/pgdata/
 
-# Ignorar arquivos de backup e temporários
+# Ignorar ficheiros de backup e temporários
 *.bak
 *.tmp
 *.swp

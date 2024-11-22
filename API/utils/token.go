@@ -32,7 +32,7 @@ func GenerateJWT(userID int, username string, email string) (string, error) {
     return token.SignedString(jwtKey) // Retornando o token assinado
 }
 
-// Função para verificar o token JWT e extrair as informações do usuário
+// Função para verificar o token JWT e extrair as informações do utilizador
 func VerifyJWT(tokenString string) (*models.Claims, error) {
     token, err := jwt.ParseWithClaims(tokenString, &models.Claims{}, func(token *jwt.Token) (interface{}, error) {
         return jwtKey, nil // Retorna a chave secreta para verificar a assinatura

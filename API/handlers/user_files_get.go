@@ -27,7 +27,7 @@ func GetUserFilesHandler() http.HandlerFunc {
 
         rows, err := db.DB.Query("SELECT id, name, size FROM files WHERE user_id=$1", userID)
         if err != nil {
-            http.Error(w, "Erro ao buscar arquivos", http.StatusInternalServerError)
+            http.Error(w, "Erro ao guardar ficheiro", http.StatusInternalServerError)
             return
         }
         defer rows.Close()
@@ -36,7 +36,7 @@ func GetUserFilesHandler() http.HandlerFunc {
         for rows.Next() {
             var file models.File
             if err := rows.Scan(&file.ID, &file.Name, &file.Size); err != nil {
-                http.Error(w, "Erro ao escanear arquivo", http.StatusInternalServerError)
+                http.Error(w, "Erro ao fazer scan do ficheiro", http.StatusInternalServerError)
                 return
             }
             files = append(files, file)

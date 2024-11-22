@@ -33,14 +33,14 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     
         if (response.ok) {
             const result = await response.json();
-            alert('Usuário registrado com sucesso! Bem-vindo, ' + result.username);
-            window.location.href = 'index.html'; // Redirecionar para a página de login após o registro
+            alert('Registado com sucesso! Bem-vindo, ' + result.username);
+            window.location.href = 'index.html'; // Redirecionar para a página de login após o registo
         } else {
             const errorText = await response.text();
-            alert('Erro ao registrar: ' + errorText);
+            alert('Erro ao registar: ' + errorText);
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao registrar. Tente novamente mais tarde.');
+        alert('Erro ao registar. Tente novamente mais tarde.');
     }
 });

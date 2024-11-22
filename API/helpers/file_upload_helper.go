@@ -28,13 +28,13 @@ func SaveFileInfo(name string, size int64, userID int) (int, error) {
 
 func CalculateNumberOfFragments(fileSize int64) int {
     if fileSize <= 0 {
-        return 0 // Caso o arquivo esteja vazio ou com tamanho inválido
+        return 0 // Caso o ficheiro esteja vazio ou com tamanho inválido
     }
     
     const targetFragmentSize = 1024 * 1024 // 1MB
     numberOfFragments := int(fileSize / targetFragmentSize)
     if fileSize%targetFragmentSize != 0 {
-        numberOfFragments++ // Adiciona mais um fragmento para o resto do arquivo
+        numberOfFragments++ // Adiciona mais um fragmento para o resto do ficheiro
     }
     return numberOfFragments
 }
@@ -64,13 +64,13 @@ func FragmentFile(fileContent []byte, fileSize int64, numFragments int) ([][]byt
 }
 
 func TestFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments int) error {
-    // Fragmentar o arquivo
+    // Fragmentar o ficheiro
     fragments, err := FragmentFile(fileContent, fileSize, numFragments)
     if err != nil {
-        return fmt.Errorf("Erro ao fragmentar o arquivo: %v", err)
+        return fmt.Errorf("Erro ao fragmentar o ficheiro: %v", err)
     }
 
-    // Reconstituir o arquivo a partir dos fragmentos
+    // Reconstituir o ficheiro a partir dos fragmentos
     var reassembledContent []byte
     for _, fragment := range fragments {
         reassembledContent = append(reassembledContent, fragment...)
@@ -78,10 +78,10 @@ func TestFragmentAndReassemble(fileContent []byte, fileSize int64, numFragments 
 
     // Verificar se o conteúdo reconstituído é igual ao conteúdo original
     if !bytes.Equal(fileContent, reassembledContent) {
-        return fmt.Errorf("O arquivo reconstituído não é idêntico ao original")
+        return fmt.Errorf("O ficheiro reconstituído não é idêntico ao original")
     }
 
-    fmt.Println("Teste bem-sucedido: o arquivo foi fragmentado e reconstituído corretamente")
+    fmt.Println("Teste bem-sucedido: o ficheiro foi fragmentado e reconstituído corretamente")
     return nil
 }
 
@@ -128,7 +128,7 @@ func DistributeFragments(fileID int, numberOfFragments int, fragments [][]byte, 
 
             err = SaveDistributionInfo(fileID, i, node.NodeAddress)
             if err != nil {
-                fmt.Printf("Erro ao salvar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
+                fmt.Printf("Erro ao guardar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
                 continue
             }
         }
@@ -219,11 +219,11 @@ func SaveDistributionInfo(fileID int, fragmentOrder int, nodeAddress string) err
         return fmt.Errorf("erro ao obter nó: %v", err)
     }
 
-    // Inserir na tabela FragmentLocation para registrar onde o fragmento foi armazenado
+    // Inserir na tabela FragmentLocation para registar onde o fragmento foi armazenado
     query := "INSERT INTO FragmentLocation (fragment_id, node_id) VALUES ($1, $2)"
     _, err = db.DB.Exec(query, fragmentID, nodeID)
     if err != nil {
-        return fmt.Errorf("erro ao salvar informações de localização do fragmento: %v", err)
+        return fmt.Errorf("erro ao guardar informações de localização do fragmento: %v", err)
     }
     return nil
 }

@@ -4,7 +4,7 @@ FROM golang:1.20-buster AS builder
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar todos os arquivos de código fonte para o container
+# Copiar todos os ficheiros de código fonte para o container
 COPY . .
 
 # Baixar as dependências e compilar a aplicação

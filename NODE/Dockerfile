@@ -4,7 +4,7 @@ FROM golang:1.20-alpine AS builder
 # Definir o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copiar todos os arquivos da pasta NODE para o container
+# Copiar todos os ficheiros da pasta NODE para o container
 COPY . .
 
 # Baixar as dependências e compilar a aplicação

@@ -24,12 +24,12 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
     }
     
     if r.Method == http.MethodPost {
-        fmt.Println("Recebendo arquivo...")
+        fmt.Println("Recebendo ficheiro...")
         
-        // Obter o arquivo do formulário
+        // Obter o ficheiro do formulário
         file, fileHeader, err := r.FormFile("file")
         if err != nil {
-            http.Error(w, "Erro ao obter o arquivo", http.StatusBadRequest)
+            http.Error(w, "Erro ao obter o ficheiro", http.StatusBadRequest)
             return
         }
         defer file.Close()
@@ -37,7 +37,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         // Ler o conteudo do ficheiro e calcular o tamanho
         fileContent, err := io.ReadAll(file)
         if err != nil {
-            http.Error(w, "Erro ao ler o arquivo", http.StatusInternalServerError)
+            http.Error(w, "Erro ao ler o ficheiro", http.StatusInternalServerError)
             return
         }
         fileSize := int64(len(fileContent))
@@ -45,7 +45,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
         const maxFileSize = 1000 * 1024 * 1024 // 100MB
         if fileSize > maxFileSize {
-            http.Error(w, "Arquivo excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
+            http.Error(w, "ficheiro excede o tamanho máximo permitido de 10MB", http.StatusBadRequest)
             return
         }
 
@@ -55,14 +55,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
         
-        // Informações do arquivo na base de dados
+        // Informações do ficheiro na base de dados
         fileID, err := helpers.SaveFileInfo(fileName, fileSize, userID) 
         if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao salvar informações do arquivo: %v", err), http.StatusInternalServerError)
+            http.Error(w, fmt.Sprintf("Erro ao guardar informações do ficheiro: %v", err), http.StatusInternalServerError)
             return 
         }
 
-        fmt.Printf("ID do Arquivo salvo: %d\n", fileID)
+        fmt.Printf("ID do ficheiro salvo: %d\n", fileID)
 
         numberOfFragments := helpers.CalculateNumberOfFragments(fileSize)
         fmt.Printf("Número de fragmentos: %d\n", numberOfFragments)
@@ -70,14 +70,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         
         err = helpers.TestFragmentAndReassemble(fileContent, fileSize, numberOfFragments)
         if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao testar a integridade do arquivo: %v", err), http.StatusInternalServerError)
+            http.Error(w, fmt.Sprintf("Erro ao testar a integridade do ficheiro: %v", err), http.StatusInternalServerError)
             return
         }
 
-        // Fragmentar o arquivo
+        // Fragmentar o ficheiro
         fragments, err := helpers.FragmentFile(fileContent, fileSize, numberOfFragments)
         if err != nil {
-            http.Error(w, fmt.Sprintf("Erro ao fragmentar o arquivo: %v", err), http.StatusInternalServerError)
+            http.Error(w, fmt.Sprintf("Erro ao fragmentar o ficheiro: %v", err), http.StatusInternalServerError)
             return
         }
 
@@ -107,17 +107,17 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
 
-        // // Enviar o arquivo para o node
+        // // Enviar o ficheiro para o node
         // err = sendFileToNode(file, fileHeader.Filename)
         // if err != nil {
-        //     http.Error(w, fmt.Sprintf("Erro ao enviar arquivo para o node: %v", err), http.StatusInternalServerError)
+        //     http.Error(w, fmt.Sprintf("Erro ao enviar ficheiro para o node: %v", err), http.StatusInternalServerError)
         //     return
         // }
         
         // Responder com sucesso
         w.Header().Set("Content-Type", "application/json")
         w.WriteHeader(http.StatusOK)
-        w.Write([]byte(`{"message": "Arquivo enviado com sucesso para o node."}`))
+        w.Write([]byte(`{"message": "ficheiro enviado com sucesso para o node."}`))
         return
     }
     

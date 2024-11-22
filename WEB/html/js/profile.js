@@ -20,7 +20,7 @@ window.onload = function() {
     const token = localStorage.getItem('authToken');
 
     if (!token) {
-        alert('Você precisa estar logado para acessar esta página.');
+        alert('Precisa estar autenticado para aceder a esta página.');
         window.location.href = 'index.html'; 
         return;
     }
@@ -35,13 +35,13 @@ function uploadFile() {
     console.log("Selected file:", file);
 
     if (!file) {
-        alert('Por favor, selecione um arquivo para upload.');
+        alert('Por favor, selecione um ficheiro para upload.');
         return;
     }
 
     const maxSize = 1000 * 1024 * 1024; // 100 MB
     if (file.size > maxSize) {
-        alert('O arquivo excede o tamanho máximo permitido de 100MB.');
+        alert('O ficheiro excede o tamanho máximo permitido de 100MB.');
         return;
     }
 
@@ -74,7 +74,7 @@ function uploadFile() {
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao enviar o arquivo. Por favor, tente novamente.');
+        alert('Erro ao enviar o ficheiro. Por favor, tente novamente.');
     })
     .finally(() => {
         console.log("Removing upload message");
@@ -90,22 +90,22 @@ function fetchUserFiles() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao obter a lista de arquivos: ' + response.statusText);
+            throw new Error('Erro ao obter a lista de ficheiros: ' + response.statusText);
         }
         return response.json();
     })
     .then(data => {
-        console.log("Arquivos recebidos:", data);
+        console.log("ficheiros recebidos:", data);
         if (!data || !Array.isArray(data)) {
             console.error("Dados inválidos recebidos:", data);
-            alert('Erro ao obter a lista de arquivos. Por favor, tente novamente.');
+            alert('Erro ao obter a lista de ficheiros. Por favor, tente novamente.');
             return;
         }
         displayFiles(data);
     })
     .catch(error => {
         console.error('Erro:', error);
-        alert('Erro ao obter a lista de arquivos. Por favor, tente novamente.');
+        alert('Erro ao obter a lista de ficheiros. Por favor, tente novamente.');
     });
 }
 
@@ -114,7 +114,7 @@ function displayFiles(files) {
     filesList.innerHTML = ''; // Limpa o conteúdo existente
 
     if (!files || files.length === 0) {
-        filesList.innerHTML = '<p>Você não possui arquivos.</p>';
+        filesList.innerHTML = '<p>Você não possui ficheiros.</p>';
         return;
     }
 
@@ -164,31 +164,31 @@ function downloadFile(fileID) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao baixar o arquivo: ' + response.statusText);
+            throw new Error('Erro ao descarregar o ficheiro: ' + response.statusText);
         }
         return response.blob();
     })
     .then(blob => {
-        // Criar URL para o blob e baixar o arquivo
+        // Criar URL para o blob e baixar o ficheiro
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
         
-        // Definir o nome do arquivo para download (você pode melhorar para usar o nome real do arquivo)
-        a.download = `arquivo_${fileID}`; 
+        // Definir o nome do ficheiro para download (você pode melhorar para usar o nome real do ficheiro)
+        a.download = `ficheiro_${fileID}`; 
         document.body.appendChild(a);
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
     })
     .catch(error => {
-        console.error('Erro ao baixar o arquivo:', error);
-        alert('Erro ao baixar o arquivo. Por favor, tente novamente.');
+        console.error('Erro ao descarregar o ficheiro:', error);
+        alert('Erro ao descarregar o ficheiro. Por favor, tente novamente.');
     });
 }
 
 function deleteFile(fileID) {
-    const confirmDelete = confirm("Tem certeza que deseja deletar este arquivo?");
+    const confirmDelete = confirm("Tem certeza que deseja eliminar este ficheiro?");
     if (!confirmDelete) return;
 
     const url = `http://localhost:8081/user/delete?file_id=${fileID}`;
@@ -201,19 +201,19 @@ function deleteFile(fileID) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error('Erro ao deletar o arquivo: ' + response.statusText);
+            throw new Error('Erro ao eliminar o ficheiro: ' + response.statusText);
         }
         return response.json();
     })
     .then(data => {
         alert(data.message);
-        console.log("Arquivo deletado com sucesso:", data.message);
-        // Atualizar a lista de arquivos após deletar
+        console.log("ficheiro eliminado com sucesso:", data.message);
+        // Atualizar a lista de ficheiros após eliminar
         fetchUserFiles();
     })
     .catch(error => {
-        console.error('Erro ao deletar o arquivo:', error);
-        alert('Erro ao deletar o arquivo. Por favor, tente novamente.');
+        console.error('Erro ao eliminar o ficheiro:', error);
+        alert('Erro ao eliminar o ficheiro. Por favor, tente novamente.');
     });
 }
 
@@ -226,7 +226,7 @@ window.onload = function() {
     const token = localStorage.getItem('authToken');
 
     if (!token) {
-        alert('Você precisa estar logado para acessar esta página.');
+        alert('Precisa de estar autenticado para aceder a esta página.');
         window.location.href = 'index.html';
         return;
     }

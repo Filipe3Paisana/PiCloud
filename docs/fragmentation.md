@@ -1,4 +1,4 @@
-# Implementação de Redundância em Fragmentação de Arquivos
+# Implementação de Redundância em Fragmentação de ficheiros
 
 ## Cálculo do Número de Cópias
 
@@ -13,7 +13,7 @@ Por exemplo, se `N` é 10 e a tolerância de falhas é 60% (0,6), o número de c
 ## Estrutura de Redundância
 
 1. **Número Total de Nodes**: Denote como `N` o número total de nodes.
-2. **Tolerância a Falhas**: Para permitir a falha de até 60% dos nodes, você deve garantir que existam fragmentos suficientes para reconstruir o arquivo mesmo que 60% dos nodes falhem.
+2. **Tolerância a Falhas**: Para permitir a falha de até 60% dos nodes, você deve garantir que existam fragmentos suficientes para reconstruir o ficheiro mesmo que 60% dos nodes falhem.
 3. **Número de Cópias**: A fórmula para calcular o número de cópias necessárias pode ser ajustada para ser um pouco mais complexa. Para 60% de falhas, uma abordagem é garantir que haja cópias suficientes para que os 40% restantes possam garantir a recuperação.
 
 ## Atualização da Função de Cálculo de Cópias
