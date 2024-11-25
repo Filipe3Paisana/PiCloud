@@ -1979,5 +1979,25 @@
         }
       ]
     }
+  },
+  {
+    "node_id": "node2",
+    "timestamp": 1732555537,
+    "metrics": {}
+  },
+  {
+    "node_id": "node3",
+    "timestamp": 1732555538,
+    "metrics": {}
+  },
+  {
+    "node_id": "node4",
+    "timestamp": 1732555538,
+    "metrics": {}
+  },
+  {
+    "node_id": "node5",
+    "timestamp": 1732555539,
+    "metrics": {}
   }
 ]
