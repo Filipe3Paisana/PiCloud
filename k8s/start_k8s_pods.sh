@@ -4,7 +4,9 @@ kubectl apply -f WEB/.
 
 kubectl apply -f DB/secret/.
 kubectl apply -f DB/master/.
-kubectl apply -f DB/replica/.
+#kubectl apply -f DB/replica/.
+
+kubectl apply -f API/.
 # Aguarda alguns segundos para o Kubernetes iniciar os pods
 echo "Aguardar que os pods seijam iniciados..."
 sleep 5

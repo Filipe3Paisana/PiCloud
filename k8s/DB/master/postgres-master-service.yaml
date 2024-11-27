@@ -6,11 +6,14 @@ metadata:
     app: postgres
     role: master
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - port: 5432
       targetPort: 5432
+      nodePort: 30002
   selector:
     app: postgres
     role: master
+  
+
   

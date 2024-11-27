@@ -154,7 +154,7 @@ function formatFileSize(bytes) {
 }
 
 function downloadFile(fileID) {
-    const url = `http://localhost:8081/user/download?file_id=${fileID}`;
+    const url = `http://localhost:30001/user/download?file_id=${fileID}`;
     
     fetch(url, {
         method: 'GET',
@@ -191,7 +191,7 @@ function deleteFile(fileID) {
     const confirmDelete = confirm("Tem certeza que deseja eliminar este ficheiro?");
     if (!confirmDelete) return;
 
-    const url = `http://localhost:8081/user/delete?file_id=${fileID}`;
+    const url = `http://localhost:30001/user/delete?file_id=${fileID}`;
 
     fetch(url, {
         method: 'DELETE',

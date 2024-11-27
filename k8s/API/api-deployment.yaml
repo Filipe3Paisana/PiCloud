@@ -1,27 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-app
+  name: api-deployment
   labels:
     app: PiCloud
+    tier: api-app
     environment: dev
+
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: PiCloud
-      tier: web-app
+      tier: api-app
       environment: dev
   template:
     metadata:
       labels:
         app: PiCloud
-        tier: web-app
+        tier: api-app
         environment: dev
     spec:
       containers:
-      - name: web-app
-        image: filipe3paisana/frontend-image:latest
+      - name: api-app
+        image: filipe3paisana/backend-image:latest
         resources:
           limits:
             memory: "512Mi"
@@ -30,4 +32,4 @@ spec:
             memory: "256Mi"
             cpu: "250m"
         ports:
-          - containerPort: 80  
+          - containerPort: 8080
