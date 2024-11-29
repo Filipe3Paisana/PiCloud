@@ -5,15 +5,14 @@ metadata:
   labels:
     app: postgres
     role: master
+
 spec:
-  type: NodePort
-  ports:
-    - port: 5432
-      targetPort: 5432
-      nodePort: 30002
+  type: ClusterIP
   selector:
     app: postgres
     role: master
-  
 
-  
+  ports:
+    - protocol: TCP
+      port: 5432        
+      targetPort: 5432  
