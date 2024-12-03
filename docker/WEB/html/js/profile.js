@@ -53,7 +53,7 @@ function uploadFile() {
     document.body.appendChild(uploadMessage);
     console.log("FormData created, starting fetch...");
 
-    fetch('http://localhost:8081/user/upload', {
+    fetch('http://localhost:8080/user/upload', {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${localStorage.getItem('authToken')}` 
@@ -82,7 +82,7 @@ function uploadFile() {
     });
 }
 function fetchUserFiles() {
-    fetch('http://localhost:8081/user/files', {
+    fetch('http://localhost:8080/user/files', {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -154,7 +154,7 @@ function formatFileSize(bytes) {
 }
 
 function downloadFile(fileID) {
-    const url = `http://localhost:30001/user/download?file_id=${fileID}`;
+    const url = `http://localhost:8080/user/download?file_id=${fileID}`;
     
     fetch(url, {
         method: 'GET',
@@ -191,7 +191,7 @@ function deleteFile(fileID) {
     const confirmDelete = confirm("Tem certeza que deseja eliminar este ficheiro?");
     if (!confirmDelete) return;
 
-    const url = `http://localhost:30001/user/delete?file_id=${fileID}`;
+    const url = `http://localhost:8080/user/delete?file_id=${fileID}`;
 
     fetch(url, {
         method: 'DELETE',
