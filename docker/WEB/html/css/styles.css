@@ -180,6 +180,11 @@ input:focus {
     text-decoration: underline;
 }
 
+.material-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
     .container {
