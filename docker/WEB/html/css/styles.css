@@ -1,3 +1,4 @@
+/* Geral */
 * {
     margin: 0;
     padding: 0;
@@ -15,6 +16,7 @@ body {
     padding: 20px;
 }
 
+/* Cabeçalho */
 header {
     text-align: center;
     padding: 20px;
@@ -30,12 +32,12 @@ header {
     margin: 0;
 }
 
+/* Container Principal */
 .container {
     width: 100%;
-    max-width: 900px; /* Aumentando a largura máxima */
-    min-width: 600px; /* Definindo uma largura mínima para que a caixa principal seja mais larga */
+    max-width: 900px;
     text-align: center;
-    padding: 20px; /* Adicionando um pouco de padding para dar mais espaço interno */
+    padding: 20px;
 }
 
 .welcome-box {
@@ -63,9 +65,10 @@ h3 {
     margin-bottom: 15px;
 }
 
+/* Grid Responsivo para Documentos */
 .files-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Ajuste para uma única coluna larga */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajuste automático */
     gap: 15px;
 }
 
@@ -75,17 +78,15 @@ h3 {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    align-items: center; /* Centralizar itens verticalmente */
-    justify-content: space-between; /* Espaçar itens para as extremidades */
+    align-items: center;
+    justify-content: space-between;
     text-align: left;
-    padding-right: 20px;
 }
 
 .file-card h4 {
     font-size: 16px;
     color: #333;
     margin: 0;
-    flex-grow: 1; /* Para ocupar o espaço restante */
 }
 
 .file-card .icon-buttons {
@@ -106,6 +107,7 @@ h3 {
     color: #0d47a1;
 }
 
+/* Botões */
 .material-button {
     background-color: #1976d2;
     color: white;
@@ -139,13 +141,7 @@ h3 {
     background-color: #d32f2f;
 }
 
-input[type="file"] {
-    display: none;
-}
-
-
-
-/* Estilos para o formulário de login */
+/* Formulários */
 .form-group {
     margin-bottom: 20px;
     text-align: left;
@@ -184,44 +180,43 @@ input:focus {
     text-decoration: underline;
 }
 
+/* Media Queries */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        max-width: 100%;
+    }
 
+    .files-grid {
+        grid-template-columns: 1fr; /* Uma coluna no celular */
+    }
 
-/* Estilos para o formulário de registo */
-.form-group {
-    margin-bottom: 20px;
-    text-align: left;
+    .file-card {
+        flex-direction: column; /* Empilhar conteúdo verticalmente */
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .file-card h4 {
+        margin-bottom: 10px;
+    }
+
+    .icon-buttons {
+        justify-content: flex-start;
+    }
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    color: #555;
-}
+@media (max-width: 480px) {
+    .title h1 {
+        font-size: 1.5rem;
+    }
 
-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-}
+    .welcome-box {
+        padding: 15px;
+    }
 
-input:focus {
-    outline: none;
-    border-color: #1976d2;
+    .material-button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
 }
-
-.register-text {
-    margin-top: 15px;
-    color: #555;
-}
-
-.register-text a {
-    color: #1976d2;
-    text-decoration: none;
-}
-
-.register-text a:hover {
-    text-decoration: underline;
-}
-
