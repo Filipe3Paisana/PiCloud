@@ -39,3 +39,45 @@
     14	4.8 segundos	~378.6 anos
     16	19.2 segundos	~1,514.5 anos
     Foi considerado uma password de 8 caracteres alfanuméricos
+
+
+   #### Impletações 
+
+   Objetivo:
+   A função validateUserInput valida os dados fornecidos pelos usuários (nome de usuário, e-mail e senha) para garantir que estejam no formato adequado, protegendo contra vulnerabilidades como XSS e entradas inválidas.
+
+   Validações Implementadas:
+
+   Nome de Usuário:
+   Permite apenas letras, números e sublinhados, com até 50 caracteres.
+   E-mail:
+   Verifica se o e-mail tem o formato correto (ex.: usuario@dominio.com).
+   Senha:
+   Exige pelo menos 8 caracteres e pelo menos 1 número.
+   Benefícios de Segurança:
+
+   Prevenção de XSS e SQL Injection.
+   Garante que os dados não contenham entradas maliciosas.
+   Impede senhas fracas e entradas inválidas.
+   Código:
+
+   func validateUserInput(user *models.User) error {
+      // Validação do nome de usuário
+      usernameRegex := regexp.MustCompile(`^[a-zA-Z0-9_]{1,50}$`)
+      if !usernameRegex.MatchString(user.Username) {
+         return errors.New("Username inválido: deve conter apenas letras, números ou sublinhados e ter no máximo 50 caracteres")
+      }
+
+      // Validação de e-mail
+      emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+      if !emailRegex.MatchString(user.Email) {
+         return errors.New("E-mail inválido: formato de e-mail incorreto")
+      }
+
+      // Validação de senha
+      if len(user.Password) < 8 || !strings.ContainsAny(user.Password, "0123456789") {
+         return errors.New("Senha inválida: deve conter pelo menos 8 caracteres e incluir pelo menos um número")
+      }
+
+      return nil
+   }
