@@ -8,8 +8,9 @@ import (
 )
 var DB *sql.DB
 func Connect() (*sql.DB, error) {
-    connStr := "host=db port=5432 user=test password=test dbname=test sslmode=disable"
-    //connStr := "host=10.109.40.91 port=5432 user=test password=test dbname=test sslmode=disable" para conectar ao kubernetes
+    //connStr := "host=localhost port=5432 user=test password=test dbname=test sslmode=disable"
+    //connStr := "host= 10.105.21.191 port=5432 user=test password=test dbname=test sslmode=disable" //para conectar ao kubernetes
+    connStr := "host=postgres-master-service port=5432 user=test password=test dbname=test sslmode=disable"
 
     var db *sql.DB
     var err error

@@ -1,2 +1,0 @@
-#createuser -U test -P -c 5 --replication reptest
-#pg_basebackup -h postgres-container -p 5432 -U reptest -D /var/lib/postgresql/data -Fp -Xs -R -P

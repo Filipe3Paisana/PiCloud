@@ -142,7 +142,7 @@ services:
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
     volumes:
-      - node1_data:/app/fragme§nts
+      - node1_data:/app/fragments
   
   node-exporter1:
     image: prom/node-exporter
@@ -287,14 +287,14 @@ services:
     networks:
       - pi_network
   
-  # k6:
-  #   build:
-  #     context: ./k6-tester 
-  #     dockerfile: Dockerfile  
-  #   depends_on:
-  #     - nginx  
-  #   networks:
-  #     - pi_network
+  k6:
+    build:
+      context: ./k6-tester 
+      dockerfile: Dockerfile  
+    depends_on:
+      - nginx  
+    networks:
+      - pi_network
 
 volumes:
   db_data:

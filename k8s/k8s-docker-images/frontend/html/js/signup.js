@@ -7,9 +7,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
-    // Validar se as senhas correspondem
+    // Validar se as passwords correspondem
     if (password !== confirmPassword) {
-        alert('As senhas não correspondem.');
+        alert('As Passwords não correspondem.');
         return;
     }
 
@@ -22,7 +22,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
 
     try {
         
-        const response = await fetch('http://localhost:8081/users/add', {
+        const response = await fetch('api/users/add', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -1,0 +1,227 @@
+/* Geral */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+    padding: 20px;
+}
+
+/* Cabeçalho */
+header {
+    text-align: center;
+    padding: 20px;
+    justify-content: center;
+    color: black;
+    max-width: 90%;
+    margin-bottom: 20px;
+}
+
+.title h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Container Principal */
+.container {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+    padding: 20px;
+}
+
+.welcome-box {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.welcome-box h2 {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.welcome-box p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+/* Grid Responsivo para Documentos */
+.files-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajuste automático */
+    gap: 15px;
+}
+
+.file-card {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.file-card h4 {
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+}
+
+.file-card .icon-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.icon-buttons button {
+    background: none;
+    border: none;
+    color: #1976d2;
+    font-size: 18px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.icon-buttons button:hover {
+    color: #0d47a1;
+}
+
+/* Botões */
+.material-button {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 16px;
+    width: 100%;
+}
+
+.material-button:hover {
+    background-color: #155a9a;
+}
+
+.upload-button {
+    background-color: #007bff;
+    margin-bottom: 10px;
+}
+
+.upload-button:hover {
+    background-color: #0056b3;
+}
+
+.logout-button {
+    background-color: #f44336;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+.register-text {
+    margin-top: 15px;
+    color: #555;
+}
+
+.register-text a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+.material-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .files-grid {
+        grid-template-columns: 1fr; /* Uma coluna no celular */
+    }
+
+    .file-card {
+        flex-direction: column; /* Empilhar conteúdo verticalmente */
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .file-card h4 {
+        margin-bottom: 10px;
+    }
+
+    .icon-buttons {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .title h1 {
+        font-size: 1.5rem;
+    }
+
+    .welcome-box {
+        padding: 15px;
+    }
+
+    .material-button {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+}
