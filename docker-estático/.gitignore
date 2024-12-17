@@ -1,0 +1,9 @@
+*.env
+*.git_command.sh
+DB/master/pgdata/
+DB/replica/pgdata/
+
+# Ignorar ficheiros de backup e temporários
+*.bak
+*.tmp
+*.swp

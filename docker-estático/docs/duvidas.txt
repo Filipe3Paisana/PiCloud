@@ -1,0 +1,19 @@
+FASES DO PROJETO
+
+para o projeto vamos fazer essencialmente 3 fazes:
+
+1. Desenvolver toda o sistema, com um datacenter capaz de comunicar com vários nodes em redes diferentes e permitir que utilizadores criem nodes e os corram em suas casas com todas as funcionalidades disponíveis.
+
+2. Desenvolver o segundo datacenter, numa rede diferente, utilizando o CloudFlare para ligar os dois datacenters replicando a base de dados em Active - Passive. 
+
+3. Desenvolver dois clusters dentro de cada datacenter, funcionando como Active - Active, com duas bases de dados e duas apis para garantir redundância dentro do mesmo datacenter bem como redundância com o segundo datacenter.
+
+4. Quardar fragmentos em todos os nodes ou não (Quantos mais nodes tivermos  menos fragmentos) (menos nodes necessida em guardar em todos os nodes)
+
+
+
+Duvidas
+
+- como é que a API comunica com os nodes que estão em redes diferentes? 
+    - tem de ter o ip publico? 
+    - podemos fazer isso com o cloudflare?
