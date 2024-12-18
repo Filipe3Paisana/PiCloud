@@ -141,8 +141,7 @@ services:
       - "8082:8082"
     networks:
       - pi_network  # Conectado à mesma rede que a API para comunicação
-    volumes:
-      - node1_data:/app/fragments
+    
   
   node-exporter1:
     image: prom/node-exporter
@@ -295,15 +294,24 @@ services:
       - nginx  
     networks:
       - pi_network
+  
+  model:
+    build:
+      context: ./AI
+      dockerfile: Dockerfile
+    container_name: model-container
+    volumes:
+      - ./data_collector/prometheus_data:/app/prometheus_data  
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - pi_network
+
 
 volumes:
   db_data:
   db_replica_data:
-  node1_data:
-  node2_data:
-  node3_data:
-  node4_data:
-  node5_data:
+  
   
 networks:
   pi_network:
