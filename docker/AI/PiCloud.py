@@ -28,6 +28,7 @@ for entry in data:
     cpu_usage = entry.get('metrics', {}).get('CPU', [{}])[0].get('value', np.nan)  # Valor padrão se não existir
     disk_usage = np.mean([disk.get('value', np.nan) for disk in entry.get('metrics', {}).get('Disk', [])] or [0])  # Evitar lista vazia
     memory_available = entry.get('metrics', {}).get('Memory', [{}])[0].get('value', np.nan)
+    response_time = entry.get('metrics', {}).get('ResponseTime', [{}])[0].get('value', np.nan)
     
     # Verificar se temos valores válidos para as métricas (evitar NaN)
     if np.isnan(cpu_usage) or np.isnan(disk_usage) or np.isnan(memory_available):
@@ -39,7 +40,8 @@ for entry in data:
         'timestamp': timestamp,
         'cpu_usage': cpu_usage,
         'disk_usage': disk_usage,
-        'memory_available': memory_available
+        'memory_available': memory_available,
+        'response_time': response_time
     })
 
 # Criar DataFrame
@@ -48,7 +50,7 @@ df = pd.DataFrame(metrics_data)
 # Certifique-se de que todos os dados de 'df' são apenas os reais do 'all_metrics'
 
 # Adicionar uma coluna para o tempo de resposta (aqui você usaria os dados reais ou uma simulação baseada nas métricas)
-df['response_time'] = np.random.uniform(0.1, 5, len(df))  # Aqui ainda usamos uma variável simulada, se não houver dados reais
+#df['response_time'] = np.random.uniform(0.1, 5, len(df))  # Aqui ainda usamos uma variável simulada, se não houver dados reais
 
 # ------------------- PREPARAÇÃO DOS DADOS -------------------
 
