@@ -130,7 +130,8 @@ func gatherMetrics() map[string][]Metric {
     cpuQuery := fmt.Sprintf("100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\", instance=\"%s\"}[1m])) * 100)", instanceLabel)
     memQuery := fmt.Sprintf("100 * (1 - (node_memory_MemAvailable_bytes{instance=\"%s\"} / node_memory_MemTotal_bytes{instance=\"%s\"}))", instanceLabel, instanceLabel)
     diskQuery := fmt.Sprintf("100 * ((node_filesystem_size_bytes{fstype!=\"tmpfs\", instance=\"%s\"} - node_filesystem_free_bytes{fstype!=\"tmpfs\", instance=\"%s\"}) / node_filesystem_size_bytes{fstype!=\"tmpfs\", instance=\"%s\"})", instanceLabel, instanceLabel, instanceLabel)
-
+    responseTimeQuery := fmt.Sprintf("probe_duration_seconds{job='blackbox', instance=\"%s\"}", instanceLabel)
+    
     cpuMetrics, err := fetchMetric(cpuQuery)
     if err != nil {
         log.Printf("Erro ao coletar métricas de CPU: %v", err)
@@ -150,6 +151,13 @@ func gatherMetrics() map[string][]Metric {
         log.Printf("Erro ao coletar métricas de Disco: %v", err)
     } else {
         metrics["Disk"] = diskMetrics
+    }
+
+    responseTimeMetrics, err := fetchMetric(responseTimeQuery)
+    if err != nil {
+        log.Printf("Erro ao coletar métricas de Tempo de Resposta: %v", err)
+    } else {
+        metrics["ResponseTime"] = responseTimeMetrics
     }
 
     return metrics

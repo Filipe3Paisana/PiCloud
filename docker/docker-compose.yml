@@ -19,6 +19,16 @@ services:
       - "9090:9090"
     networks:
       - pi_network
+
+  blackbox-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml
+    networks:
+      - pi_network
   
   data_collector:
     build:
