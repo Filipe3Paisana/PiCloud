@@ -20,7 +20,7 @@ type Metric struct {
 
 type MetricsData struct {
     NodeID    string                 `json:"node_id"`
-    Timestamp int64                  `json:"timestamp"`
+    Timestamp string                  `json:"timestamp"`
     Metrics   map[string][]Metric    `json:"metrics"`
 }
 
@@ -28,7 +28,7 @@ var mu sync.Mutex  // Mutex para proteger o acesso ao ficheiro
 
 func receiveMetricsHandler(w http.ResponseWriter, r *http.Request) {
     var data MetricsData
-    data.Timestamp = time.Now().Unix()
+    data.Timestamp = time.Now().Format("2006-01-02 15:04:05") // Formato legível
 
     bodyBytes, err := ioutil.ReadAll(r.Body)
     if err != nil {

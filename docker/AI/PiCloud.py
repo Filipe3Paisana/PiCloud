@@ -5,7 +5,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
+from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
+
 
 # Caminho para o arquivo JSON (ajuste de acordo com o local do seu arquivo dentro do contêiner)
 file_path = '/app/prometheus_data/all_metrics.json'
@@ -17,6 +19,8 @@ if not os.path.exists(file_path):
 # Carregar dados do arquivo JSON
 with open(file_path, 'r') as f:
     data = json.load(f)
+
+print("Current Working Directory:", os.getcwd())
 
 # Estruturar os dados em formato adequado para o modelo
 metrics_data = []
@@ -64,7 +68,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # ------------------- TREINO DO MODELO -------------------
 
 # Criar modelo de Regressão Linear
-model = LinearRegression()
+model = LinearRegression() #TODO utilizar cena que tenta vários modelos e escolhe o melhor
 
 # Treinar o modelo
 model.fit(X_train, y_train)
@@ -109,6 +113,7 @@ plt.xlabel("Amostras")
 plt.ylabel("Tempo de Resposta (s)")
 plt.title("Previsão vs Real (Tempo de Resposta)")
 plt.legend()
+plt.savefig('/foo.png')
 plt.show()
 
 # ------------------- REDISTRIBUIÇÃO -------------------

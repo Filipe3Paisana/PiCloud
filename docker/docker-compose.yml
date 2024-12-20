@@ -312,6 +312,7 @@ services:
     container_name: model-container
     volumes:
       - ./data_collector/prometheus_data:/app/prometheus_data  
+      - ./AI/foo.png:/app/foo.pgn
     environment:
       - PYTHONUNBUFFERED=1
     networks:
