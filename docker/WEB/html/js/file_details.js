@@ -62,9 +62,9 @@ function fetchFileDetails() {
 }
 
 // Função para realizar logout
-function logout() {
-    localStorage.removeItem('authToken');
-    window.location.href = 'index.html';
+function backToProfile() {
+    
+    window.location.href = 'profile.html';
 }
 
 // Adicionar evento para carregar os detalhes do ficheiro quando a página estiver pronta
