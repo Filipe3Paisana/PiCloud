@@ -12,16 +12,48 @@ function displayFileDetails(fileData) {
     document.getElementById('fileName').textContent = fileData.file.name;
     document.getElementById('fileSize').textContent = formatFileSize(fileData.file.size);
     document.getElementById('totalFragments').textContent = fileData.fragments.length;
+    // Calcular o número de nodes únicos
+    const uniqueNodes = new Set();
+    fileData.fragments.forEach(fragment => {
+        fragment.nodes.forEach(node => {
+            uniqueNodes.add(node.location); // Use "location" como identificador único
+        });
+    });
+    document.getElementById('totalNodes').textContent = uniqueNodes.size;
 
-    // Atualizar a lista de fragmentos e as localizações nos nodes
+
+    // Ordenar os fragmentos por ordem crescente de `fragment.order`
+    const sortedFragments = fileData.fragments.sort((a, b) => a.order - b.order);
+
+    // Atualizar a lista de fragmentos como cards
     const fragmentsList = document.getElementById('fragmentsList');
     fragmentsList.innerHTML = ''; // Limpar a lista antes de adicionar novos itens
 
-    fileData.fragments.forEach(fragment => {
-        const listItem = document.createElement('li');
-        const nodeAddresses = fragment.nodes.map(node => node.node_address).join(', ');
-        listItem.textContent = `Fragmento ${fragment.order} (Hash: ${fragment.hash}) - Nodes: ${nodeAddresses}`;
-        fragmentsList.appendChild(listItem);
+    sortedFragments.forEach(fragment => {
+        const fragmentCard = document.createElement('div');
+        fragmentCard.classList.add('file-card');
+
+        const fragmentInfo = document.createElement('div');
+        fragmentInfo.classList.add('clickable-area');
+
+        // Informações do fragmento
+        const fragmentTitle = document.createElement('h4');
+        fragmentTitle.textContent = `Fragmento ${fragment.order}`;
+        
+        const fragmentHash = document.createElement('p');
+        fragmentHash.innerHTML = `<strong>Hash:</strong> ${fragment.hash}`;
+
+        const fragmentLocation = document.createElement('p');
+        const location = fragment.nodes.map(node => node.location).join(', ');
+        fragmentLocation.innerHTML = `<strong>Nodes:</strong> ${location}`;
+
+        // Adicionar informações ao card
+        fragmentInfo.appendChild(fragmentTitle);
+        fragmentInfo.appendChild(fragmentHash);
+        fragmentInfo.appendChild(fragmentLocation);
+        fragmentCard.appendChild(fragmentInfo);
+
+        fragmentsList.appendChild(fragmentCard);
     });
 }
 

@@ -44,7 +44,7 @@ func GetFileDetailsHandler(w http.ResponseWriter, r *http.Request) {
 
     // Buscar fragmentos e nodes associados
     rows, err := db.DB.Query(`
-        SELECT ff.fragment_id, ff.fragment_hashes, ff.fragment_order, n.node_address
+        SELECT ff.fragment_id, ff.fragment_hashes, ff.fragment_order, n.location
         FROM FileFragments ff
         JOIN FragmentLocation fl ON ff.fragment_id = fl.fragment_id
         JOIN Nodes n ON fl.node_id = n.id
@@ -67,9 +67,9 @@ func GetFileDetailsHandler(w http.ResponseWriter, r *http.Request) {
         var fragmentID int
         var fragmentHash string
         var fragmentOrder int
-        var nodeAddress string
+        var Location string
 
-        if err := rows.Scan(&fragmentID, &fragmentHash, &fragmentOrder, &nodeAddress); err != nil {
+        if err := rows.Scan(&fragmentID, &fragmentHash, &fragmentOrder, &Location); err != nil {
             http.Error(w, fmt.Sprintf("Erro ao processar fragmentos: %v", err), http.StatusInternalServerError)
             return
         }
@@ -84,7 +84,7 @@ func GetFileDetailsHandler(w http.ResponseWriter, r *http.Request) {
         }
 
         fragmentsMap[fragmentID].Nodes = append(fragmentsMap[fragmentID].Nodes, models.Node{
-            NodeAddress: nodeAddress,
+            Location: Location,
         })
     }
 

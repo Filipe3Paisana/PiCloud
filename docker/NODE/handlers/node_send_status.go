@@ -33,7 +33,7 @@ func SendNodeStatusHandler() {
 			}
         }
 
-        location := "Datacenter XYZ" // Defina isso dinamicamente, se necessário
+        location := helpers.GetRandomLocation() // Defina isso dinamicamente, se necessário
         status := "online"           // Você pode mudar essa lógica com base em outras verificações
 
         nodeStatus := models.NodeStatusRequest{
