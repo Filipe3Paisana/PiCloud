@@ -225,3 +225,28 @@ input:focus {
         padding: 8px 12px;
     }
 }
+
+
+/* Garante que os cards sejam exibidos em uma única coluna */
+.files-grid {
+    display: flex;
+    flex-direction: column; /* Configura os itens para serem empilhados verticalmente */
+    gap: 15px; /* Espaço entre os cards */
+}
+
+.file-card {
+    text-align: left;
+    padding: 15px;
+}
+
+.file-card h4 {
+    margin-bottom: 8px;
+    font-size: 18px;
+    color: #555;
+}
+
+.file-card p {
+    font-size: 14px;
+    color: #777;
+    margin: 2px 0;
+}

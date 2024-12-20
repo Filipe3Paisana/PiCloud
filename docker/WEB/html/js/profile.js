@@ -122,25 +122,42 @@ function displayFiles(files) {
         const fileCard = document.createElement('div');
         fileCard.classList.add('file-card');
 
+        // Camada de clique para redirecionar
+        const clickableArea = document.createElement('div');
+        clickableArea.classList.add('clickable-area');
+        clickableArea.onclick = () => {
+            window.location.href = `file_details.html?file_id=${file.id}`;
+        };
+
         const fileName = document.createElement('h4');
         fileName.textContent = `${file.name} (${formatFileSize(file.size)})`;
 
+        clickableArea.appendChild(fileName);
+
+        // Botões de ação
         const iconButtons = document.createElement('div');
         iconButtons.classList.add('icon-buttons');
 
         const downloadButton = document.createElement('button');
         downloadButton.innerHTML = '<i class="fas fa-download"></i>';
-        downloadButton.onclick = () => downloadFile(file.id);
+        downloadButton.onclick = (event) => {
+            event.stopPropagation(); // Impede que o clique nos botões afete o card
+            downloadFile(file.id);
+        };
 
         const deleteButton = document.createElement('button');
         deleteButton.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        deleteButton.onclick = () => deleteFile(file.id);
+        deleteButton.onclick = (event) => {
+            event.stopPropagation(); // Impede que o clique nos botões afete o card
+            deleteFile(file.id);
+        };
 
         iconButtons.appendChild(downloadButton);
         iconButtons.appendChild(deleteButton);
 
-        fileCard.appendChild(fileName);
-        fileCard.appendChild(iconButtons);
+        // Montagem do card
+        fileCard.appendChild(clickableArea); // Área clicável
+        fileCard.appendChild(iconButtons);  // Botões separados
 
         filesList.appendChild(fileCard);
     });

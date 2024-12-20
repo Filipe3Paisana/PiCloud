@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Ficheiro</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="title">
+            <h1>Detalhes do Ficheiro</h1>
+        </div>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </header>
+
+    <div class="container">
+        <div class="welcome-box">
+            <h2 id="fileName">Nome do Ficheiro</h2>
+            <p><strong>Tamanho:</strong> <span id="fileSize">-</span></p>
+            <p><strong>Fragmentos:</strong> <span id="totalFragments">-</span></p>
+            <p><strong>Número de Nodes:</strong> <span id="totalNodes">-</span></p>
+        </div>
+
+        <h3>Fragmentos e Localizações:</h3>
+        <div class="files-grid" id="fragmentsList"></div>
+    </div>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return `${bytes} B`;
+            else if (bytes < 1048576) return `${(bytes / 1024).toFixed(2)} KB`;
+            else if (bytes < 1073741824) return `${(bytes / 1048576).toFixed(2)} MB`;
+            return `${(bytes / 1073741824).toFixed(2)} GB`;
+        }
+
+        function displayFileDetails(fileData) {
+            document.getElementById('fileName').textContent = fileData.file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(fileData.file.size);
+            document.getElementById('totalFragments').textContent = fileData.fragments.length;
+
+            const fragmentsList = document.getElementById('fragmentsList');
+            fragmentsList.innerHTML = '';
+
+            fileData.fragments.forEach(fragment => {
+                const fragmentCard = document.createElement('div');
+                fragmentCard.classList.add('file-card');
+                fragmentCard.innerHTML = `
+                    <h4>Fragmento ${fragment.order}</h4>
+                    <p><strong>Hash:</strong> ${fragment.hash}</p>
+                    <p><strong>Nodes:</strong> ${fragment.nodes.map(n => n.node_address).join(', ')}</p>
+                `;
+                fragmentsList.appendChild(fragmentCard);
+            });
+        }
+
+        function fetchFileDetails() {
+            const queryParams = new URLSearchParams(window.location.search);
+            const fileId = queryParams.get('file_id');
+
+            if (!fileId) {
+                alert('Ficheiro inválido.');
+                window.location.href = 'profile.html';
+                return;
+            }
+
+            fetch(`http://localhost:8081/user/file/details?file_id=${fileId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Erro ao obter detalhes do ficheiro: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    displayFileDetails(data);
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao carregar os detalhes do ficheiro. Por favor, tente novamente.');
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchFileDetails);
+    </script>
+</body>
+</html>
