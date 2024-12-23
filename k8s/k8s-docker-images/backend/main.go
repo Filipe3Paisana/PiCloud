@@ -24,6 +24,7 @@ func main() {
     http.HandleFunc("/users/add", handlers.CreateUserHandler)      
     http.HandleFunc("/users/login", handlers.LoginHandler)         
     http.HandleFunc("/user/upload", handlers.UploadHandler)
+    http.HandleFunc("/user/file/details", handlers.GetFileDetailsHandler)
     
     http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler())))
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler())))   

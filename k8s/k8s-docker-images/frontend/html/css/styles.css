@@ -65,33 +65,52 @@ h3 {
     margin-bottom: 15px;
 }
 
-/* Grid Responsivo para Documentos */
+
 .files-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Ajuste automático */
-    gap: 15px;
+    display: flex;
+    flex-direction: column; 
+    gap: 15px; 
 }
 
 .file-card {
     background: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 12px; /* Borda arredondada */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column; /* Empilhando conteúdo verticalmente */
+    gap: 15px;
     text-align: left;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Efeito de hover */
+    border-left: 6px solid #1976d2; /* Linha de destaque à esquerda */
 }
 
+.file-card:hover {
+    transform: translateY(-5px); /* Efeito de levantar ao passar o mouse */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Sombra mais forte ao passar o mouse */
+}
+
+/* Títulos nos cards */
 .file-card h4 {
-    font-size: 16px;
+    font-size: 18px;
     color: #333;
     margin: 0;
+    font-weight: 600;
+    margin-bottom: 10px;
 }
 
+/* Descrição ou conteúdo adicional no card */
+.file-card p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+/* Ícones de Ação nos cards */
 .file-card .icon-buttons {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+    justify-content: flex-end;
 }
 
 .icon-buttons button {
@@ -105,6 +124,40 @@ h3 {
 
 .icon-buttons button:hover {
     color: #0d47a1;
+}
+
+/* Ícones para Fragmentos */
+.file-card .icon {
+    font-size: 24px; /* Ícone maior */
+    color: #1976d2; /* Cor do ícone */
+    transition: color 0.3s ease;
+}
+
+.file-card .icon:hover {
+    color: #0d47a1; /* Cor de destaque do ícone ao passar o mouse */
+}
+
+/* Info de Status dos Fragmentos */
+.fragment-status {
+    font-weight: bold;
+    color: #ffffff; /* Cor do texto */
+    padding: 8px 15px;
+    border-radius: 15px; /* Bordas arredondadas */
+    font-size: 14px;
+    text-transform: capitalize;
+    display: inline-block;
+}
+
+.fragment-status.in-progress {
+    background-color: #ff9800; /* Cor laranja para 'Em andamento' */
+}
+
+.fragment-status.completed {
+    background-color: #4caf50; /* Verde para 'Concluído' */
+}
+
+.fragment-status.failed {
+    background-color: #f44336; /* Vermelho para 'Falhou' */
 }
 
 /* Botões */
@@ -139,6 +192,25 @@ h3 {
 
 .logout-button:hover {
     background-color: #d32f2f;
+}
+
+.back-button {
+    background-color: #555;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.back-button:hover {
+    background-color: #333;
 }
 
 /* Formulários */
@@ -199,7 +271,7 @@ input:focus {
     .file-card {
         flex-direction: column; /* Empilhar conteúdo verticalmente */
         align-items: flex-start;
-        text-align: left;
+        text-align: center;
     }
 
     .file-card h4 {
@@ -208,6 +280,11 @@ input:focus {
 
     .icon-buttons {
         justify-content: flex-start;
+    }
+
+    .back-button {
+        font-size: 14px;
+        padding: 8px 16px;
     }
 }
 
@@ -223,5 +300,14 @@ input:focus {
     .material-button {
         font-size: 14px;
         padding: 8px 12px;
+    }
+
+    .file-card .fragment-info {
+        font-size: 13px;
+    }
+
+    .back-button {
+        font-size: 13px;
+        padding: 8px 14px;
     }
 }
