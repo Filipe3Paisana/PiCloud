@@ -70,11 +70,9 @@ df = pd.DataFrame(metrics_data)
 # ------------------- PREPARAÇÃO DOS DADOS -------------------
 
 # Criar rótulos binários (1 = Alta Latência, 0 = Baixa Latência)
-df['high_latency'] = (df['response_time'] > 3).astype(int)
 
 # Separar variáveis independentes (X) e variável dependente (y)
 X = df[['cpu_usage', 'disk_usage', 'memory_available', 'hour_of_day', 'minute']]  # Não usamos mais 'tasks_interval' se não estiver disponível
-# y = df['high_latency']  # Variável de saída binária
 y = df['response_time']  # O que queremos prever
 
 # Dividir dados em treino e teste (aqui vamos manter apenas as amostras reais)
