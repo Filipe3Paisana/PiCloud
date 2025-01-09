@@ -81,22 +81,26 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
             return
         }
 
-        
         for i, fragment := range fragments {
-            // Calcular hash MD5 para verificar a integridade
-            hash := md5.Sum(fragment)
-            hashString := hex.EncodeToString(hash[:])
-
-            // Converter para base64 para visualizar o conteúdo de forma legível
-            encoded := base64.StdEncoding.EncodeToString(fragment)
-            if len(encoded) > 20 {
-                encoded = encoded[:20] + "..." // Mostrar apenas os primeiros 20 caracteres
-            }
-
-            fmt.Printf("Fragmento %d: Tamanho = %d bytes, Hash MD5 = %s, Conteúdo (base64) = %s\n", i+1, len(fragment), hashString, encoded)
-            helpers.SaveFragmentInfo(fileID, i+1, hashString) 
-
+            fmt.Printf("Enviando fragmento %d para os nodes conectados...\n", i+1)
+            handlers.SendUploadCommandToNodes(fileID, i+1, fragment)
         }
+        
+        // for i, fragment := range fragments {
+        //     // Calcular hash MD5 para verificar a integridade
+        //     hash := md5.Sum(fragment)
+        //     hashString := hex.EncodeToString(hash[:])
+
+        //     // Converter para base64 para visualizar o conteúdo de forma legível
+        //     encoded := base64.StdEncoding.EncodeToString(fragment)
+        //     if len(encoded) > 20 {
+        //         encoded = encoded[:20] + "..." // Mostrar apenas os primeiros 20 caracteres
+        //     }
+
+        //     fmt.Printf("Fragmento %d: Tamanho = %d bytes, Hash MD5 = %s, Conteúdo (base64) = %s\n", i+1, len(fragment), hashString, encoded)
+        //     helpers.SaveFragmentInfo(fileID, i+1, hashString) 
+
+        // }
         numberOfNodes := helpers.GetNumberOfOnlineNodes()
         replicationFactor := helpers.CalcReplicationFactor(availability, failureRate, numberOfNodes)
         fmt.Printf("Fator de Replicação: %d\n", replicationFactor)

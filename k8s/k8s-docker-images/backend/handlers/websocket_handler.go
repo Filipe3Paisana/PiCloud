@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"sync"
@@ -69,6 +70,27 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	connMutex.Unlock()
 }
 
+func SendUploadCommandToNodes(fileID int, fragmentOrder int, fragmentData []byte) {
+	connMutex.Lock()
+	defer connMutex.Unlock()
+
+	encodedData := base64.StdEncoding.EncodeToString(fragmentData)
+
+	for conn := range connections {
+		command := map[string]interface{}{
+			"command":        "upload_fragment",
+			"file_id":        fileID,
+			"fragment_order": fragmentOrder,
+			"fragment_data":  encodedData,
+		}
+		err := conn.WriteJSON(command)
+		if err != nil {
+			fmt.Printf("Erro ao enviar comando para o nó: %v\n", err)
+			conn.Close()
+			delete(connections, conn)
+		}
+	}
+}
 
 // Função para inserir/atualizar status do Node na base de dados
 func updateNodeStatusInDB(status models.Node) error {
