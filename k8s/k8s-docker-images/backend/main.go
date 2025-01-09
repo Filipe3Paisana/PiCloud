@@ -29,13 +29,15 @@ func main() {
     http.Handle("/user/", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUserHandler())))
     http.Handle("/users", utils.AuthMiddleware(http.HandlerFunc(handlers.GetUsersHandler())))   
     
-    http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler())
+    //http.HandleFunc("/node/status/update", handlers.UpdateNodeStatusHandler())
 
     http.Handle("/user/files", (http.HandlerFunc(handlers.GetUserFilesHandler())))    
     http.Handle("/user/download", (http.HandlerFunc(handlers.DownloadHandler)))
     http.Handle("/user/delete", (http.HandlerFunc(handlers.DeleteFileHandler)))
 
+    http.HandleFunc("/ws", handlers.WebSocketHandler)
 
+    http.HandleFunc("/node/status/update", handlers.NodeStatusUpdateHandler)
 
     go helpers.MarkOfflineNodes()
 

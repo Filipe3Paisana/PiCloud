@@ -59,21 +59,3 @@ func UpdateNodeStatusHandler() http.HandlerFunc {
     }
 }
 
-func NodeStatusUpdateHandler(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodPost {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
-
-    var nodeStatus map[string]interface{}
-    err := json.NewDecoder(r.Body).Decode(&nodeStatus)
-    if err != nil {
-        http.Error(w, "Invalid JSON", http.StatusBadRequest)
-        return
-    }
-
-    fmt.Printf("Node status received: %+v\n", nodeStatus)
-    w.WriteHeader(http.StatusOK)
-}
-
-
