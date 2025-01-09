@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
-	
+	"database/sql"
+
 	"api/db"
 	"api/models"
 
@@ -23,7 +24,6 @@ var connections = make(map[*websocket.Conn]bool)
 var connMutex = sync.Mutex{}
 
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
-	// Atualiza a conexão HTTP para WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("Erro ao criar WebSocket:", err)
@@ -34,11 +34,11 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	connMutex.Lock()
 	connections[conn] = true
 	connMutex.Unlock()
-
+	
 	fmt.Println("Nova conexão WebSocket")
 
 	for {
-		var msg map[string]interface{}
+		var msg models.Node
 		err := conn.ReadJSON(&msg)
 		if err != nil {
 			fmt.Println("Erro ao ler mensagem:", err)
@@ -46,9 +46,17 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println("Mensagem recebida:", msg)
 
-		// Exemplo: responder ao node
+
+		// Inserir/Atualizar status do Node na base de dados
+		err = updateNodeStatusInDB(msg)
+		if err != nil {
+			fmt.Printf("Erro ao armazenar status do Node: %v\n", err)
+			continue
+		}
+
+		// Confirmação ao Node
 		err = conn.WriteJSON(map[string]string{
-			"message": "Mensagem recebida com sucesso!",
+			"message": "Status recebido e armazenado com sucesso!",
 		})
 		if err != nil {
 			fmt.Println("Erro ao enviar resposta:", err)
