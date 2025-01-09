@@ -38,6 +38,7 @@ func main() {
     http.HandleFunc("/ws", handlers.WebSocketHandler)
 
     http.HandleFunc("/node/status/update", handlers.NodeStatusUpdateHandler)
+    http.HandleFunc("/node/status/update", handlers.updateNodeStatusInDB)
 
     go helpers.MarkOfflineNodes()
 

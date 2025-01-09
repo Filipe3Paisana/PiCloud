@@ -63,7 +63,7 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 
 // Função para inserir/atualizar status do Node na base de dados
-func updateNodeStatusInDB(status models.NodeStatusRequest) error {
+func updateNodeStatusInDB(status models.Node) error {
 	// Verifica se o nó já existe
 	var nodeID int
 	err := db.DB.QueryRow("SELECT id FROM Nodes WHERE node_address = $1", status.NodeAddress).Scan(&nodeID)
