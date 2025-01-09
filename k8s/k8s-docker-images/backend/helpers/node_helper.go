@@ -61,30 +61,3 @@ func GetOnlineNodesList() []models.Node {
 
     return onlineNodesList
 }
-
-func SelectNodesForFragment(availableNodes []models.Node, replicationFactor int) []models.Node {
-	connMutex.Lock()
-	defer connMutex.Unlock()
-
-	// Filtrar Nodes que possuem conexão WebSocket ativa
-	var activeNodes []models.Node
-	for _, node := range availableNodes {
-		for conn := range connections {
-			if node.NodeAddress == conn.RemoteAddr().String() {
-				activeNodes = append(activeNodes, node)
-				break
-			}
-		}
-	}
-
-	if replicationFactor >= len(activeNodes) {
-		return activeNodes
-	}
-
-	// Selecionar Nodes aleatórios entre os ativos
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(activeNodes), func(i, j int) {
-		activeNodes[i], activeNodes[j] = activeNodes[j], activeNodes[i]
-	})
-	return activeNodes[:replicationFactor]
-}

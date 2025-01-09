@@ -3,6 +3,7 @@ package helpers
 import (
     "fmt"
     "io"
+    "sync"
     "mime/multipart"
     "net/http"
     "bytes"
@@ -13,7 +14,15 @@ import (
 
     "api/models"
     "api/db"
+
+    "github.com/gorilla/websocket"
 )
+
+// Mutex para proteger o mapa de conexões WebSocket
+var connMutex sync.Mutex
+
+// Mapa de conexões WebSocket (endereços de nós para conexões)
+var connections = make(map[string]*websocket.Conn)
 
 
 func SaveFileInfo(name string, size int64, userID int) (int, error) {
@@ -111,47 +120,80 @@ func CalcReplicationFactor(availability float64, failureRate float64, numberOfNo
 }
 
 func DistributeFragments(fileID int, numberOfFragments int, fragments [][]byte, replicationFactor int) error {
-    availableNodes := GetOnlineNodesList()
-    if len(availableNodes) == 0 {
-        return fmt.Errorf("Nenhum nó disponível para distribuir os fragmentos")
-    }
+	availableNodes := GetOnlineNodesList()
+	if len(availableNodes) == 0 {
+		return fmt.Errorf("Nenhum nó disponível para distribuir os fragmentos")
+	}
 
-    for i := 1; i <= numberOfFragments; i++ {
-        selectedNodes := SelectNodesForFragment(availableNodes, replicationFactor)
+	for i := 1; i <= numberOfFragments; i++ {
+		selectedNodes := SelectNodesForFragment(availableNodes, replicationFactor)
 
-        for _, node := range selectedNodes {
-            err := SendFragmentToNodeWebSocket(node.NodeAddress, fragments[i-1], i)
-            if err != nil {
-                fmt.Printf("Erro ao enviar fragmento %d ao Node %s: %v\n", i, node.NodeAddress, err)
-                continue
-            }
+		for _, node := range selectedNodes {
+			err := SendFragmentToNodeWebSocket(node.NodeAddress, fragments[i-1], i)
+			if err != nil {
+				fmt.Printf("Erro ao enviar fragmento %d ao Node %s: %v\n", i, node.NodeAddress, err)
+				continue
+			}
 
-            err = SaveDistributionInfo(fileID, i, node.NodeAddress)
-            if err != nil {
-                fmt.Printf("Erro ao guardar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
-                continue
-            }
-        }
-    }
-    return nil
+			err = SaveDistributionInfo(fileID, i, node.NodeAddress)
+			if err != nil {
+				fmt.Printf("Erro ao guardar informações de distribuição para o fragmento %d no nó %s: %v\n", i, node.NodeAddress, err)
+				continue
+			}
+		}
+	}
+	return nil
 }
 
 func SelectNodesForFragment(availableNodes []models.Node, replicationFactor int) []models.Node {
-    if replicationFactor >= len(availableNodes) {
-        // Se o fator de replicação é maior ou igual ao número de nós disponíveis, retorna todos os nós
-        return availableNodes
-    }
+	connMutex.Lock()
+	defer connMutex.Unlock()
 
-    // Inicializar o gerador de números aleatórios
-    rand.Seed(time.Now().UnixNano())
+	// Filtrar apenas Nodes conectados via WebSocket
+	var activeNodes []models.Node
+	for _, node := range availableNodes {
+		if _, exists := connections[node.NodeAddress]; exists {
+			activeNodes = append(activeNodes, node)
+		}
+	}
 
-    // Embaralhar a lista de nós para uma seleção aleatória
-    rand.Shuffle(len(availableNodes), func(i, j int) {
-        availableNodes[i], availableNodes[j] = availableNodes[j], availableNodes[i]
-    })
+	if replicationFactor >= len(activeNodes) {
+		return activeNodes
+	}
 
-    // Selecionar um número de nós igual ao fator de replicação
-    return availableNodes[:replicationFactor]
+	// Selecionar Nodes aleatórios entre os ativos
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(activeNodes), func(i, j int) {
+		activeNodes[i], activeNodes[j] = activeNodes[j], activeNodes[i]
+	})
+	return activeNodes[:replicationFactor]
+}
+
+// Envia um fragmento para um Node via WebSocket
+func SendFragmentToNodeWebSocket(nodeAddress string, fragment []byte, fragmentOrder int) error {
+	connMutex.Lock()
+	conn, exists := connections[nodeAddress]
+	connMutex.Unlock()
+
+	if !exists {
+		return fmt.Errorf("nenhuma conexão WebSocket ativa para o Node %s", nodeAddress)
+	}
+
+	// Construir a mensagem para enviar
+	message := map[string]interface{}{
+		"type":           "upload_fragment",
+		"fragment_order": fragmentOrder,
+		"data":           fragment,
+	}
+
+	// Enviar a mensagem via WebSocket
+	err := conn.WriteJSON(message)
+	if err != nil {
+		return fmt.Errorf("erro ao enviar fragmento para o Node %s via WebSocket: %v", nodeAddress, err)
+	}
+
+	fmt.Printf("Fragmento %d enviado com sucesso para o Node %s via WebSocket\n", fragmentOrder, nodeAddress)
+	return nil
 }
 
 func SendFragmentToNode(fileID int, fragmentOrder int, fragmentContent []byte, nodeID int) error {
@@ -226,4 +268,28 @@ func SaveDistributionInfo(fileID int, fragmentOrder int, nodeAddress string) err
         return fmt.Errorf("erro ao guardar informações de localização do fragmento: %v", err)
     }
     return nil
+}
+
+func SendUploadCommandToNodes(fileID int, fragmentOrder int, fragment []byte) {
+	connMutex.Lock()
+	defer connMutex.Unlock()
+
+	// Construir a mensagem para enviar
+	message := map[string]interface{}{
+		"type":           "upload_fragment",
+		"file_id":        fileID,
+		"fragment_order": fragmentOrder,
+		"data":           fragment,
+	}
+
+	// Iterar sobre todas as conexões ativas
+	for nodeAddress, conn := range connections {
+		// Enviar a mensagem via WebSocket
+		err := conn.WriteJSON(message)
+		if err != nil {
+			fmt.Printf("Erro ao enviar fragmento %d para o Node %s: %v\n", fragmentOrder, nodeAddress, err)
+			continue
+		}
+		fmt.Printf("Fragmento %d enviado com sucesso para o Node %s\n", fragmentOrder, nodeAddress)
+	}
 }

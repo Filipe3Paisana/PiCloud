@@ -4,9 +4,6 @@ import (
     "fmt"
     "io"
     "net/http"
-    "encoding/hex"
-    "encoding/base64"
-    "crypto/md5"
     
     "api/helpers"
     "api/utils"
@@ -83,7 +80,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
         for i, fragment := range fragments {
             fmt.Printf("Enviando fragmento %d para os nodes conectados...\n", i+1)
-            handlers.SendUploadCommandToNodes(fileID, i+1, fragment)
+            helpers.SendUploadCommandToNodes(fileID, i+1, fragment)
         }
         
         // for i, fragment := range fragments {
