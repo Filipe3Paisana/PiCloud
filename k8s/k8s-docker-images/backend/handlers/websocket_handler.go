@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	
+	"api/db"
+	"api/models"
 
 	"github.com/gorilla/websocket"
 )
@@ -61,17 +64,12 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 // Função para inserir/atualizar status do Node na base de dados
 func updateNodeStatusInDB(status models.NodeStatusRequest) error {
-	query := `
-		INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated)
-		VALUES ($1, $2, $3, $4, $5, NOW())
-		ON CONFLICT (node_address)
-		DO UPDATE SET
-			location = $2,
-			capacity = $3,
-			available_capacity = $4,
-			status = $5,
-			last_updated = NOW()
-	`
-	_, err := db.DB.Exec(query, status.NodeAddress, status.Location, status.Capacity, status.AvailableCapacity, status.Status)
-	return err
-}
+	// Verifica se o nó já existe
+	var nodeID int
+	err := db.DB.QueryRow("SELECT id FROM Nodes WHERE node_address = $1", status.NodeAddress).Scan(&nodeID)
+
+	if err == sql.ErrNoRows {
+		// Inserir novo registro se não existir
+		_, err = db.DB.Exec(
+			"INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated) VALUES ($1, $2, $3, $4, $5, NOW())",
+			status.NodeAddress, status.Location, statu
