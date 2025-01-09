@@ -72,4 +72,25 @@ func updateNodeStatusInDB(status models.NodeStatusRequest) error {
 		// Inserir novo registro se não existir
 		_, err = db.DB.Exec(
 			"INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated) VALUES ($1, $2, $3, $4, $5, NOW())",
-			status.NodeAddress, status.Location, statu
+			status.NodeAddress, status.Location, status.Capacity, status.AvailableCapacity, status.Status,
+		)
+		if err != nil {
+			return fmt.Errorf("erro ao inserir o nó: %w", err)
+		}
+		fmt.Println("Nó adicionado com sucesso:", status.NodeAddress)
+	} else if err == nil {
+		// Atualizar registro existente
+		_, err = db.DB.Exec(
+			"UPDATE Nodes SET location = $1, capacity = $2, available_capacity = $3, status = $4, last_updated = NOW() WHERE id = $5",
+			status.Location, status.Capacity, status.AvailableCapacity, status.Status, nodeID,
+		)
+		if err != nil {
+			return fmt.Errorf("erro ao atualizar o nó: %w", err)
+		}
+		fmt.Println("Nó atualizado com sucesso:", status.NodeAddress)
+	} else {
+		return fmt.Errorf("erro ao verificar o nó: %w", err)
+	}
+
+	return nil
+}
