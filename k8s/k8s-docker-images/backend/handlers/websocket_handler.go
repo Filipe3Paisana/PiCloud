@@ -57,3 +57,21 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	delete(connections, conn)
 	connMutex.Unlock()
 }
+
+
+// Função para inserir/atualizar status do Node na base de dados
+func updateNodeStatusInDB(status models.NodeStatusRequest) error {
+	query := `
+		INSERT INTO Nodes (node_address, location, capacity, available_capacity, status, last_updated)
+		VALUES ($1, $2, $3, $4, $5, NOW())
+		ON CONFLICT (node_address)
+		DO UPDATE SET
+			location = $2,
+			capacity = $3,
+			available_capacity = $4,
+			status = $5,
+			last_updated = NOW()
+	`
+	_, err := db.DB.Exec(query, status.NodeAddress, status.Location, status.Capacity, status.AvailableCapacity, status.Status)
+	return err
+}

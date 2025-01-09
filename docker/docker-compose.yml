@@ -127,7 +127,7 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       - PORT=8080
     ports:
-      - "${APP_PORT}:8081"
+      - "${APP_PORT}:8080"
     depends_on:
       - db
     tty: true
@@ -136,130 +136,130 @@ services:
 
 
   # Node de Armazenamento
-  # node1:
-  #   build:
-  #     context: ./NODE
-  #     dockerfile: Dockerfile
-  #   container_name: node1-container
-  #   environment:
-  #     - NODE_ID=node1
-  #     - NODE_PORT=8082
-  #     - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
-  #     - PROMETHEUS_URL=http://prometheus:9090
-  #     - INSTANCE_LABEL=node-exporter1:9100
-  #   ports:
-  #     - "8082:8082"
-  #   networks:
-  #     - pi_network  # Conectado à mesma rede que a API para comunicação
+  node1:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node1-container
+    environment:
+      - NODE_ID=node1
+      - NODE_PORT=8082
+      - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
+      - PROMETHEUS_URL=http://prometheus:9090
+      - INSTANCE_LABEL=node-exporter1:9100
+    ports:
+      - "8082:8082"
+    networks:
+      - pi_network  # Conectado à mesma rede que a API para comunicação
     
   
-  # node-exporter1:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter1
-  #   ports:
-  #     - "9101:9100"
-  #   networks:
-  #     - pi_network
+  node-exporter1:
+    image: prom/node-exporter
+    container_name: node-exporter1
+    ports:
+      - "9101:9100"
+    networks:
+      - pi_network
 
-  # node2:
-  #   build:
-  #     context: ./NODE
-  #     dockerfile: Dockerfile
-  #   container_name: node2-container
-  #   environment:
-  #     - NODE_ID=node2
-  #     - NODE_PORT=8082
-  #     - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
-  #     - PROMETHEUS_URL=http://prometheus:9090
-  #     - INSTANCE_LABEL=node-exporter2:9100
-  #   ports:
-  #     - "8083:8082"
-  #   networks:
-  #     - pi_network
-  #   depends_on:
-  #     - node1
-  # node-exporter2:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter2
-  #   ports:
-  #     - "9100"
-  #   networks:
-  #     - pi_network
+  node2:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node2-container
+    environment:
+      - NODE_ID=node2
+      - NODE_PORT=8082
+      - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
+      - PROMETHEUS_URL=http://prometheus:9090
+      - INSTANCE_LABEL=node-exporter2:9100
+    ports:
+      - "8083:8082"
+    networks:
+      - pi_network
+    depends_on:
+      - node1
+  node-exporter2:
+    image: prom/node-exporter
+    container_name: node-exporter2
+    ports:
+      - "9100"
+    networks:
+      - pi_network
 
-  # node3:
-  #   build:
-  #     context: ./NODE
-  #     dockerfile: Dockerfile
-  #   container_name: node3-container
-  #   environment:
-  #     - NODE_ID=node3
-  #     - NODE_PORT=8082
-  #     - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
-  #     - PROMETHEUS_URL=http://prometheus:9090
-  #     - INSTANCE_LABEL=node-exporter3:9100
-  #   ports:
-  #     - "8084:8082"
-  #   networks:
-  #     - pi_network
-  #   depends_on:
-  #     - node2
-  # node-exporter3:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter3
-  #   ports:
-  #     - "9100"
-  #   networks:
-  #     - pi_network
+  node3:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node3-container
+    environment:
+      - NODE_ID=node3
+      - NODE_PORT=8082
+      - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
+      - PROMETHEUS_URL=http://prometheus:9090
+      - INSTANCE_LABEL=node-exporter3:9100
+    ports:
+      - "8084:8082"
+    networks:
+      - pi_network
+    depends_on:
+      - node2
+  node-exporter3:
+    image: prom/node-exporter
+    container_name: node-exporter3
+    ports:
+      - "9100"
+    networks:
+      - pi_network
 
-  # node4:
-  #   build:
-  #     context: ./NODE
-  #     dockerfile: Dockerfile
-  #   container_name: node4-container
-  #   environment:
-  #     - NODE_ID=node4
-  #     - NODE_PORT=8082
-  #     - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
-  #     - PROMETHEUS_URL=http://prometheus:9090
-  #     - INSTANCE_LABEL=node-exporter4:9100
-  #   ports:
-  #     - "8085:8082"
-  #   networks:
-  #     - pi_network
-  #   depends_on:
-  #     - node3
-  # node-exporter4:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter4
-  #   ports:
-  #     - "9100"
-  #   networks:
-  #     - pi_network
+  node4:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node4-container
+    environment:
+      - NODE_ID=node4
+      - NODE_PORT=8082
+      - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
+      - PROMETHEUS_URL=http://prometheus:9090
+      - INSTANCE_LABEL=node-exporter4:9100
+    ports:
+      - "8085:8082"
+    networks:
+      - pi_network
+    depends_on:
+      - node3
+  node-exporter4:
+    image: prom/node-exporter
+    container_name: node-exporter4
+    ports:
+      - "9100"
+    networks:
+      - pi_network
   
-  # node5:
-  #   build:
-  #     context: ./NODE
-  #     dockerfile: Dockerfile
-  #   container_name: node5-container
-  #   environment:
-  #     - NODE_ID=node5
-  #     - NODE_PORT=8082
-  #     - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
-  #     - PROMETHEUS_URL=http://prometheus:9090
-  #     - INSTANCE_LABEL=node-exporter5:9100
-  #   ports:
-  #     - "8086:8082"
-  #   networks:
-  #     - pi_network
-  #   depends_on:
-  #     - node4
-  # node-exporter5:
-  #   image: prom/node-exporter
-  #   container_name: node-exporter5
-  #   ports:
-  #     - "9100"
-  #   networks:
-  #     - pi_network
+  node5:
+    build:
+      context: ./NODE
+      dockerfile: Dockerfile
+    container_name: node5-container
+    environment:
+      - NODE_ID=node5
+      - NODE_PORT=8082
+      - DATA_COLLECTOR_URL=http://data_collector:8001/receive_metrics
+      - PROMETHEUS_URL=http://prometheus:9090
+      - INSTANCE_LABEL=node-exporter5:9100
+    ports:
+      - "8086:8082"
+    networks:
+      - pi_network
+    depends_on:
+      - node4
+  node-exporter5:
+    image: prom/node-exporter
+    container_name: node-exporter5
+    ports:
+      - "9100"
+    networks:
+      - pi_network
 
 
   # Serviços web com NGINX
