@@ -120,9 +120,9 @@ func DistributeFragments(fileID int, numberOfFragments int, fragments [][]byte, 
         selectedNodes := SelectNodesForFragment(availableNodes, replicationFactor)
 
         for _, node := range selectedNodes {
-            err := SendFragmentToNode(fileID, i, fragments[i-1], node.NodeID) // Passando o conteúdo real do fragmento
+            err := SendFragmentToNodeWebSocket(node.NodeAddress, fragments[i-1], i)
             if err != nil {
-                fmt.Printf("Erro ao enviar fragmento %d para o nó %d: %v\n", i, node.NodeID, err)
+                fmt.Printf("Erro ao enviar fragmento %d ao Node %s: %v\n", i, node.NodeAddress, err)
                 continue
             }
 

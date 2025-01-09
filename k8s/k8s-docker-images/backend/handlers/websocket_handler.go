@@ -70,26 +70,26 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	connMutex.Unlock()
 }
 
-func SendUploadCommandToNodes(fileID int, fragmentOrder int, fragmentData []byte) {
+
+// Função para enviar fragmentos aos Nodes conectados via WebSocket
+func SendUploadCommandToNodes(nodeAddress string, fragmentData []byte, fragmentOrder int) error {
 	connMutex.Lock()
 	defer connMutex.Unlock()
 
-	encodedData := base64.StdEncoding.EncodeToString(fragmentData)
-
 	for conn := range connections {
-		command := map[string]interface{}{
-			"command":        "upload_fragment",
-			"file_id":        fileID,
+		// Enviar apenas para o Node específico
+		if err := conn.WriteJSON(map[string]interface{}{
+			"type":           "upload_fragment",
 			"fragment_order": fragmentOrder,
-			"fragment_data":  encodedData,
+			"data":           fragmentData,
+			"node_address":   nodeAddress,
+		}); err != nil {
+			fmt.Printf("Erro ao enviar fragmento ao Node %s: %v\n", nodeAddress, err)
+			return err
 		}
-		err := conn.WriteJSON(command)
-		if err != nil {
-			fmt.Printf("Erro ao enviar comando para o nó: %v\n", err)
-			conn.Close()
-			delete(connections, conn)
-		}
+		fmt.Printf("Fragmento enviado ao Node %s, ordem %d\n", nodeAddress, fragmentOrder)
 	}
+	return nil
 }
 
 // Função para inserir/atualizar status do Node na base de dados
