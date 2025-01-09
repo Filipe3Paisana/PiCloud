@@ -8,9 +8,14 @@ from sklearn.metrics import mean_squared_error, r2_score
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 
+from lazypredict.Supervised import LazyRegressor
+from sklearn.model_selection import train_test_split
+# from lazypredict.Supervised import LazyClassifier
+# from sklearn.model_selection import train_test_split
+
 
 # Caminho para o arquivo JSON (ajuste de acordo com o local do seu arquivo dentro do contêiner)
-file_path = '/app/prometheus_data/all_metrics.json'
+file_path = '/app/prometheus_data/all_metrics_sim.json'
 
 # Verificar se o arquivo existe
 if not os.path.exists(file_path):
@@ -33,6 +38,10 @@ for entry in data:
     disk_usage = np.mean([disk.get('value', np.nan) for disk in entry.get('metrics', {}).get('Disk', [])] or [0])  # Evitar lista vazia
     memory_available = entry.get('metrics', {}).get('Memory', [{}])[0].get('value', np.nan)
     response_time = entry.get('metrics', {}).get('ResponseTime', [{}])[0].get('value', np.nan)
+
+    hour_of_day = entry.get('metrics', {}).get('HourOfDay', [{}])[0].get('value', np.nan)
+    minute = entry.get('metrics', {}).get('Minute', [{}])[0].get('value', np.nan)
+    
     
     # Verificar se temos valores válidos para as métricas (evitar NaN)
     if np.isnan(cpu_usage) or np.isnan(disk_usage) or np.isnan(memory_available):
@@ -45,7 +54,9 @@ for entry in data:
         'cpu_usage': cpu_usage,
         'disk_usage': disk_usage,
         'memory_available': memory_available,
-        'response_time': response_time
+        'response_time': response_time,
+        'hour_of_day': hour_of_day,
+        'minute': minute
     })
 
 # Criar DataFrame
@@ -58,8 +69,12 @@ df = pd.DataFrame(metrics_data)
 
 # ------------------- PREPARAÇÃO DOS DADOS -------------------
 
+# Criar rótulos binários (1 = Alta Latência, 0 = Baixa Latência)
+df['high_latency'] = (df['response_time'] > 3).astype(int)
+
 # Separar variáveis independentes (X) e variável dependente (y)
-X = df[['cpu_usage', 'disk_usage', 'memory_available']]  # Não usamos mais 'tasks_interval' se não estiver disponível
+X = df[['cpu_usage', 'disk_usage', 'memory_available', 'hour_of_day', 'minute']]  # Não usamos mais 'tasks_interval' se não estiver disponível
+# y = df['high_latency']  # Variável de saída binária
 y = df['response_time']  # O que queremos prever
 
 # Dividir dados em treino e teste (aqui vamos manter apenas as amostras reais)
@@ -68,15 +83,25 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # ------------------- TREINO DO MODELO -------------------
 
 # Criar modelo de Regressão Linear
-model = LinearRegression() #TODO utilizar cena que tenta vários modelos e escolhe o melhor
+#model = LinearRegression() #TODO utilizar lazy predict
+reg = LazyRegressor(verbose=0, ignore_warnings=True, custom_metric=None)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+
+print(models)
+
+# Escolher o melhor modelo (primeira linha dos resultados)
+best_model_name = models.index[0]
+best_model = reg.models[best_model_name]  # Obter o modelo treinado
+
+print(f"\nO melhor modelo encontrado: {best_model_name}")
 
 # Treinar o modelo
-model.fit(X_train, y_train)
+#model.fit(X_train, y_train) # isto é código da professora
 
 # ------------------- AVALIAÇÃO -------------------
 
 # Prever no conjunto de teste
-y_pred = model.predict(X_test)
+y_pred = best_model.predict(X_test)
 
 # Avaliar o desempenho do modelo
 mse = mean_squared_error(y_test, y_pred)
@@ -88,10 +113,10 @@ print(f"R2 Score: {r2}")
 # ------------------- PREVISÕES -------------------
 
 # Fazer previsões para os nodes reais
-future_data = df[['cpu_usage', 'disk_usage', 'memory_available']]  # Dados reais para previsões
+future_data = df[['cpu_usage', 'disk_usage', 'memory_available', 'hour_of_day', 'minute']]  # Dados reais para previsões
 
 # Fazer previsões para os nodes reais
-future_predictions = model.predict(future_data)
+future_predictions = best_model.predict(future_data)
 
 print("\nPrevisões de Tempo de Resposta para Dados Reais (Nodes presentes no arquivo):")
 for i, prediction in enumerate(future_predictions):
