@@ -55,4 +55,5 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	connMutex.Lock()
 	delete(connections, conn)
-	connMutex.Unlo
+	connMutex.Unlock()
+}
