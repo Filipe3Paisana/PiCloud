@@ -87,11 +87,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
         replicationFactor := helpers.CalcReplicationFactor(availability, failureRate, numberOfNodes)
         fmt.Printf("Fator de Replicação: %d\n", replicationFactor)
 
-        err = helpers.DistributeFragments(fileID, numberOfFragments, fragments, replicationFactor)
-        if err != nil {
-            http.Error(w, fmt.Sprint("Erro ao distribuir fragmentos pelos nodes: %v", err), http.StatusInternalServerError)
-            return
-        }
+        // err = helpers.DistributeFragments(fileID, numberOfFragments, fragments, replicationFactor)
+        // if err != nil {
+        //     http.Error(w, fmt.Sprint("Erro ao distribuir fragmentos pelos nodes: %v", err), http.StatusInternalServerError)
+        //     return
+        // }
 
         // Responder com sucesso
         w.Header().Set("Content-Type", "application/json")
