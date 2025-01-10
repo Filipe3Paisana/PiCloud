@@ -41,7 +41,7 @@ func main() {
 
     go helpers.MarkOfflineNodes()
 
-    fmt.Println("Servidor a bombar em http://localhost:8081/")
+    fmt.Println("Servidor a bombar em http://localhost:8085/")
     if err := http.ListenAndServe(":8080", nil); err != nil {  
         fmt.Println("Erro ao iniciar o servidor:", err)
     }
