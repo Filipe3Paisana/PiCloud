@@ -2,7 +2,6 @@
 *.git_command.sh
 DB/master/pgdata/
 DB/replica/pgdata/
-data_collector/prometheus_data/
 # Ignorar ficheiros de backup e temporários
 *.bak
 *.tmp
